@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart'; // Você já tem esse arquivo
+import 'firebase_options.dart';
+import 'services/teste_login_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -11,23 +12,13 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Firebase Example',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Firebase Initialized'),
-        ),
-        body: const Center(
-          child: Text('Firebase has been initialized successfully!'),
-        ),
-      ),
+      title: 'Login Firebase + Backend',
+      home: const LoginPage(),
     );
   }
 }
