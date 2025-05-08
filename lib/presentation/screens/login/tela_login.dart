@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:vision_app/core/constants/app_texts.dart';
+import 'package:vision_app/presentation/widgets/state/state.dart';
 // import '/routes/app_routes.dart';
-
 
 class TelaLogin extends StatelessWidget {
   const TelaLogin({super.key});
@@ -16,31 +16,28 @@ class TelaLogin extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             const Image(
-              image: AssetImage('assets/IconApp.png'), // Substitua pelo caminho correto da imagem
+              image: AssetImage(
+                'assets/IconApp.png',
+              ), // Substitua pelo caminho correto da imagem
               width: 100,
               height: 100,
             ),
             const SizedBox(height: 20),
-            Text(StandardTexts.appTitle,
-            style: Theme.of(context).textTheme.bodyLarge),
-
-            TextField(
-              decoration: const InputDecoration(labelText: 'Usuário'),
+            Text(
+              StandardTexts.appTitle,
+              style: Theme.of(context).textTheme.bodyLarge,
             ),
+
+            TextField(decoration: const InputDecoration(labelText: 'Usuário')),
             const SizedBox(height: 20),
             TextField(
               obscureText: true,
               decoration: const InputDecoration(labelText: 'Senha'),
             ),
             const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                // Navigator.pushNamed(context, AppRoutes.home);  // Navega para a tela de home
-              },
-              child: Text(
-                'Entrar',
-                style: const TextStyle(fontSize: 16),
-              ),
+              Button(
+              text: 'Entrar',
+              onPressed: () {},
             ),
           ],
         ),
