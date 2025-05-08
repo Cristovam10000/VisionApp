@@ -26,6 +26,8 @@ Future<String?> postWithToken(String firebaseToken) async {
     final accessToken = data['access_token'] as String?;
     print('🔑 accessToken="$accessToken"');
     return accessToken;
+
+    
   } catch (e) {
     print('Erro ao fazer requisição POST: $e');
     return null;
