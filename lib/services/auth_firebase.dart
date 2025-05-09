@@ -17,7 +17,8 @@ class AuthService {
       if (userCredential.user == null) {
         return null; // Retorna null se o usuário não for encontrado
       } else {
-         final token = await userCredential.user?.getIdToken();
+        // substiti ? por !
+         final token = await userCredential.user!.getIdToken();
          return token;
       }
      

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'auth_firebase.dart';
-import 'auth_backend.dart';
+import '../../../services/auth_firebase.dart';
+import '../../../services/auth_backend.dart';
+import '../../../services/auth_token_service.dart';
+import '../camera/face_camera_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -52,7 +54,17 @@ class _LoginPageState extends State<LoginPage> {
       _perfil = perfil;
       _mensagem = 'Bem-vindo, ${perfil['nome']}!';
     });
+
+     // Navega para a Home (ou Dashboard)
+     AuthTokenService().setToken(backendJwt);
+     AuthTokenService().setToken(backendJwt);
+     Navigator.pushReplacementNamed(
+       context,
+       '/home',
+       arguments: perfil,
+    );
   }
+  
 
   @override
   Widget build(BuildContext context) {
