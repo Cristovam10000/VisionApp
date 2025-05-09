@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vision_app/core/constants/app_texts.dart';
-import 'package:vision_app/presentation/widgets/state/state.dart';
-// import '/routes/app_routes.dart';
+import '../login/widgets.dart';
 
 class TelaLogin extends StatelessWidget {
   const TelaLogin({super.key});
@@ -9,37 +8,38 @@ class TelaLogin extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Image(
-              image: AssetImage(
-                'assets/IconApp.png',
-              ), // Substitua pelo caminho correto da imagem
-              width: 100,
-              height: 100,
-            ),
-            const SizedBox(height: 20),
-            Text(
-              StandardTexts.appTitle,
-              style: Theme.of(context).textTheme.bodyLarge,
-            ),
-
-            TextField(decoration: const InputDecoration(labelText: 'Usuário')),
-            const SizedBox(height: 20),
-            TextField(
-              obscureText: true,
-              decoration: const InputDecoration(labelText: 'Senha'),
-            ),
-            const SizedBox(height: 20),
-              Button(
-              text: 'Entrar',
-              onPressed: () {},
-            ),
-          ],
+      body: Container(
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage(
+              'assets/logo.png',
+            ), // Substitua pelo caminho correto da imagem
+            fit: BoxFit.cover, // Ajusta a imagem para cobrir toda a tela
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              const Image(
+                image: AssetImage('assets/IconApp.png'),
+                width: 143,
+                height: 121,
+              ),
+              const SizedBox(height: 20),
+              Text(
+                StandardTexts.appTitle,
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  fontSize: 32, // Define o tamanho da fonte
+                  fontWeight: FontWeight.w700, // Define o texto como negrito
+                ),
+              ),
+              const SizedBox(height: 200
+              ),
+              Logincontainer(),
+            ],
+          ),
         ),
       ),
     );

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-// import 'package:vision_app/core/constants/app_colors.dart';
 
 class Button extends StatelessWidget {
   final String text;
@@ -8,6 +7,7 @@ class Button extends StatelessWidget {
   final Color? textColor;
   final double? width;
   final double? height;
+  final TextStyle? textStyle;
 
   const Button({
     super.key,
@@ -17,6 +17,7 @@ class Button extends StatelessWidget {
     this.textColor,
     this.width,
     this.height,
+    this.textStyle,
   });
 
   @override
@@ -28,12 +29,18 @@ class Button extends StatelessWidget {
         foregroundColor: textColor,
         minimumSize: Size(width ?? 149, height ?? 52),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(
-            12,
-          ), // Aqui define a borda arredondada
-        ), // Padrão: 100x40
+          borderRadius: BorderRadius.circular(12),
+        ),
       ),
-      child: Text(text),
+      child: Text(
+        text,
+        style: textStyle ??
+            TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w700,
+              color: textColor,
+            ),
+      ),
     );
   }
 }
