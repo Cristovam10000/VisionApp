@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vision_app/presentation/screens/home/tela_home.dart';
 import 'package:vision_app/presentation/widgets/state/state.dart';
 
 class Logincontainer extends StatelessWidget {
@@ -40,7 +41,12 @@ class Logincontainer extends StatelessWidget {
               Button(
                 text: 'Entrar',
                 onPressed: () {
-                  print('Botão Entrar pressionado');
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => TelaHome(), // Navega para a tela de login
+                    ),
+                  );
                 },
               ),
             ],
