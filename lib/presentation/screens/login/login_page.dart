@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import '../../../services/auth_firebase.dart';
 import '../../../services/auth_backend.dart';
 import '../../../services/auth_token_service.dart';
-import '../camera/face_camera_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});

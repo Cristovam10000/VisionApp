@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class HomePage extends StatelessWidget {
   final Map<String, dynamic> perfil;
   
-  const HomePage({Key? key, required this.perfil}) : super(key: key);
+  const HomePage({super.key, required this.perfil});
   
   @override
   Widget build(BuildContext context) {
