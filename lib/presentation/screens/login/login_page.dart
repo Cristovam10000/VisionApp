@@ -18,51 +18,53 @@ class _LoginPageState extends State<LoginPage> {
   Map<String, dynamic>? _perfil;
 
   void _fazerLogin() async {
-    final email = emailController.text.trim();
-    final senha = senhaController.text;
+  final cpf = emailController.text.trim(); // Agora isso é o CPF
+  final senha = senhaController.text;
 
-    // 1) Login no Firebase → ID token
-    final firebaseToken = await AuthService().loginComFirebase(email, senha);
-    if (firebaseToken == null) {
-      setState(() {
-        _mensagem = 'Erro ao fazer login no Firebase.';
-      });
-      return;
-    }
+  final emailFake = '$cpf@app.com'; // Converte CPF para e-mail
 
-    // 2) Envia o Firebase token pro FastAPI → JWT próprio
-    final backendJwt = await postWithToken(firebaseToken);
-    if (backendJwt == null) {
-      setState(() {
-        _mensagem = 'Falha na autenticação com o back-end.';
-      });
-      return;
-    }
-
-    // 3) Usa o JWT do seu back-end pra puxar o perfil
-    final perfil = await getUserProfile(backendJwt);
-    if (perfil == null) {
-      setState(() {
-        _mensagem = 'Não foi possível obter o perfil.';
-      });
-      return;
-    }
-
-    // 4) Sucesso: atualiza UI
+  // 1) Login no Firebase → ID token
+  final firebaseToken = await AuthService().loginComFirebase(emailFake, senha);
+  if (firebaseToken == null) {
     setState(() {
-      _perfil = perfil;
-      _mensagem = 'Bem-vindo, ${perfil['nome']}!';
+      _mensagem = 'Erro ao fazer login no Firebase.';
     });
-
-     // Navega para a Home (ou Dashboard)
-     AuthTokenService().setToken(backendJwt);
-     AuthTokenService().setToken(backendJwt);
-     Navigator.pushReplacementNamed(
-       context,
-       '/home',
-       arguments: perfil,
-    );
+    return;
   }
+
+  // 2) Envia o Firebase token pro FastAPI → JWT próprio
+  final backendJwt = await postWithToken(firebaseToken);
+  if (backendJwt == null) {
+    setState(() {
+      _mensagem = 'Falha na autenticação com o back-end.';
+    });
+    return;
+  }
+
+  // 3) Usa o JWT do seu back-end pra puxar o perfil
+  final perfil = await getUserProfile(backendJwt);
+  if (perfil == null) {
+    setState(() {
+      _mensagem = 'Não foi possível obter o perfil.';
+    });
+    return;
+  }
+
+  // 4) Sucesso: atualiza UI
+  setState(() {
+    _perfil = perfil;
+    _mensagem = 'Bem-vindo, ${perfil['nome']}!';
+  });
+
+  AuthTokenService().setToken(backendJwt);
+  Navigator.pushReplacementNamed(
+    context,
+    '/home',
+    arguments: perfil,
+  );
+}
+
+
   
 
   @override
@@ -75,7 +77,8 @@ class _LoginPageState extends State<LoginPage> {
           children: [
             TextField(
               controller: emailController,
-              decoration: const InputDecoration(labelText: 'Email'),
+              decoration: const InputDecoration(labelText: 'CPF'),
+              keyboardType: TextInputType.number,
             ),
             TextField(
               controller: senhaController,
