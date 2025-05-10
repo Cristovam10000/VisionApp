@@ -4,5 +4,6 @@ class StandardTexts {
   static const String appTitle = 'VisionApp';
   // Define o título do aplicativo como "VisionApp".
 
-
+  static const String appSubtitle =
+      'In sit amet lorem maximus, rhoncus dui vel, pharetra magna. Mauris  ornare quis nibh et fringilla. Nulla sollicitudin maximus sem. ';
 }

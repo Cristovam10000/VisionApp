@@ -35,6 +35,14 @@ class TelaLogin extends StatelessWidget {
                   fontWeight: FontWeight.w700, // Define o texto como negrito
                 ),
               ),
+              const SizedBox(height: 20),
+              Text(
+                StandardTexts.appSubtitle,
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  fontSize: 16, // Define o tamanho da fonte
+                  fontWeight: FontWeight.w400, // Define o texto como normal
+                ),
+              ),
               const SizedBox(height: 200
               ),
               Logincontainer(),

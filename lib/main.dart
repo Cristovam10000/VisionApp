@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'VisionApp',
-      theme: AppTheme.lightTheme,
+      theme: AppTheme.darkTheme,
       initialRoute: AppRoutes.login,  // Tela inicial é o login
       routes: {
         AppRoutes.login: (context) => const TelaLogin(),
