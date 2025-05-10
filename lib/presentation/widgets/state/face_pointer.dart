@@ -4,18 +4,21 @@ import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';  
 class FacePainter extends CustomPainter {
   final List<Face> faces;
   final Size imageSize;  // importado de dart:ui via flutter/material
+  final bool isFaceInPosition;
 
-  FacePainter(this.faces, this.imageSize);
+  // Tornando o terceiro parâmetro opcional com valor padrão false
+  FacePainter(this.faces, this.imageSize, [this.isFaceInPosition = false]);
 
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = Colors.greenAccent
+      ..color = isFaceInPosition ? Colors.green : Colors.greenAccent
       ..style = PaintingStyle.stroke
       ..strokeWidth = 3.0;
 
-    final scaleX = size.width / imageSize.height;
-    final scaleY = size.height / imageSize.width;
+    final scaleX = size.width / imageSize.width;
+    final scaleY = size.height / imageSize.height;
+
 
     // Desenha as faces detectadas
     for (final face in faces) {
@@ -50,5 +53,6 @@ class FacePainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant FacePainter old) => old.faces != faces;
+  bool shouldRepaint(covariant FacePainter old) => 
+      old.faces != faces || old.isFaceInPosition != isFaceInPosition;
 }
