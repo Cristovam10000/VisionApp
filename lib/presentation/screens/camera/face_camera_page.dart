@@ -59,7 +59,25 @@ class _FaceCameraPageState extends State<FaceCameraPage> {
 
   Future<void> _captureAndUpload() async {
     try {
+      // Desliga o flash antes de capturar, se estiver ligado
+      final currentFlashState = _flashOn;
+      
+      if (_flashOn) {
+        await _cameraService.controller.setFlashMode(FlashMode.off);
+      }
+      
+      // Configura flash apenas para a foto, se necessário
+      await _cameraService.controller.setFlashMode(
+        currentFlashState ? FlashMode.auto : FlashMode.off
+      );
+      
       final picture = await _cameraService.takePicture();
+      
+      // Restaura estado anterior do flash
+      await _cameraService.controller.setFlashMode(
+        currentFlashState ? FlashMode.torch : FlashMode.off
+      );
+      
       final token = AuthTokenService().token;
       if (token != null) {
         await _uploadService.enviarImagem(File(picture.path), token);
@@ -80,31 +98,58 @@ class _FaceCameraPageState extends State<FaceCameraPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Detecção Facial'),
-        actions: [
-          IconButton(
-            icon: Icon(_flashOn ? Icons.flash_on : Icons.flash_off),
-            onPressed: _toggleFlash,
-          )
-        ],
       ),
       body: Stack(
         fit: StackFit.expand,
         children: [
+          // Preview da câmera
           CameraPreview(_cameraService.controller),
-          // desenha bounding boxes
+          
+          // Guia de posicionamento facial (sempre visível)
+          Center(
+            child: Container(
+              width: 280,
+              height: 350,
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.green, width: 2),
+                borderRadius: BorderRadius.circular(150),
+              ),
+            ),
+          ),
+          
+          // Desenha bounding boxes das faces detectadas
           CustomPaint(
             painter: FacePainter(_faces, _cameraService.controller.value.previewSize!),
           ),
-          // botão de captura
+          
+          // Botões de controle na parte inferior
           Positioned(
             bottom: 24,
             left: 0,
             right: 0,
-            child: Center(
-              child: FloatingActionButton(
-                onPressed: _captureAndUpload,
-                child: const Icon(Icons.camera_alt),
-              ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // Botão de flash
+                FloatingActionButton(
+                  heroTag: 'flashButton',
+                  onPressed: _toggleFlash,
+                  backgroundColor: Colors.grey[800],
+                  mini: true,
+                  child: Icon(
+                    _flashOn ? Icons.flash_on : Icons.flash_off,
+                    color: _flashOn ? Colors.amber : Colors.white,
+                  ),
+                ),
+                const SizedBox(width: 20),
+                // Botão de captura
+                FloatingActionButton(
+                  heroTag: 'cameraButton',
+                  onPressed: _captureAndUpload,
+                  backgroundColor: Colors.white,
+                  child: const Icon(Icons.camera_alt, color: Colors.black),
+                ),
+              ],
             ),
           ),
         ],
