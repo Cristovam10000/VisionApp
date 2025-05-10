@@ -1,10 +1,7 @@
-// lib/services/face_detection_service.dart
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
-import 'dart:typed_data';
 
 class FaceDetectionService {
   final FaceDetector _faceDetector = FaceDetector(

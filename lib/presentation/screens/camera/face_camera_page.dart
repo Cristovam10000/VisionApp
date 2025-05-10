@@ -26,17 +26,12 @@ class _FaceCameraPageState extends State<FaceCameraPage> {
   List<Face> _faces = [];
   bool _isFaceInPosition = false;
   bool _showMessage = false;
-  bool _processingImage = false; // Controle para evitar processamento excessivo
   
-  // Tamanho do quadrado de detecção facial - REDUZIDO para facilitar o posicionamento
-  final double _faceBoxSize = 220.0;
+  // Tamanho do quadrado de detecção facial
+  final double _faceBoxSize = 260.0;
   
-  // Flag para controlar a rotação da câmera - ALTERADO PARA TRUE
-  final bool _rotationCorrection = true; // Ative para inverter as coordenadas
-  
-  // Controle de frame rate para reduzir carga de CPU
-  int _frameSkipCounter = 0;
-  final int _processEveryNthFrame = 3; // Processa a cada 3 frames
+  // Flag para controlar a rotação da câmera
+  final bool _rotationCorrection = false; // Defina como true se precisar inverter as coordenadas
   
   @override
   void initState() {
@@ -44,100 +39,97 @@ class _FaceCameraPageState extends State<FaceCameraPage> {
     _init();
   }
 
-  // Trecho corrigido para o método _init() em face_camera_page.dart
-
-Future<void> _init() async {
-  try {
+  Future<void> _init() async {
     final ok = await _cameraService.initializeCamera();
     if (ok) {
-      // Adicionando log para debug da resolução
-      print('📏 Tamanho da prévia: ${_cameraService.controller.value.previewSize?.width} x ${_cameraService.controller.value.previewSize?.height}');
-      
-      // Para processar frames em tempo real com controle de frequência:
+      // Para processar frames em tempo real:
       _cameraService.controller.startImageStream((image) async {
-        // Processa apenas alguns frames para reduzir carga
-        _frameSkipCounter++;
-        if (_frameSkipCounter % _processEveryNthFrame != 0) {
-          return;
-        }
+        final faces = await _faceService.detectFacesFromImage(image);
         
-        // Evita processar um novo frame se já estiver processando outro
-        if (_processingImage) {
-          return;
-        }
-        
-        _processingImage = true;
-        
-        try {
-          // CORREÇÃO: Determine a rotação adequada com base na orientação do dispositivo
-          // Isso é crucial para o funcionamento correto da detecção facial
-          final deviceOrientation = MediaQuery.of(context).orientation;
-          final cameraLensDirection = _cameraService.controller.description.lensDirection;
+        // Verificar se tem algum rosto dentro da região quadrada
+        bool faceInPosition = false;
+        if (faces.isNotEmpty) {
+          // Obter o tamanho da tela
+          final screenSize = MediaQuery.of(context).size;
           
-          InputImageRotation imageRotation;
+          // Calcular o centro e tamanho da região quadrada na tela
+          final centerX = screenSize.width / 2;
+          final centerY = screenSize.height / 2;
+          final halfBoxSize = _faceBoxSize / 2;
           
-          // Determina a rotação adequada com base na orientação e câmera
-          if (Platform.isAndroid) {
-            if (deviceOrientation == Orientation.portrait) {
-              imageRotation = cameraLensDirection == CameraLensDirection.front
-                  ? InputImageRotation.rotation270deg  // Para câmera frontal em modo retrato
-                  : InputImageRotation.rotation90deg;  // Para câmera traseira em modo retrato
-            } else {
-              imageRotation = cameraLensDirection == CameraLensDirection.front
-                  ? InputImageRotation.rotation180deg  // Para câmera frontal em modo paisagem
-                  : InputImageRotation.rotation0deg;   // Para câmera traseira em modo paisagem
-            }
-          } else {
-            // Para iOS ou outros dispositivos
-            imageRotation = deviceOrientation == Orientation.portrait
-                ? InputImageRotation.rotation90deg
-                : InputImageRotation.rotation0deg;
-          }
+          // Definir os limites da região quadrada
+          final left = centerX - halfBoxSize;
+          final top = centerY - halfBoxSize;
+          final right = centerX + halfBoxSize;
+          final bottom = centerY + halfBoxSize;
           
-          // Log para debug
-          print('🔄 Rotação da imagem: $imageRotation');
-          
-          final faces = await _faceService.detectFacesFromImage(
-            image, 
-            rotation: imageRotation // Usa a rotação calculada dinamicamente
-          );
-          
-          // Debug info
+          // Calcular a escala da imagem para a tela
+          final scaleX = screenSize.width / image.width;
+          final scaleY = screenSize.height / image.height;
+
+          // Adiciona logs para depuração
           print('👤 Faces detectadas: ${faces.length}');
-          if (faces.isNotEmpty) {
-            print('📏 Tamanho da face: ${faces[0].boundingBox.width} x ${faces[0].boundingBox.height}');
-          }
           
-          // Verificar se tem algum rosto dentro da região quadrada
-          bool faceInPosition = false;
-          if (faces.isNotEmpty) {
-            // ... [resto do código para verificar face em posição permanece igual]
+          // Verificar se algum rosto está suficientemente dentro da região
+          for (int i = 0; i < faces.length; i++) {
+            final face = faces[i];
+            print('📏 Face #$i: ${face.boundingBox.toString()}');
+            
+            // Calcular coordenadas do rosto na tela
+            double faceLeft, faceTop, faceRight, faceBottom;
+            
+            // Se estiver em modo retrato e precisar inverter as coordenadas
+            if (_rotationCorrection) {
+              // Inverte X e Y devido à rotação da câmera
+              faceLeft = face.boundingBox.top * scaleX;
+              faceTop = image.width - face.boundingBox.right * scaleY;
+              faceRight = face.boundingBox.bottom * scaleX;
+              faceBottom = image.width - face.boundingBox.left * scaleY;
+            } else {
+              // Sem inversão
+              faceLeft = face.boundingBox.left * scaleX;
+              faceTop = face.boundingBox.top * scaleY;
+              faceRight = face.boundingBox.right * scaleX;
+              faceBottom = face.boundingBox.bottom * scaleY;
+            }
+            
+            print('📱 Face #$i na tela: L:$faceLeft, T:$faceTop, R:$faceRight, B:$faceBottom');
+            print('🎯 Quadrado de detecção: L:$left, T:$top, R:$right, B:$bottom');
+            
+            // Calcular intersecção entre o rosto e o quadrado de detecção
+            final intersectionLeft = max(faceLeft, left);
+            final intersectionTop = max(faceTop, top);
+            final intersectionRight = min(faceRight, right);
+            final intersectionBottom = min(faceBottom, bottom);
+            
+            // Se há intersecção válida
+            if (intersectionLeft < intersectionRight && intersectionTop < intersectionBottom) {
+              // Calcular áreas
+              final intersectionArea = (intersectionRight - intersectionLeft) * 
+                                    (intersectionBottom - intersectionTop);
+              final faceArea = (faceRight - faceLeft) * (faceBottom - faceTop);
+              
+              final percentageInBox = faceArea > 0 ? (intersectionArea / faceArea) : 0;
+              print('📊 Porcentagem do rosto no quadrado: ${(percentageInBox * 100).toStringAsFixed(1)}%');
+              
+              // Se pelo menos 70% do rosto estiver dentro do quadrado
+              if (faceArea > 0 && percentageInBox > 0.7) {
+                faceInPosition = true;
+                break;
+              }
+            }
           }
-          
-          if (mounted) {
-            setState(() {
-              _faces = faces;
-              _isFaceInPosition = faceInPosition;
-              _showMessage = faces.isEmpty;
-            });
-          }
-        } catch (e) {
-          print('Erro ao processar imagem: $e');
-        } finally {
-          _processingImage = false;
         }
+        
+        setState(() {
+          _faces = faces;
+          _isFaceInPosition = faceInPosition;
+          _showMessage = faces.isEmpty;
+        });
       });
     }
-    if (mounted) {
-      setState(() => _isLoading = false);
-    }
-  } catch (e) {
-    print('Erro na inicialização da câmera: $e');
-    if (mounted) {
-      setState(() => _isLoading = false);
-    }
+    setState(() => _isLoading = false);
   }
-}
 
   @override
   void dispose() {
@@ -253,37 +245,27 @@ Future<void> _init() async {
           CustomPaint(
             painter: FacePainter(
               _faces, 
-              Size(
-                _cameraService.controller.value.previewSize?.height ?? 0, 
-                _cameraService.controller.value.previewSize?.width ?? 0
-              ),
+              _cameraService.controller.value.previewSize!,
               _isFaceInPosition,
             ),
           ),
           
-          // Feedback do status da detecção
-          Positioned(
-            top: 20,
-            left: 0,
-            right: 0,
-            child: Center(
+          // Mensagem quando não há rostos detectados
+          if (_showMessage)
+            Center(
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding: const EdgeInsets.all(16),
+                margin: EdgeInsets.only(top: 20 + _faceBoxSize/2),
                 decoration: BoxDecoration(
                   color: Colors.black.withOpacity(0.7),
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(8),
                 ),
-                child: Text(
-                  _showMessage 
-                      ? 'Nenhum rosto detectado'
-                      : _isFaceInPosition 
-                          ? 'Rosto posicionado corretamente!'
-                          : 'Centralize seu rosto no quadrado',
-                  style: const TextStyle(color: Colors.white, fontSize: 16),
+                child: const Text(
+                  'Nenhum rosto detectado',
+                  style: TextStyle(color: Colors.white, fontSize: 16),
                 ),
               ),
             ),
-          ),
           
           // Botões de controle na parte inferior
           Positioned(

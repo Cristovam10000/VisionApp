@@ -1,12 +1,13 @@
+// face_pointer.dart
+
 import 'package:flutter/material.dart';
-import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';  // traz Face
+import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
 
 class FacePainter extends CustomPainter {
   final List<Face> faces;
-  final Size imageSize;  // importado de dart:ui via flutter/material
+  final Size imageSize;
   final bool isFaceInPosition;
 
-  // Tornando o terceiro parâmetro opcional com valor padrão false
   FacePainter(this.faces, this.imageSize, [this.isFaceInPosition = false]);
 
   @override
@@ -19,8 +20,6 @@ class FacePainter extends CustomPainter {
     final scaleX = size.width / imageSize.width;
     final scaleY = size.height / imageSize.height;
 
-
-    // Desenha as faces detectadas
     for (final face in faces) {
       final rect = Rect.fromLTRB(
         face.boundingBox.left * scaleX,
@@ -29,20 +28,19 @@ class FacePainter extends CustomPainter {
         face.boundingBox.bottom * scaleY,
       );
       canvas.drawRect(rect, paint);
+
+      final landmarkPaint = Paint()
+        ..color = Colors.yellow
+        ..style = PaintingStyle.fill
+        ..strokeWidth = 3.0;
       
-      // Desenha pontos de referência facial se disponíveis
-      if (face.landmarks.isNotEmpty) {
-        final landmarkPaint = Paint()
-          ..color = Colors.yellow
-          ..style = PaintingStyle.fill
-          ..strokeWidth = 3.0;
-        
-        for (final landmark in face.landmarks.values) {
-          final position = landmark;
+      for (final landmark in face.landmarks.values) {
+        final position = landmark?.position;
+        if (position != null) {
           canvas.drawCircle(
             Offset(
-              (position?.position.x ?? 0) * scaleX, // Usa 0 como valor padrão se position for null
-              (position?.position.y ?? 0) * scaleY, // Usa 0 como valor padrão se position for null
+              position.x * scaleX,
+              position.y * scaleY,
             ),
             2.0,
             landmarkPaint,
