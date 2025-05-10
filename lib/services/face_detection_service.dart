@@ -1,51 +1,76 @@
 // lib/services/face_detection_service.dart
 
-import 'package:flutter/foundation.dart'; // para WriteBuffer
-import 'package:flutter/material.dart';  // para Size
-import 'package:camera/camera.dart';  // para CameraImage
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:camera/camera.dart';
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
+import 'dart:typed_data';
 
 class FaceDetectionService {
   final FaceDetector _faceDetector = FaceDetector(
     options: FaceDetectorOptions(
-      enableContours: true,          // Ativa detecção de contornos faciais
-      enableClassification: true,    // Ativa classificação (olhos abertos, sorriso)
-      enableLandmarks: true,         // Ativa detecção de pontos de referência
-      minFaceSize: 0.1,              // ALTERADO: Reduzido para 10% da imagem (era 0.15)
-      performanceMode: FaceDetectorMode.fast, // ALTERADO: Prioriza velocidade sobre precisão
+      enableContours: true,
+      enableClassification: true,
+      enableLandmarks: true,
+      minFaceSize: 0.05,  // Reduzido para 5% da imagem para maior sensibilidade
+      performanceMode: FaceDetectorMode.accurate, // Mudando para modo mais preciso
     ),
   );
 
-  /// Recebe um [CameraImage], converte para [InputImage] e detecta faces.
-  Future<List<Face>> detectFacesFromImage(CameraImage image, {InputImageRotation rotation = InputImageRotation.rotation0deg}) async {
+  /// Método melhorado para converter o CameraImage para InputImage
+  Future<List<Face>> detectFacesFromImage(CameraImage cameraImage, {InputImageRotation rotation = InputImageRotation.rotation0deg}) async {
     try {
-      // 1) Junta todos os bytes dos planos em um único buffer
-      final allBytes = WriteBuffer();
-      for (final plane in image.planes) {
-        allBytes.putUint8List(plane.bytes);
+      // Correção: Melhor abordagem para converter CameraImage para InputImage
+      final inputImage = _convertCameraImageToInputImage(cameraImage, rotation);
+      if (inputImage == null) {
+        print('Erro: Não foi possível converter a imagem.');
+        return [];
       }
-      final bytes = allBytes.done().buffer.asUint8List();
 
-      // 2) Cria o InputImage com metadados obrigatórios
-      final inputImage = InputImage.fromBytes(
-        bytes: bytes,
-        metadata: InputImageMetadata(
-          size: Size(
-            image.width.toDouble(),
-            image.height.toDouble(),
-          ),
-          rotation: rotation,  // Usa a rotação passada como parâmetro
-          format: InputImageFormatValue.fromRawValue(image.format.raw) 
-              ?? InputImageFormat.nv21,
-          bytesPerRow: image.planes.first.bytesPerRow,
-        ),
-      );
-
-      // 3) Processa a imagem e retorna a lista de faces detectadas
+      // Processa a imagem e retorna a lista de faces detectadas
       return await _faceDetector.processImage(inputImage);
     } catch (e) {
       print('Erro ao detectar faces: $e');
       return [];
+    }
+  }
+
+  /// Método especializado para converter CameraImage para InputImage
+  InputImage? _convertCameraImageToInputImage(CameraImage cameraImage, InputImageRotation rotation) {
+    try {
+      final format = InputImageFormatValue.fromRawValue(cameraImage.format.raw);
+      if (format == null) {
+        print('Formato de imagem desconhecido: ${cameraImage.format.raw}');
+        return null;
+      }
+
+      // Prepara os bytes de acordo com o formato da imagem
+      Uint8List bytes;
+      if (cameraImage.planes.length == 1) {
+        // Se tiver apenas um plano, usa diretamente
+        bytes = cameraImage.planes[0].bytes;
+      } else {
+        // Para formatos YUV (multplanos), precisamos tratar de forma diferente
+        final allBytes = WriteBuffer();
+        for (final plane in cameraImage.planes) {
+          allBytes.putUint8List(plane.bytes);
+        }
+        bytes = allBytes.done().buffer.asUint8List();
+      }
+
+      // Cria o InputImage com metadados adequados
+      return InputImage.fromBytes(
+        bytes: bytes,
+        metadata: InputImageMetadata(
+          size: Size(cameraImage.width.toDouble(), cameraImage.height.toDouble()),
+          rotation: rotation,
+          format: format,
+          bytesPerRow: cameraImage.planes[0].bytesPerRow,
+        ),
+      );
+    } catch (e) {
+      print('Erro ao converter imagem: $e');
+      return null;
     }
   }
 

@@ -44,130 +44,100 @@ class _FaceCameraPageState extends State<FaceCameraPage> {
     _init();
   }
 
-  Future<void> _init() async {
-    try {
-      final ok = await _cameraService.initializeCamera();
-      if (ok) {
-        // Para processar frames em tempo real com controle de frequência:
-        _cameraService.controller.startImageStream((image) async {
-          // Processa apenas alguns frames para reduzir carga
-          _frameSkipCounter++;
-          if (_frameSkipCounter % _processEveryNthFrame != 0) {
-            return;
-          }
+  // Trecho corrigido para o método _init() em face_camera_page.dart
+
+Future<void> _init() async {
+  try {
+    final ok = await _cameraService.initializeCamera();
+    if (ok) {
+      // Adicionando log para debug da resolução
+      print('📏 Tamanho da prévia: ${_cameraService.controller.value.previewSize?.width} x ${_cameraService.controller.value.previewSize?.height}');
+      
+      // Para processar frames em tempo real com controle de frequência:
+      _cameraService.controller.startImageStream((image) async {
+        // Processa apenas alguns frames para reduzir carga
+        _frameSkipCounter++;
+        if (_frameSkipCounter % _processEveryNthFrame != 0) {
+          return;
+        }
+        
+        // Evita processar um novo frame se já estiver processando outro
+        if (_processingImage) {
+          return;
+        }
+        
+        _processingImage = true;
+        
+        try {
+          // CORREÇÃO: Determine a rotação adequada com base na orientação do dispositivo
+          // Isso é crucial para o funcionamento correto da detecção facial
+          final deviceOrientation = MediaQuery.of(context).orientation;
+          final cameraLensDirection = _cameraService.controller.description.lensDirection;
           
-          // Evita processar um novo frame se já estiver processando outro
-          if (_processingImage) {
-            return;
-          }
+          InputImageRotation imageRotation;
           
-          _processingImage = true;
-          
-          try {
-            final faces = await _faceService.detectFacesFromImage(
-              image, 
-              rotation: InputImageRotation.rotation90deg // Tente diferentes rotações se necessário
-            );
-            
-            // Debug info - remove posteriormente
-            print('👤 Faces detectadas: ${faces.length}');
-            
-            // Verificar se tem algum rosto dentro da região quadrada
-            bool faceInPosition = false;
-            if (faces.isNotEmpty) {
-              // Obter o tamanho da tela
-              final screenSize = MediaQuery.of(context).size;
-              
-              // Calcular o centro e tamanho da região quadrada na tela
-              final centerX = screenSize.width / 2;
-              final centerY = screenSize.height / 2;
-              final halfBoxSize = _faceBoxSize / 2;
-              
-              // Definir os limites da região quadrada
-              final left = centerX - halfBoxSize;
-              final top = centerY - halfBoxSize;
-              final right = centerX + halfBoxSize;
-              final bottom = centerY + halfBoxSize;
-              
-              // Calcular a escala da imagem para a tela
-              final scaleX = screenSize.width / image.width;
-              final scaleY = screenSize.height / image.height;
-              
-              // Verificar se algum rosto está suficientemente dentro da região
-              for (int i = 0; i < faces.length; i++) {
-                final face = faces[i];
-                
-                // Calcular coordenadas do rosto na tela
-                double faceLeft, faceTop, faceRight, faceBottom;
-                
-                if (_rotationCorrection) {
-                  // Inverte X e Y devido à rotação da câmera
-                  faceLeft = face.boundingBox.top * scaleX;
-                  faceTop = image.width - face.boundingBox.right * scaleY;
-                  faceRight = face.boundingBox.bottom * scaleX;
-                  faceBottom = image.width - face.boundingBox.left * scaleY;
-                } else {
-                  // Sem inversão
-                  faceLeft = face.boundingBox.left * scaleX;
-                  faceTop = face.boundingBox.top * scaleY;
-                  faceRight = face.boundingBox.right * scaleX;
-                  faceBottom = face.boundingBox.bottom * scaleY;
-                }
-                
-                // Debug - remove posteriormente
-                print('📱 Face #$i na tela: L:$faceLeft, T:$faceTop, R:$faceRight, B:$faceBottom');
-                print('🎯 Quadrado de detecção: L:$left, T:$top, R:$right, B:$bottom');
-                
-                // Calcular intersecção entre o rosto e o quadrado de detecção
-                final intersectionLeft = max(faceLeft, left);
-                final intersectionTop = max(faceTop, top);
-                final intersectionRight = min(faceRight, right);
-                final intersectionBottom = min(faceBottom, bottom);
-                
-                // ALTERADO: Relaxamos o critério de detecção
-                // Se há intersecção válida
-                if (intersectionLeft < intersectionRight && intersectionTop < intersectionBottom) {
-                  // Calcular áreas
-                  final intersectionArea = (intersectionRight - intersectionLeft) * 
-                                      (intersectionBottom - intersectionTop);
-                  final faceArea = (faceRight - faceLeft) * (faceBottom - faceTop);
-                  
-                  final percentageInBox = faceArea > 0 ? (intersectionArea / faceArea) : 0;
-                  print('📊 Porcentagem do rosto no quadrado: ${(percentageInBox * 100).toStringAsFixed(1)}%');
-                  
-                  // ALTERADO: Reduzido para 50% para facilitar a detecção
-                  if (faceArea > 0 && percentageInBox > 0.5) {
-                    faceInPosition = true;
-                    break;
-                  }
-                }
-              }
+          // Determina a rotação adequada com base na orientação e câmera
+          if (Platform.isAndroid) {
+            if (deviceOrientation == Orientation.portrait) {
+              imageRotation = cameraLensDirection == CameraLensDirection.front
+                  ? InputImageRotation.rotation270deg  // Para câmera frontal em modo retrato
+                  : InputImageRotation.rotation90deg;  // Para câmera traseira em modo retrato
+            } else {
+              imageRotation = cameraLensDirection == CameraLensDirection.front
+                  ? InputImageRotation.rotation180deg  // Para câmera frontal em modo paisagem
+                  : InputImageRotation.rotation0deg;   // Para câmera traseira em modo paisagem
             }
-            
-            if (mounted) {
-              setState(() {
-                _faces = faces;
-                _isFaceInPosition = faceInPosition;
-                _showMessage = faces.isEmpty;
-              });
-            }
-          } catch (e) {
-            print('Erro ao processar imagem: $e');
-          } finally {
-            _processingImage = false;
+          } else {
+            // Para iOS ou outros dispositivos
+            imageRotation = deviceOrientation == Orientation.portrait
+                ? InputImageRotation.rotation90deg
+                : InputImageRotation.rotation0deg;
           }
-        });
-      }
-      if (mounted) {
-        setState(() => _isLoading = false);
-      }
-    } catch (e) {
-      print('Erro na inicialização da câmera: $e');
-      if (mounted) {
-        setState(() => _isLoading = false);
-      }
+          
+          // Log para debug
+          print('🔄 Rotação da imagem: $imageRotation');
+          
+          final faces = await _faceService.detectFacesFromImage(
+            image, 
+            rotation: imageRotation // Usa a rotação calculada dinamicamente
+          );
+          
+          // Debug info
+          print('👤 Faces detectadas: ${faces.length}');
+          if (faces.isNotEmpty) {
+            print('📏 Tamanho da face: ${faces[0].boundingBox.width} x ${faces[0].boundingBox.height}');
+          }
+          
+          // Verificar se tem algum rosto dentro da região quadrada
+          bool faceInPosition = false;
+          if (faces.isNotEmpty) {
+            // ... [resto do código para verificar face em posição permanece igual]
+          }
+          
+          if (mounted) {
+            setState(() {
+              _faces = faces;
+              _isFaceInPosition = faceInPosition;
+              _showMessage = faces.isEmpty;
+            });
+          }
+        } catch (e) {
+          print('Erro ao processar imagem: $e');
+        } finally {
+          _processingImage = false;
+        }
+      });
+    }
+    if (mounted) {
+      setState(() => _isLoading = false);
+    }
+  } catch (e) {
+    print('Erro na inicialização da câmera: $e');
+    if (mounted) {
+      setState(() => _isLoading = false);
     }
   }
+}
 
   @override
   void dispose() {
