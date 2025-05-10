@@ -11,40 +11,42 @@ class FaceDetectionService {
       enableContours: true,          // Ativa detecção de contornos faciais
       enableClassification: true,    // Ativa classificação (olhos abertos, sorriso)
       enableLandmarks: true,         // Ativa detecção de pontos de referência
-      minFaceSize: 0.15,             // Define tamanho mínimo da face (15% da imagem)
-      performanceMode: FaceDetectorMode.accurate, // Prioriza precisão sobre velocidade
+      minFaceSize: 0.1,              // ALTERADO: Reduzido para 10% da imagem (era 0.15)
+      performanceMode: FaceDetectorMode.fast, // ALTERADO: Prioriza velocidade sobre precisão
     ),
   );
 
   /// Recebe um [CameraImage], converte para [InputImage] e detecta faces.
   Future<List<Face>> detectFacesFromImage(CameraImage image, {InputImageRotation rotation = InputImageRotation.rotation0deg}) async {
-    // 1) Junta todos os bytes dos planos em um único buffer
-    final allBytes = WriteBuffer();
-    for (final plane in image.planes) {
-      allBytes.putUint8List(plane.bytes);
-    }
-    final bytes = allBytes.done().buffer.asUint8List();
+    try {
+      // 1) Junta todos os bytes dos planos em um único buffer
+      final allBytes = WriteBuffer();
+      for (final plane in image.planes) {
+        allBytes.putUint8List(plane.bytes);
+      }
+      final bytes = allBytes.done().buffer.asUint8List();
 
-    // 2) Cria o InputImage com metadados obrigatórios
-    // Defina a rotação antes de criar o InputImageMetadata
-    final actualRotation = InputImageRotationValue.fromRawValue(image.format.raw) ?? rotation;
-
-    final inputImage = InputImage.fromBytes(
-      bytes: bytes,
-      metadata: InputImageMetadata(
-        size: Size(
-          image.width.toDouble(),
-          image.height.toDouble(),
+      // 2) Cria o InputImage com metadados obrigatórios
+      final inputImage = InputImage.fromBytes(
+        bytes: bytes,
+        metadata: InputImageMetadata(
+          size: Size(
+            image.width.toDouble(),
+            image.height.toDouble(),
+          ),
+          rotation: rotation,  // Usa a rotação passada como parâmetro
+          format: InputImageFormatValue.fromRawValue(image.format.raw) 
+              ?? InputImageFormat.nv21,
+          bytesPerRow: image.planes.first.bytesPerRow,
         ),
-        rotation: actualRotation,
-        format: InputImageFormatValue.fromRawValue(image.format.raw) 
-            ?? InputImageFormat.nv21,
-        bytesPerRow: image.planes.first.bytesPerRow,
-      ),
-    );
+      );
 
-    // 3) Processa a imagem e retorna a lista de faces detectadas
-    return _faceDetector.processImage(inputImage);
+      // 3) Processa a imagem e retorna a lista de faces detectadas
+      return await _faceDetector.processImage(inputImage);
+    } catch (e) {
+      print('Erro ao detectar faces: $e');
+      return [];
+    }
   }
 
   /// Libera recursos do detector
