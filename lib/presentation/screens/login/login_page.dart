@@ -56,7 +56,8 @@ class _LoginPageState extends State<LoginPage> {
     _mensagem = 'Bem-vindo, ${perfil['nome']}!';
   });
 
-  AuthTokenService().setToken(backendJwt);
+  await AuthTokenService().saveToken(backendJwt);
+
   Navigator.pushReplacementNamed(
     context,
     '/home',

@@ -2,14 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'routes/app_routes.dart';
+import 'package:face_camera/face_camera.dart';  // Importe o pacote
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
-  try {
+
+   try {
     await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   } catch (e) {
     print('Erro ao inicializar Firebase: $e');
+  }
+  
+  try {
+    await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+    await FaceCamera.initialize();  // Inicialize o FaceCamera
+  } catch (e) {
+    print('Erro ao inicializar: $e');
   }
   
   runApp(const MyApp());
@@ -25,7 +33,6 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
-        // Tema Material 3 (opcional)
         useMaterial3: true,
       ),
       initialRoute: '/',
@@ -34,81 +41,3 @@ class MyApp extends StatelessWidget {
   }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// import 'package:flutter/material.dart';
-// import 'package:firebase_core/firebase_core.dart';
-// import 'firebase_options.dart';
-// import 'services/teste_login_page.dart';
-
-// void main() async {
-//   WidgetsFlutterBinding.ensureInitialized();
-//   await Firebase.initializeApp(
-//     options: DefaultFirebaseOptions.currentPlatform,
-//   );
-//   runApp(const MyApp());
-// }
-
-// class MyApp extends StatelessWidget {
-//   const MyApp({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       title: 'Login Firebase + Backend',
-//       home: const LoginPage(),
-//     );
-//   }
-// }
-
-
-
-
-
-// só uma pegunta para que serve esse jwt eu gostaria de resaltar que esse app sera usado na segurana publica ou seja o policial vai logar e usar para tirar uma foto de uma pessoa suspeita e enviar  essa foto para o back end comparar com uma foto no banco e dados 

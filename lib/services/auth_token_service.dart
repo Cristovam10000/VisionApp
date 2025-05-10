@@ -1,15 +1,40 @@
+import 'package:shared_preferences/shared_preferences.dart';
+
 class AuthTokenService {
+  // Implementação de singleton
   static final AuthTokenService _instance = AuthTokenService._internal();
-
   factory AuthTokenService() => _instance;
-
   AuthTokenService._internal();
 
-  String? _jwt;
+  // Chave para armazenar o token nas SharedPreferences
+  static const String _tokenKey = 'auth_token';
+  
+  // Cache do token
+  String? _cachedToken;
 
-  void setToken(String token) {
-    _jwt = token;
+  // Obter o token atual (da memória ou do armazenamento)
+  Future<String?> getToken() async {
+    if (_cachedToken != null) return _cachedToken;
+    
+    final prefs = await SharedPreferences.getInstance();
+    _cachedToken = prefs.getString(_tokenKey);
+    return _cachedToken;
   }
 
-  String? get token => _jwt;
+  // Getter síncrono (pode retornar null se não carregado ainda)
+  String? get token => _cachedToken;
+
+  // Salvar um novo token
+  Future<void> saveToken(String token) async {
+    _cachedToken = token;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_tokenKey, token);
+  }
+
+  // Limpar o token (logout)
+  Future<void> clearToken() async {
+    _cachedToken = null;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_tokenKey);
+  }
 }

@@ -43,6 +43,9 @@ dependencies:
   cupertino_icons: ^1.0.8
   firebase_core: ^3.13.0
   face_camera: ^0.1.4
+  shared_preferences: ^2.5.3
+  mime: ^2.0.0 
+  image: ^3.1.16
 
 dev_dependencies:
   flutter_test:
