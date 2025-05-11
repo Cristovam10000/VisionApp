@@ -1,0 +1,176 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// import 'package:flutter/material.dart';
+// import 'package:face_camera/face_camera.dart';
+// import 'dart:io';
+// import '../../../services/auth_token_service.dart';
+// import '../../../services/upload_service.dart';
+
+// class FaceCameraPage extends StatefulWidget {
+//   const FaceCameraPage({super.key});
+
+//   @override
+//   _FaceCameraPageState createState() => _FaceCameraPageState();
+// }
+
+// class _FaceCameraPageState extends State<FaceCameraPage> {
+//   late FaceCameraController _controller;
+//   File? _capturedImage;
+//   bool _isProcessing = false;
+//   final UploadService _uploadService = UploadService();
+
+//   @override
+//   void initState() {
+//     super.initState();
+//     _controller = FaceCameraController(
+//       autoCapture: false,
+//       defaultCameraLens: CameraLens.front,
+//       enableAudio: false,
+//       onCapture: _handleCapture,
+//       onFaceDetected: (face) {
+//         // Você pode fazer algo aqui se quiser
+//       },
+//     );
+//   }
+
+//   Future<void> _handleCapture(File? imageFile) async {
+//     if (imageFile == null || _isProcessing) return;
+
+//     setState(() {
+//       _isProcessing = true;
+//       _capturedImage = imageFile;
+//     });
+
+//     try {
+//       final token = AuthTokenService().token;
+//       if (token != null) {
+//         await _uploadService.enviarImagem(imageFile, token);
+//         _showMessage('Imagem enviada com sucesso!', Colors.green);
+//       } else {
+//         _showMessage('Token de autenticação não encontrado', Colors.red);
+//       }
+//     } catch (e) {
+//       _showMessage('Erro ao enviar imagem: $e', Colors.red);
+//     } finally {
+//       setState(() {
+//         _isProcessing = false;
+//       });
+//     }
+//   }
+
+//   void _showMessage(String message, Color color) {
+//     if (!mounted) return;
+//     ScaffoldMessenger.of(context).showSnackBar(
+//       SnackBar(content: Text(message), backgroundColor: color),
+//     );
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(title: const Text('Detecção Facial')),
+//       body: Stack(
+//         children: [
+//           if (_capturedImage != null)
+//             Center(
+//               child: Column(
+//                 children: [
+//                   Expanded(child: Image.file(_capturedImage!)),
+//                   ElevatedButton(
+//                     onPressed: () async {
+//                       await _controller.startImageStream();
+//                       setState(() => _capturedImage = null);
+//                     },
+//                     child: const Text('Capturar Novamente'),
+//                   ),
+//                 ],
+//               ),
+//             )
+//           else
+//             SmartFaceCamera(
+//               controller: _controller,
+//               messageBuilder: (context, face) {
+//                 if (face == null) {
+//                   return _message('Coloque seu rosto na câmera');
+//                 } else if (!face.wellPositioned) {
+//                   return _message('Centralize seu rosto');
+//                 }
+//                 return const SizedBox.shrink();
+//               },
+//             ),
+//           if (_isProcessing)
+//             const Center(child: CircularProgressIndicator()),
+//         ],
+//       ),
+//     );
+//   }
+
+//   Widget _message(String msg) => Padding(
+//         padding: const EdgeInsets.all(16),
+//         child: Text(
+//           msg,
+//           textAlign: TextAlign.center,
+//           style: const TextStyle(fontSize: 16, color: Colors.white),
+//         ),
+//       );
+
+//   @override
+//   void dispose() {
+//     _controller.dispose();
+//     super.dispose();
+//   }
+// }

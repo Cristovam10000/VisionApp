@@ -3,7 +3,7 @@ import 'package:face_camera/face_camera.dart';
 import 'dart:io';
 import '../../../services/auth_token_service.dart';
 import '../../../services/upload_service.dart';
-
+import 'package:camera/camera.dart';
 class FaceCameraPage extends StatefulWidget {
   const FaceCameraPage({super.key});
 
@@ -22,7 +22,7 @@ class _FaceCameraPageState extends State<FaceCameraPage> {
     super.initState();
     _controller = FaceCameraController(
       autoCapture: false,
-      defaultCameraLens: CameraLens.front,
+      defaultCameraLens: CameraLens.back,
       enableAudio: false,
       onCapture: _handleCapture,
       onFaceDetected: (face) {
@@ -64,44 +64,51 @@ class _FaceCameraPageState extends State<FaceCameraPage> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Detecção Facial')),
-      body: Stack(
-        children: [
-          if (_capturedImage != null)
-            Center(
-              child: Column(
-                children: [
-                  Expanded(child: Image.file(_capturedImage!)),
-                  ElevatedButton(
-                    onPressed: () async {
-                      await _controller.startImageStream();
-                      setState(() => _capturedImage = null);
-                    },
-                    child: const Text('Capturar Novamente'),
-                  ),
-                ],
-              ),
-            )
-          else
-            SmartFaceCamera(
-              controller: _controller,
-              messageBuilder: (context, face) {
-                if (face == null) {
-                  return _message('Coloque seu rosto na câmera');
-                } else if (!face.wellPositioned) {
-                  return _message('Centralize seu rosto');
-                }
-                return const SizedBox.shrink();
-              },
+Widget build(BuildContext context) {
+  return Scaffold(
+    appBar: AppBar(title: const Text('Detecção Facial')),
+    body: Stack(
+      children: [
+        if (_capturedImage != null)
+          Center(
+            child: Column(
+              children: [
+                Expanded(child: Image.file(_capturedImage!)),
+                ElevatedButton(
+                  onPressed: () async {
+                    await _controller.startImageStream();
+                    setState(() => _capturedImage = null);
+                  },
+                  child: const Text('Capturar Novamente'),
+                ),
+              ],
             ),
-          if (_isProcessing)
-            const Center(child: CircularProgressIndicator()),
-        ],
-      ),
-    );
-  }
+          )
+        else
+          SmartFaceCamera(
+            controller: _controller,
+            messageBuilder: (context, face) {
+              if (face == null) {
+                return _message('Coloque seu rosto na câmera');
+              } else if (!face.wellPositioned) {
+                return _message('Centralize seu rosto');
+              }
+              return const SizedBox.shrink();
+            },
+          ),
+
+        // 🎯 Foco circular por cima da câmera
+        if (_capturedImage == null) const FaceOverlay(),
+
+        // ⏳ Loading
+        if (_isProcessing)
+          const Center(child: CircularProgressIndicator()),
+      ],
+    ),
+    floatingActionButton: null,
+  );
+}
+
 
   Widget _message(String msg) => Padding(
         padding: const EdgeInsets.all(16),
@@ -118,3 +125,132 @@ class _FaceCameraPageState extends State<FaceCameraPage> {
     super.dispose();
   }
 }
+
+// 🎯 Overlay com foco circular
+class FaceOverlay extends StatelessWidget {
+  const FaceOverlay({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned.fill(
+      child: IgnorePointer(
+        child: CustomPaint(
+          painter: FaceOverlayPainter(),
+        ),
+      ),
+    );
+  }
+}
+
+class FaceOverlayPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = Colors.black.withOpacity(0.6)
+      ..style = PaintingStyle.fill;
+
+    final holeRadius = size.width * 0.35;
+    final center = Offset(size.width / 2, size.height / 2.2);
+
+    final path = Path()..addRect(Rect.fromLTWH(0, 0, size.width, size.height));
+    path.addOval(Rect.fromCircle(center: center, radius: holeRadius));
+    path.fillType = PathFillType.evenOdd;
+
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) => false;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
