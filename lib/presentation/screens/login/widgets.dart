@@ -6,96 +6,95 @@ import 'package:vision_app/core/constants/app_colors.dart';
 class Logincontainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Center(
-      // Centraliza o Container na tela
-      child: Container(
-        width: double.infinity,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16), // Bordas arredondadas
-          border: Border.all(
-            color: Colors.grey, // Borda cinza
-            width: 1, // Largura da borda
-          ),
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: ColorPalette.branco,
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(30),
+          topRight: Radius.circular(30),
         ),
-        child: Padding(
-          padding: const EdgeInsets.only(
-            top: 42, // Espaçamento superior
-            right: 24, // Espaçamento à direita
-            left: 25, // Espaçamento à esquerda
-            bottom: 64, // Espaçamento inferior
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min, // Ajusta o tamanho ao conteúdo
-            children: <Widget>[
-              const TextField(
-                style: TextStyle(
-                  color: Colors.black, // Cor preta para o texto digitado
-                  fontSize: 16, // Tamanho da fonte
-                  fontWeight: FontWeight.w400, // Peso da fonte
-                ),
-                decoration: InputDecoration(
-                  labelText: 'Digite seu CPF', // Texto do campo de entrada
-                  border: OutlineInputBorder(), // Adiciona borda ao campo
-                ),
+        border: Border.all(
+          color: Colors.grey,
+          width: 1,
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.only(
+          top: 42,
+          right: 24,
+          left: 25,
+          bottom: 64,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            const TextField(
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 16,
+                fontWeight: FontWeight.w400,
               ),
-              const SizedBox(height: 20),
-              const TextField(
-                style: TextStyle(
-                  color: Colors.black, // Cor preta para o texto digitado
-                  fontSize: 16, // Tamanho da fonte
-                  fontWeight: FontWeight.w400, // Peso da fonte
-                ),
-                obscureText: true, // Oculta o texto (senha)
-                decoration: InputDecoration(
-                  labelText: 'Digite sua senha', // Texto do campo de entrada
-                  border: OutlineInputBorder(), // Adiciona borda ao campo
-                ),
+              decoration: InputDecoration(
+                labelText: 'Digite seu CPF',
+                border: OutlineInputBorder(),
               ),
-              const SizedBox(height: 20),
-              Button(
-                text: 'Entrar',
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          TelaHome(), // Navega para a tela de login
-                    ),
-                  );
-                },
+            ),
+            const SizedBox(height: 20),
+            const TextField(
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 16,
+                fontWeight: FontWeight.w400,
               ),
-              const SizedBox(height: 8),
-              Row(
-                mainAxisAlignment:
-                    MainAxisAlignment.center, // Centraliza os itens na linha
-                children: [
-                  Text(
-                    'Não possui uma conta ?',
-                    style: const TextStyle(
-                      color: ColorPalette.cinzaMedio, // Cor cinza médio
-                      fontSize: 14, // Tamanho da fonte
-                      fontWeight: FontWeight.w400, // Peso da fonte
+              obscureText: true,
+              decoration: InputDecoration(
+                labelText: 'Digite sua senha',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 20),
+            Button(
+              text: 'Entrar',
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => TelaHome(),
+                  ),
+                );
+              },
+            ),
+            const SizedBox(height: 8),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text(
+                  'Não possui uma conta?',
+                  style: TextStyle(
+                    color: ColorPalette.cinzaMedio,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+                const SizedBox(width: 0),
+                TextButton(
+                  onPressed: () {
+                    print('Cadastrar');
+                  },
+                  child: const Text(
+                    'Cadastrar',
+                    style: TextStyle(
+                      color: ColorPalette.button,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w700,
+                      
                     ),
                   ),
-                  TextButton(
-                    onPressed: () {
-                      // Ação para "Cadastrar"
-                      print('Cadastrar');
-                    },
-                    child: Text(
-                      'Cadastrar',
-                      style: const TextStyle(
-                        color: ColorPalette.button, // Cor destacada (laranja)
-                        fontSize: 14, // Tamanho da fonte
-                        fontWeight: FontWeight.w700, // Peso da fonte (negrito)
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );

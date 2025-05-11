@@ -3,8 +3,11 @@ import 'core/theme/app_theme.dart';
 import 'routes/app_routes.dart';  // Importando o arquivo de rotas
 import 'presentation/screens/login/tela_login.dart';
 import 'presentation/screens/home/tela_home.dart';
+import 'package:flutter/services.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
   runApp(const MyApp());
 }
 
@@ -16,6 +19,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'VisionApp',
       theme: AppTheme.darkTheme,
+      debugShowCheckedModeBanner: false,
       initialRoute: AppRoutes.login,  // Tela inicial é o login
       routes: {
         AppRoutes.login: (context) => const TelaLogin(),

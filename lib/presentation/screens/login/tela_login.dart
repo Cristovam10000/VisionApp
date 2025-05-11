@@ -8,47 +8,65 @@ class TelaLogin extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage(
-              'assets/logo.png',
-            ), // Substitua pelo caminho correto da imagem
-            fit: BoxFit.cover, // Ajusta a imagem para cobrir toda a tela
+      body: Stack(
+        children: [
+          // Imagem de fundo
+          Container(
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('assets/logo.png'),
+                fit: BoxFit.cover,
+              ),
+            ),
           ),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              const Image(
-                image: AssetImage('assets/IconApp.png'),
-                width: 143,
-                height: 121,
+
+          // Conteúdo superior com logo e textos
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Column(
+                children: [
+                  const SizedBox(height: 32),
+                  const Image(
+                    image: AssetImage('assets/IconApp.png'),
+                    width: 143,
+                    height: 121,
+                  ),
+                  Text(
+                    StandardTexts.appTitle,
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                      fontSize: 32,
+                      fontWeight:
+                          FontWeight.w700 // Define o texto como negrito
+                    ),
+                  ),
+                  const SizedBox(height: 11),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 34),
+                    child: Text(
+                      StandardTexts.appSubtitle,
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(height: 20),
-              Text(
-                StandardTexts.appTitle,
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  fontSize: 32, // Define o tamanho da fonte
-                  fontWeight: FontWeight.w700, // Define o texto como negrito
-                ),
-              ),
-              const SizedBox(height: 20),
-              Text(
-                StandardTexts.appSubtitle,
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  fontSize: 16, // Define o tamanho da fonte
-                  fontWeight: FontWeight.w400, // Define o texto como normal
-                ),
-              ),
-              const SizedBox(height: 200
-              ),
-              Logincontainer(),
-            ],
+            ),
           ),
-        ),
+          const SizedBox(height: 215),
+          // Container colado embaixo
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Padding(
+              padding: const EdgeInsets.only(left: 0, right: 0, bottom: 0),
+              child: Logincontainer(),
+            ),
+          ),
+        ],
       ),
     );
   }
