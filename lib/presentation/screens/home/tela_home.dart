@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:vision_app/core/constants/app_texts.dart';
+
 
 // Seu primeiro widget personalizado: TelaHome
 class TelaHome extends StatelessWidget {
