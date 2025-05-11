@@ -3,7 +3,14 @@ import 'package:vision_app/presentation/screens/home/tela_home.dart';
 import 'package:vision_app/presentation/widgets/state/state.dart';
 import 'package:vision_app/core/constants/app_colors.dart';
 
-class Logincontainer extends StatelessWidget {
+class Logincontainer extends StatefulWidget {
+  @override
+  _LogincontainerState createState() => _LogincontainerState();
+}
+
+class _LogincontainerState extends State<Logincontainer> {
+  bool _obscurePassword = true; // controla a visibilidade da senha
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -14,10 +21,7 @@ class Logincontainer extends StatelessWidget {
           topLeft: Radius.circular(30),
           topRight: Radius.circular(30),
         ),
-        border: Border.all(
-          color: Colors.grey,
-          width: 1,
-        ),
+        border: Border.all(color: Colors.grey, width: 1),
       ),
       child: Padding(
         padding: const EdgeInsets.only(
@@ -41,27 +45,39 @@ class Logincontainer extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 20),
-            const TextField(
-              style: TextStyle(
+
+            // CAMPO DE SENHA COM ÍCONE DE OLHO
+            TextField(
+              style: const TextStyle(
                 color: Colors.black,
-                fontSize: 16,
+                fontSize: 12,
                 fontWeight: FontWeight.w400,
               ),
-              obscureText: true,
+              obscureText: _obscurePassword,
               decoration: InputDecoration(
                 labelText: 'Digite sua senha',
-                border: OutlineInputBorder(),
+                border: const OutlineInputBorder(),
+                suffixIcon: IconButton(
+                  icon: Icon(
+                    _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                    color: ColorPalette.preto,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      _obscurePassword = !_obscurePassword;
+                    });
+                  },
+                ),
               ),
             ),
+
             const SizedBox(height: 20),
             Button(
               text: 'Entrar',
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                    builder: (context) => TelaHome(),
-                  ),
+                  MaterialPageRoute(builder: (context) => TelaHome()),
                 );
               },
             ),
@@ -88,7 +104,6 @@ class Logincontainer extends StatelessWidget {
                       color: ColorPalette.button,
                       fontSize: 14,
                       fontWeight: FontWeight.w700,
-                      
                     ),
                   ),
                 ),
