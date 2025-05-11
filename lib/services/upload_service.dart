@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:mime/mime.dart' as mime;
 import 'package:http_parser/http_parser.dart';
-import 'dart:convert'; // Para JSON
+
 
 class UploadService {
   final String apiUrl = 'https://fastapi.ajvale.com.br/buscar-similaridade-foto/';

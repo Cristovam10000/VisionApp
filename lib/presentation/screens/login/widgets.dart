@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:vision_app/presentation/screens/home/tela_home.dart';
 import 'package:vision_app/presentation/widgets/state/state.dart';
 import 'package:vision_app/core/constants/app_colors.dart';
+import '../../../services/auth_firebase.dart';
+import '../../../services/auth_backend.dart';
+import '../../../services/auth_token_service.dart';
 
 class Logincontainer extends StatefulWidget {
   @override
@@ -10,6 +13,66 @@ class Logincontainer extends StatefulWidget {
 
 class _LogincontainerState extends State<Logincontainer> {
   bool _obscurePassword = true; // controla a visibilidade da senha
+
+  final emailController = TextEditingController();
+  final senhaController = TextEditingController();
+
+  String? _mensagem;
+  Map<String, dynamic>? _perfil;
+
+  void _fazerLogin() async {
+    final cpf = emailController.text.trim(); // Agora isso é o CPF
+    final senha = senhaController.text;
+
+    final emailFake = '$cpf@app.com'; // Converte CPF para e-mail
+
+    // 1) Login no Firebase → ID token
+    final firebaseToken = await AuthService().loginComFirebase(
+      emailFake,
+      senha,
+    );
+    if (firebaseToken == null) {
+      setState(() {
+        _mensagem = 'Erro ao fazer login no Firebase.';
+      });
+      return;
+    }
+
+    // 2) Envia o Firebase token pro FastAPI → JWT próprio
+    final backendJwt = await postWithToken(firebaseToken);
+    if (backendJwt == null) {
+      setState(() {
+        _mensagem = 'Falha na autenticação com o back-end.';
+      });
+      return;
+    }
+
+    // 3) Usa o JWT do seu back-end pra puxar o perfil
+    final perfil = await getUserProfile(backendJwt);
+    if (perfil == null) {
+      setState(() {
+        _mensagem = 'Não foi possível obter o perfil.';
+      });
+      return;
+    }
+
+    // 4) Sucesso: atualiza UI
+    setState(() {
+      _perfil = perfil;
+      _mensagem = 'Bem-vindo, ${perfil['nome']}!';
+    });
+
+    await AuthTokenService().saveToken(backendJwt);
+
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(
+        builder:
+            (context) => TelaHome(perfil: perfil), // Passa o Map diretamente
+      ),
+      (Route<dynamic> route) => false, // Remove todas as rotas anteriores
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,15 +96,17 @@ class _LogincontainerState extends State<Logincontainer> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            const TextField(
-              style: TextStyle(
+            TextField(
+              style: const TextStyle(
                 color: Colors.black,
                 fontSize: 16,
                 fontWeight: FontWeight.w400,
               ),
+              controller: emailController, // Isso causa o problema
+              keyboardType: TextInputType.number,
               decoration: InputDecoration(
                 labelText: 'Digite seu CPF',
-                border: OutlineInputBorder(),
+                border: const OutlineInputBorder(),
               ),
             ),
             const SizedBox(height: 20),
@@ -54,6 +119,7 @@ class _LogincontainerState extends State<Logincontainer> {
                 fontWeight: FontWeight.w400,
               ),
               obscureText: _obscurePassword,
+              controller: senhaController,
               decoration: InputDecoration(
                 labelText: 'Digite sua senha',
                 border: const OutlineInputBorder(),
@@ -72,15 +138,7 @@ class _LogincontainerState extends State<Logincontainer> {
             ),
 
             const SizedBox(height: 20),
-            Button(
-              text: 'Entrar',
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => TelaHome()),
-                );
-              },
-            ),
+            Button(text: 'Entrar', onPressed: _fazerLogin),
             const SizedBox(height: 8),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -96,7 +154,104 @@ class _LogincontainerState extends State<Logincontainer> {
                 const SizedBox(width: 0),
                 TextButton(
                   onPressed: () {
-                    print('Cadastrar');
+                    showDialog(
+                      context: context,
+                      barrierColor:
+                          Colors.transparent, // Deixa o fundo transparente
+                      builder: (BuildContext context) {
+                        return Stack(
+                          children: [
+                            // Fundo com o papel de parede
+                            Container(
+                              decoration: const BoxDecoration(
+                                image: DecorationImage(
+                                  image: AssetImage('assets/logo.png'),
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
+                            // Popup centralizado
+                            Center(
+                              child: Container(
+                                padding: const EdgeInsets.all(20),
+                                margin: const EdgeInsets.symmetric(
+                                  horizontal: 20,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(16),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.2),
+                                      blurRadius: 10,
+                                      offset: const Offset(0, 4),
+                                    ),
+                                  ],
+                                ),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    // Ícone no topo
+                                    const Image(image: AssetImage('assets/IconApp.png')),
+                                    const SizedBox(height: 16),
+                                    // Título
+                                    const Text(
+                                      'Não tem cadastro?',
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    const SizedBox(height: 8),
+                                    // Mensagem
+                                    const Text(
+                                      'Entre em contato com um superior para liberar seu acesso ao VisionApp.',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w400,
+                                        color: Colors.black54,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    const SizedBox(height: 24),
+                                    // Botão
+                                    ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: ColorPalette.button,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            8,
+                                          ),
+                                        ),
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 32,
+                                          vertical: 12,
+                                        ),
+                                      ),
+                                      onPressed: () {
+                                        Navigator.of(
+                                          context,
+                                        ).pop(); // Fecha o popup
+                                      },
+                                      child: const Text(
+                                        'Entendido',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    );
                   },
                   child: const Text(
                     'Cadastrar',
