@@ -4,6 +4,8 @@ import 'dart:io';
 import '../../../services/auth_token_service.dart';
 import '../../../services/upload_service.dart';
 import 'package:camera/camera.dart';
+import '../camera/informacoes.dart';
+
 class FaceCameraPage extends StatefulWidget {
   const FaceCameraPage({super.key});
 
@@ -17,6 +19,10 @@ class _FaceCameraPageState extends State<FaceCameraPage> {
   bool _isProcessing = false;
   final UploadService _uploadService = UploadService();
 
+  // Flags de rosto detectado
+  bool _isFaceVisible = false;
+  bool _isFaceWellPositioned = false;
+
   @override
   void initState() {
     super.initState();
@@ -24,37 +30,72 @@ class _FaceCameraPageState extends State<FaceCameraPage> {
       autoCapture: false,
       defaultCameraLens: CameraLens.back,
       enableAudio: false,
-      onCapture: _handleCapture,
+      onCapture: (file) {
+        if (file == null || _isProcessing || !_isFaceVisible || !_isFaceWellPositioned) return;
+        setState(() {
+          _capturedImage = file;
+        });
+      },
       onFaceDetected: (face) {
-        // Você pode fazer algo aqui se quiser
+        setState(() {
+          _isFaceVisible = face != null;
+          _isFaceWellPositioned = face != null && _isFaceCentered(face.boundingBox, MediaQuery.of(context).size);
+          
+
+        });
       },
     );
+
+
+    
   }
 
-  Future<void> _handleCapture(File? imageFile) async {
-    if (imageFile == null || _isProcessing) return;
 
-    setState(() {
-      _isProcessing = true;
-      _capturedImage = imageFile;
-    });
+  bool _isFaceCentered(Rect boundingBox, Size screenSize) {
+  final centerX = boundingBox.center.dx;
+  final centerY = boundingBox.center.dy;
 
-    try {
-      final token = AuthTokenService().token;
-      if (token != null) {
-        await _uploadService.enviarImagem(imageFile, token);
-        _showMessage('Imagem enviada com sucesso!', Colors.green);
-      } else {
-        _showMessage('Token de autenticação não encontrado', Colors.red);
-      }
-    } catch (e) {
-      _showMessage('Erro ao enviar imagem: $e', Colors.red);
-    } finally {
-      setState(() {
-        _isProcessing = false;
-      });
+  final screenCenterX = screenSize.width / 2;
+  final screenCenterY = screenSize.height / 2.2;
+
+  const toleranceX = 60; // ajuste fino aqui
+  const toleranceY = 80;
+
+  return (centerX - screenCenterX).abs() < toleranceX &&
+         (centerY - screenCenterY).abs() < toleranceY;
+}
+
+
+  Future<void> _handleConfirmUpload() async {
+  if (_capturedImage == null || _isProcessing) return;
+
+  setState(() => _isProcessing = true);
+
+  try {
+    final token = AuthTokenService().token;
+    if (token != null) {
+      final resultado = await _uploadService.enviarImagem(_capturedImage!, token);
+
+      if (!mounted) return;
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ResultadoPage(resultado: resultado),
+        ),
+      );
+
+      setState(() => _capturedImage = null);
+      await _controller.startImageStream();
+    } else {
+      _showMessage('❌ Token não encontrado', Colors.red);
     }
+  } catch (e) {
+    _showMessage('❌ Erro ao enviar imagem: $e', Colors.red);
+  } finally {
+    setState(() => _isProcessing = false);
   }
+}
+
 
   void _showMessage(String message, Color color) {
     if (!mounted) return;
@@ -64,58 +105,81 @@ class _FaceCameraPageState extends State<FaceCameraPage> {
   }
 
   @override
-Widget build(BuildContext context) {
-  return Scaffold(
-    appBar: AppBar(title: const Text('Detecção Facial')),
-    body: Stack(
-      children: [
-        if (_capturedImage != null)
-          Center(
-            child: Column(
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          if (_capturedImage != null)
+            Stack(
+              fit: StackFit.expand,
               children: [
-                Expanded(child: Image.file(_capturedImage!)),
-                ElevatedButton(
-                  onPressed: () async {
-                    await _controller.startImageStream();
-                    setState(() => _capturedImage = null);
-                  },
-                  child: const Text('Capturar Novamente'),
+                Image.file(
+                  _capturedImage!,
+                  fit: BoxFit.cover,
+                ),
+                Positioned(
+                  bottom: 40,
+                  left: 0,
+                  right: 0,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.purple,
+                          shape: const CircleBorder(),
+                          padding: const EdgeInsets.all(16),
+                        ),
+                        onPressed: () async {
+                          await _controller.startImageStream();
+                          setState(() => _capturedImage = null);
+                        },
+                        child: const Icon(Icons.close, color: Colors.red, size: 32),
+                      ),
+                      const SizedBox(width: 30),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.purple,
+                          shape: const CircleBorder(),
+                          padding: const EdgeInsets.all(16),
+                        ),
+                        onPressed: _handleConfirmUpload,
+                        child: const Icon(Icons.check, color: Colors.green, size: 32),
+                      ),
+                    ],
+                  ),
                 ),
               ],
+            )
+          else
+            SmartFaceCamera(
+              controller: _controller,
+              messageBuilder: (context, face) {
+                if (!_isFaceVisible) {
+                  return _message('Nenhum rosto detectado');
+                } else if (!_isFaceWellPositioned) {
+                  return _message('Centralize o rosto corretamente');
+                }
+                return const SizedBox.shrink();
+              },
             ),
-          )
-        else
-          SmartFaceCamera(
-            controller: _controller,
-            messageBuilder: (context, face) {
-              if (face == null) {
-                return _message('Coloque seu rosto na câmera');
-              } else if (!face.wellPositioned) {
-                return _message('Centralize seu rosto');
-              }
-              return const SizedBox.shrink();
-            },
-          ),
 
-        // 🎯 Foco circular por cima da câmera
-        if (_capturedImage == null) const FaceOverlay(),
+          if (_capturedImage == null) const FaceOverlay(),
 
-        // ⏳ Loading
-        if (_isProcessing)
-          const Center(child: CircularProgressIndicator()),
-      ],
-    ),
-    floatingActionButton: null,
-  );
-}
-
+          if (_isProcessing)
+            const Center(child: CircularProgressIndicator()),
+        ],
+      ),
+    );
+  }
 
   Widget _message(String msg) => Padding(
         padding: const EdgeInsets.all(16),
         child: Text(
           msg,
           textAlign: TextAlign.center,
-          style: const TextStyle(fontSize: 16, color: Colors.white),
+          style: const TextStyle(fontSize: 16, color: Color.fromARGB(255, 222, 37, 37)),
         ),
       );
 
@@ -126,7 +190,7 @@ Widget build(BuildContext context) {
   }
 }
 
-// 🎯 Overlay com foco circular
+// Overlay com foco circular
 class FaceOverlay extends StatelessWidget {
   const FaceOverlay({super.key});
 
@@ -159,98 +223,8 @@ class FaceOverlayPainter extends CustomPainter {
     canvas.drawPath(path, paint);
   }
 
+  
+
   @override
   bool shouldRepaint(CustomPainter oldDelegate) => false;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
