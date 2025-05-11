@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import 'package:flutter/material.dart';
 import '../presentation/screens/login/login_page.dart';
 import '../presentation/screens/home/home_page.dart';
@@ -24,3 +25,9 @@ class AppRoutes {
     }
   }
 }
+=======
+class AppRoutes {
+  static const String login = '/login';
+  static const String home = '/home';
+}
+>>>>>>> login

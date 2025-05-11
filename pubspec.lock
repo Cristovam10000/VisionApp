@@ -97,6 +97,7 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.19.1"
+<<<<<<< HEAD
   cross_file:
     dependency: transitive
     description:
@@ -105,6 +106,8 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.3.4+2"
+=======
+>>>>>>> login
   crypto:
     dependency: transitive
     description:
@@ -145,6 +148,7 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.4"
+<<<<<<< HEAD
   file:
     dependency: transitive
     description:
@@ -201,6 +205,8 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.22.0"
+=======
+>>>>>>> login
   flutter:
     dependency: "direct main"
     description: flutter
@@ -227,6 +233,7 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+<<<<<<< HEAD
   flutter_web_plugins:
     dependency: transitive
     description: flutter
@@ -248,6 +255,16 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.12.0"
+=======
+  google_fonts:
+    dependency: "direct main"
+    description:
+      name: google_fonts
+      sha256: e20ff62b158b96f392bfc8afe29dee1503c94fbea2cbe8186fd59b756b8ae982
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.1.0"
+>>>>>>> login
   http:
     dependency: "direct main"
     description:
@@ -264,6 +281,7 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.1.2"
+<<<<<<< HEAD
   image:
     dependency: "direct main"
     description:
@@ -272,6 +290,8 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.3.0"
+=======
+>>>>>>> login
   leak_tracker:
     dependency: transitive
     description:
@@ -345,7 +365,11 @@ packages:
     source: hosted
     version: "1.9.1"
   path_provider:
+<<<<<<< HEAD
     dependency: "direct main"
+=======
+    dependency: transitive
+>>>>>>> login
     description:
       name: path_provider
       sha256: "50c5dd5b6e1aaf6fb3a78b33f6aa3afca52bf903a8a5298f53101fdaee55bbcd"
@@ -392,6 +416,7 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.0"
+<<<<<<< HEAD
   petitparser:
     dependency: transitive
     description:
@@ -400,6 +425,8 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.1.0"
+=======
+>>>>>>> login
   platform:
     dependency: transitive
     description:
@@ -416,6 +443,7 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.8"
+<<<<<<< HEAD
   shared_preferences:
     dependency: "direct main"
     description:
@@ -472,6 +500,8 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.4.1"
+=======
+>>>>>>> login
   sky_engine:
     dependency: transitive
     description: flutter
@@ -573,6 +603,7 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.0"
+<<<<<<< HEAD
   xml:
     dependency: transitive
     description:
@@ -581,6 +612,8 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.5.0"
+=======
+>>>>>>> login
 sdks:
   dart: ">=3.7.2 <4.0.0"
   flutter: ">=3.27.0"
