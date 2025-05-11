@@ -56,7 +56,7 @@ class _FaceCameraPageState extends State<FaceCameraPage> {
   final centerY = boundingBox.center.dy;
 
   final screenCenterX = screenSize.width / 2;
-  final screenCenterY = screenSize.height / 2.2;
+  final screenCenterY = screenSize.height / 2.7;
 
   const toleranceX = 60; // ajuste fino aqui
   const toleranceY = 80;
@@ -125,9 +125,20 @@ class _FaceCameraPageState extends State<FaceCameraPage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
+
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.purple,
+                          backgroundColor:  const Color(0xFF034DA2),
+                          shape: const CircleBorder(),
+                          padding: const EdgeInsets.all(16),
+                        ),
+                        onPressed: _handleConfirmUpload,
+                        child: const Icon(Icons.check, color: Color.fromARGB(255, 255, 255, 255), size: 32),
+                      ),
+                      const SizedBox(width: 30),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color.fromARGB(255, 224, 10, 10),
                           shape: const CircleBorder(),
                           padding: const EdgeInsets.all(16),
                         ),
@@ -135,18 +146,9 @@ class _FaceCameraPageState extends State<FaceCameraPage> {
                           await _controller.startImageStream();
                           setState(() => _capturedImage = null);
                         },
-                        child: const Icon(Icons.close, color: Colors.red, size: 32),
+                        child: const Icon(Icons.close, color: Color.fromARGB(255, 255, 255, 255), size: 32),
                       ),
-                      const SizedBox(width: 30),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.purple,
-                          shape: const CircleBorder(),
-                          padding: const EdgeInsets.all(16),
-                        ),
-                        onPressed: _handleConfirmUpload,
-                        child: const Icon(Icons.check, color: Colors.green, size: 32),
-                      ),
+
                     ],
                   ),
                 ),
@@ -179,7 +181,7 @@ class _FaceCameraPageState extends State<FaceCameraPage> {
         child: Text(
           msg,
           textAlign: TextAlign.center,
-          style: const TextStyle(fontSize: 16, color: Color.fromARGB(255, 222, 37, 37)),
+          style: const TextStyle(fontSize: 30, color: Color.fromARGB(255, 255, 0, 0), fontWeight: FontWeight.bold),
         ),
       );
 
@@ -210,20 +212,48 @@ class FaceOverlayPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = Colors.black.withOpacity(0.6)
+      ..color = const Color.fromARGB(255, 54, 54, 54).withOpacity(0.6)
       ..style = PaintingStyle.fill;
 
     final holeRadius = size.width * 0.35;
-    final center = Offset(size.width / 2, size.height / 2.2);
+    final center = Offset(size.width / 2, size.height / 2.7);
 
+    // Define o raio e a posição dos círculos para os botões
+    final buttonRadius = 32.0; // Raio dos botões
+    final buttonPadding = 25.9; // Espaço entre os botões e a borda da tela
+
+    // Ajusta o retângulo para cobrir toda a tela
     final path = Path()..addRect(Rect.fromLTWH(0, 0, size.width, size.height));
+
+    // Exclui o círculo transparente no centro
     path.addOval(Rect.fromCircle(center: center, radius: holeRadius));
+
+    // Exclui o círculo do botão de confirmação
+    // Exclui o círculo do botão de confirmação
+final confirmButtonCenter = Offset(
+  size.width / 2 - buttonRadius * 2 - buttonPadding, // Reduz o espaçamento horizontal
+  size.height - buttonRadius - buttonPadding, // Posição vertical
+);
+path.addOval(Rect.fromCircle(center: confirmButtonCenter, radius: buttonRadius));
+
+// Exclui o círculo do botão de cancelamento
+final cancelButtonCenter = Offset(
+  size.width / 2 + buttonRadius * 2 + buttonPadding, // Reduz o espaçamento horizontal
+  size.height - buttonRadius - buttonPadding, // Posição vertical
+);
+path.addOval(Rect.fromCircle(center: cancelButtonCenter, radius: buttonRadius));
+
+    // Exclui o círculo do botão adicional (central)
+    final additionalButtonCenter = Offset(
+      size.width / 2, // Posição horizontal (centro)
+      size.height - buttonRadius - buttonPadding, // Posição vertical
+    );
+    path.addOval(Rect.fromCircle(center: additionalButtonCenter, radius: buttonRadius));
+
     path.fillType = PathFillType.evenOdd;
 
     canvas.drawPath(path, paint);
   }
-
-  
 
   @override
   bool shouldRepaint(CustomPainter oldDelegate) => false;
