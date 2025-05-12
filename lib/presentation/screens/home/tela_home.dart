@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:vision_app/presentation/screens/buscacpf/ficha_result_tela.dart';
 import 'package:vision_app/services/auth_token_service.dart';
 import 'package:vision_app/services/upload_service.dart';
+import 'package:vision_app/presentation/widgets/state/navbar.dart';
 
 // Seu primeiro widget personalizado: TelaHome
 class TelaHome extends StatefulWidget {
@@ -153,6 +154,7 @@ class _TelaHomeState extends State<TelaHome> {
           ],
         ),
       ),
+       bottomNavigationBar: navbarContainer(), 
     );
 }
 

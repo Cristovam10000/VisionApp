@@ -8,11 +8,11 @@ class navbarContainer extends StatefulWidget {
 }
 
 class _navbarState extends State<navbarContainer> {
-  int _selectedIndex = 1;
+  int _selectedIndex = 0; // Índice inicial do item selecionado
 
   void _onItemTapped(int index) {
     setState(() {
-      _selectedIndex = index;
+      _selectedIndex = index; // Atualiza o índice selecionado
     });
     switch (index) {
       case 0: // Home
@@ -36,53 +36,90 @@ class _navbarState extends State<navbarContainer> {
           BottomNavigationBarItem(
             icon: Column(
               mainAxisSize: MainAxisSize.min,
-              children: const [
-                Icon(Icons.home_outlined, size: 24), // Ícone
-                SizedBox(height: 6), // Espaçamento entre ícone e label
+              children: [
+                Icon(
+                  Icons.home_outlined,
+                  size: 24,
+                  color: _selectedIndex == 0
+                      ? ColorPalette.lightbutton // Cor do item selecionado
+                      : Colors.white, // Cor do item não selecionado
+                ),
+                const SizedBox(height: 6),
                 Text(
                   'Home',
-                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700),
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700,
+                    color: _selectedIndex == 0
+                        ? ColorPalette.lightbutton// Cor do texto selecionado
+                        : Colors.white, // Cor do texto não selecionado
+                  ),
                 ),
               ],
             ),
-            label: '', // Removemos o label padrão
+            label: '',
           ),
           BottomNavigationBarItem(
             icon: Column(
               mainAxisSize: MainAxisSize.min,
-              children: const [
-                Icon(Icons.camera_alt_outlined, size: 24), // Ícone
-                SizedBox(height: 6), // Espaçamento entre ícone e label
+              children: [
+                Icon(
+                  Icons.camera_alt_outlined,
+                  size: 24,
+                  color: _selectedIndex == 1
+                      ? ColorPalette.lightbutton // Cor do item selecionado
+                      : Colors.white, // Cor do item não selecionado
+                ),
+                const SizedBox(height: 6),
                 Text(
                   'Câmera',
-                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700),
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700,
+                    color: _selectedIndex == 1
+                        ? ColorPalette.lightbutton // Cor do texto selecionado
+                        : ColorPalette.branco, // Cor do texto não selecionado
+                  ),
                 ),
               ],
             ),
-            label: '', // Removemos o label padrão
+            label: '',
           ),
           BottomNavigationBarItem(
             icon: Column(
               mainAxisSize: MainAxisSize.min,
-              children: const [
-                Icon(Icons.search, size: 24), // Ícone
-                SizedBox(height: 6), // Espaçamento entre ícone e label
+              children: [
+                Icon(
+                  Icons.search,
+                  size: 24,
+                  color: _selectedIndex == 2
+                      ? ColorPalette.lightbutton // Cor do item selecionado
+                      : ColorPalette.branco, // Cor do item não selecionado
+                ),
+                const SizedBox(height: 6),
                 Text(
                   'CPF',
-                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700),
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700,
+                    color: _selectedIndex == 2
+                        ? ColorPalette.lightbutton // Cor do texto selecionado
+                        : ColorPalette.branco, // Cor do texto não selecionado
+                  ),
                 ),
               ],
             ),
-            label: '', // Removemos o label padrão
+            label: '',
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: ColorPalette.branco,
-        unselectedItemColor: ColorPalette.branco,
-        backgroundColor: ColorPalette.azulEscuro, // já definido no container
+        selectedItemColor: ColorPalette.lightbutton, // Cor do item selecionado
+        unselectedItemColor: Colors.white, // Cor dos itens não selecionados
+        backgroundColor: ColorPalette.azulEscuro,
         onTap: _onItemTapped,
         type: BottomNavigationBarType.fixed,
-        elevation: 0, // remove sombra
+        enableFeedback: false,
+        elevation: 0, // Remove sombra
       ),
     );
   }
