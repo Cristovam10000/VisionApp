@@ -34,6 +34,8 @@ class ColorPalette {
 
   static const Color cinzaMedio = Color.fromRGBO(143, 143, 143, 1);
 
+  static const Color azulEscuro = Color.fromRGBO(19, 39, 61, 1);
+
 
 
 }
