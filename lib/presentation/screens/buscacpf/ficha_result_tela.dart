@@ -16,7 +16,7 @@ class FichaResultPage extends StatelessWidget {
             : ListView(
                 children: ficha.entries.map((entry) {
                   return ListTile(
-                    title: Text('${entry.key}'),
+                    title: Text(entry.key),
                     subtitle: Text('${entry.value}'),
                   );
                 }).toList(),

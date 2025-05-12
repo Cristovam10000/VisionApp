@@ -3,7 +3,6 @@ import 'package:face_camera/face_camera.dart';
 import 'dart:io';
 import '../../../services/auth_token_service.dart';
 import '../../../services/upload_service.dart';
-import 'package:camera/camera.dart';
 import '../camera/informacoes.dart';
 
 class FaceCameraPage extends StatefulWidget {
