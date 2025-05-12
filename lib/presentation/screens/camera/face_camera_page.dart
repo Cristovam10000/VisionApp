@@ -5,6 +5,7 @@ import '../../../services/auth_token_service.dart';
 import '../../../services/upload_service.dart';
 import '../camera/informacoes.dart';
 
+
 class FaceCameraPage extends StatefulWidget {
   const FaceCameraPage({super.key});
 
