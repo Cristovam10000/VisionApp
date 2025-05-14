@@ -1,164 +1,275 @@
 import 'package:flutter/material.dart';
-import 'package:vision_app/presentation/screens/buscacpf/ficha_result_tela.dart';
-import 'package:vision_app/services/auth_token_service.dart';
-import 'package:vision_app/services/upload_service.dart';
+import 'package:vision_app/core/constants/app_texts.dart';
+import 'package:vision_app/presentation/screens/camera/face_camera_page.dart';
+import 'package:vision_app/presentation/screens/home/pop-up.dart';
+import '../../../../../core/constants/app_colors.dart';
+import '../../widgets/state/state.dart';
+import '../../../routes/app_routes.dart';
+import 'package:vision_app/core/theme/app_theme.dart';
 
-// Seu primeiro widget personalizado: TelaHome
-class TelaHome extends StatefulWidget {
-
+class TelaHome extends StatelessWidget {
+  final String? nomeUsuario;
   final Map<String, dynamic> perfil;
-  
-  const TelaHome({super.key, required this.perfil});
 
-    @override
-  State<TelaHome> createState() => _TelaHomeState();
-
-}
-
-
-class _TelaHomeState extends State<TelaHome> {
-
-  final _cpfCtrl = TextEditingController();
-  final _uploadService = UploadService();
-  bool _isLoading = false;
-  String? _tokenStatus;
-  String? _token;
-
+  const TelaHome({
+    Key? key,
+    this.nomeUsuario,
+    required this.perfil,
+  }) : super(key: key);
 
   @override
-  void initState() {
-    super.initState();
-    _verificarToken();
-  }
+  Widget build(BuildContext context) {
+    final args = ModalRoute.of(context)?.settings.arguments;    // ...existing code...
+    final nome = (nomeUsuario ?? (args is String ? args : (perfil['nome'] ?? 'Usuário')))
+        .toString()
+        .split(' ')
+        .first;
+// ...existing code...
 
-  Future<void> _verificarToken() async {
-    // carrega do SharedPreferences + cache
-    final t = await AuthTokenService().getToken(); 
-    setState(() {
-      _token = t;
-      _tokenStatus = (t != null && t.isNotEmpty)
-        ? 'Token presente: ${t.substring(0, 10)}...'
-        : 'Token ausente. Faça login novamente';
-    });
-  }
+    // Usa os dados do perfil recebido
+    final nomeCompleto = perfil['nome'] ?? 'Nome não informado';
+    final cargo = perfil['cargo'] ?? 'Cargo não informado';
+    final classe = perfil['nivel_classe'] ?? 'Classe não informada';
+    final matricula = perfil['matricula'] ?? 'Matrícula não informada';
 
-  Future<void> buscarFicha() async {
-    final cpf = _cpfCtrl.text.trim();
-    if (cpf.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Por favor, digite um CPF')),
-      );
-      return;
-    }
-    if (_token == null || _token!.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Token ausente. Faça login novamente.')),
-      );
-      return;
-    }
-
-    setState(() => _isLoading = true);
-    try {
-      final ficha = await _uploadService.buscarFichaPorCpf(cpf, _token!);
-      if (!mounted) return;
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (_) => FichaResultPage(ficha: ficha)),
-      );
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Erro ao buscar ficha: $e')),
-        );
-      }
-    } finally {
-      if (mounted) setState(() => _isLoading = false);
-    }
-  }
-
-
-  @override
-  Widget build(BuildContext ctx) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Home'),
-        actions: [
-          IconButton(icon: const Icon(Icons.refresh), onPressed: _verificarToken),
-        ],
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: Builder(
+          builder: (context) => IconButton(
+            icon: const Icon(Icons.menu),
+            onPressed: () => Scaffold.of(context).openDrawer(),
+          ),
+        ),
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            Text('Bem-vindo, ${widget.perfil['nome'] ?? 'Usuário'}!',
-                style: Theme.of(ctx).textTheme.titleLarge),
-            if (_tokenStatus != null)
-              Container(
-                margin: const EdgeInsets.symmetric(vertical: 10),
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: _tokenStatus!.contains('presente')
-                      ? Colors.green.withOpacity(0.1)
-                      : Colors.red.withOpacity(0.1),
-                  border: Border.all(
-                    color: _tokenStatus!.contains('presente')
-                        ? Colors.green
-                        : Colors.red,
+      drawer: Drawer(
+          backgroundColor: const Color(0xFF181B1F), // cor escura de fundo
+          child: SafeArea(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const SizedBox(height: 32),
+                // Título centralizado
+                Text(
+                  'VisionApp',
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w900,
+                    fontSize: 40,
+                    color: Colors.white,
                   ),
-                  borderRadius: BorderRadius.circular(8),
                 ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      _tokenStatus!.contains('presente')
-                          ? Icons.check_circle
-                          : Icons.error,
-                      color: _tokenStatus!.contains('presente')
-                          ? Colors.green
-                          : Colors.red,
+                const SizedBox(height: 24),
+                // Ícone centralizado (troque por Image.asset se quiser)
+                const Icon(
+                  Icons.shield_outlined,
+                  size: 80,
+                  color: Colors.white,
+                ),
+                const SizedBox(height: 24),
+                // Nome do usuário centralizado
+                Text(
+                  nomeCompleto,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w700,
+                    fontSize: 22,
+                    color: Colors.white,
+                  ),
+                ),
+                const SizedBox(height: 32),
+                // Informações do usuário
+                Container(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+
+                      children: [
+                        RichText(
+                          text: TextSpan(
+                            style: const TextStyle(
+                              fontSize: 18,
+                              color: Colors.white,
+                            ),
+                            children: [
+                              const TextSpan(
+                                text: 'Cargo: ',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              TextSpan(text: cargo),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        RichText(
+                          text: TextSpan(
+                            style: const TextStyle(
+                              fontSize: 18,
+                              color: Colors.white,
+                            ),
+                            children: [
+                              const TextSpan(
+                                text: 'Classe: ',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              TextSpan(text: classe),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        RichText(
+                          text: TextSpan(
+                            style: const TextStyle(
+                              fontSize: 18,
+                              color: Colors.white,
+                            ),
+                            children: [
+                              const TextSpan(
+                                text: 'Matrícula: ',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              TextSpan(text: matricula),
+                            ],
+                          ),
+                        ),
+                      ],
+                      ),
                     ),
-                    const SizedBox(width: 8),
-                    Flexible(child: Text(_tokenStatus!)),
-                  ],
+                  ),
+                ),
+              // Botão de sair
+              const SizedBox(height: 15),
+              Padding(
+                padding: const EdgeInsets.only(left: 20, bottom: 32),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: TextButton.icon(
+                    icon: const Icon(Icons.logout, color: Color(0xFF0B5ED7), size: 32),
+                    label: const Text(
+                      'Sair',
+                      style: TextStyle(
+                        color: Color(0xFF0B5ED7),
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    onPressed: () {
+                      mostrarDialogoLogout(context);
+                    },
+                    style: TextButton.styleFrom(
+                      foregroundColor: const Color(0xFF0B5ED7),
+                      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+                    ),
+                  ),
                 ),
               ),
-            const SizedBox(height: 30),
-            ElevatedButton.icon(
-              onPressed: () => Navigator.pushNamed(ctx, '/camera'),
-              icon: const Icon(Icons.camera_alt),
-              label: const Text('Abrir Câmera'),
-            ),
-            const SizedBox(height: 40),
-            const Text('Buscar ficha por CPF',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 10),
-            TextField(
-              controller: _cpfCtrl,
-              decoration: const InputDecoration(
-                labelText: 'Digite o CPF',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.person),
+            ],
+          ),
+        ),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+              Container(
+                  child: Text(
+                    'Bem Vindo,\n$nome!',
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontSize: 38,
+                      fontWeight: FontWeight.w900,
+                      color: Colors.white,
+                    ),
+                  ),
               ),
-              keyboardType: TextInputType.number,
+            const SizedBox(height: 140),
+
+            BotaoPersonalizado(
+              assetImagePath: 'assets/lupa_cpf.png',
+              texto: 'Busca por CPF',
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const PageTwo()),
+                );
+              },
             ),
             const SizedBox(height: 20),
-            _isLoading
-                ? const CircularProgressIndicator()
-                : ElevatedButton.icon(
-                    onPressed: (_token != null) ? buscarFicha : null,
-                    icon: const Icon(Icons.search),
-                    label: const Text('Buscar'),
-                  ),
+            BotaoPersonalizado(
+              assetImagePath: 'assets/face_recognition.png',
+              texto: 'Pesquisa Criminal',
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const FaceCameraPage()),
+                );
+              },
+            ),
           ],
         ),
       ),
     );
+  }
 }
 
- @override
-  void dispose() {
-    _cpfCtrl.dispose();
-    super.dispose();
+// Botão com ícone e texto
+class BotaoPersonalizado extends StatelessWidget {
+  final IconData? icone;
+  final String? assetImagePath;
+  final String texto;
+  final VoidCallback onPressed;
+
+  const BotaoPersonalizado({
+    Key? key,
+    this.icone,
+    this.assetImagePath,
+    required this.texto,
+    required this.onPressed,
+  }) : super(key: key);
+
+  @override
+    Widget build(BuildContext context) {
+      Widget? visual;
+      if (assetImagePath != null) {
+        visual = Image.asset(assetImagePath!, width: 70, height: 70);
+      } else if (icone != null) {
+        visual = Icon(icone, size: 50);
+      }
+
+      return ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          fixedSize: const Size(273, 150),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          padding: const EdgeInsets.all(16),
+        ),
+        onPressed: onPressed,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            if (visual != null) visual,
+            if (visual != null) const SizedBox(height: 20),
+            Text(texto, style: const TextStyle(fontSize: 14)),
+          ],
+        ),
+      );
+    }
+}
+
+
+
+// Página 2
+class PageTwo extends StatelessWidget {
+  const PageTwo({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Página 2')),
+      body: const Center(child: Text('Conteúdo da Página 2')),
+    );
   }
 }
