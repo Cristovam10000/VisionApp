@@ -19,7 +19,6 @@ class _FaceCameraPageState extends State<FaceCameraPage> {
   bool _isProcessing = false;
   final UploadService _uploadService = UploadService();
 
-  // Flags de rosto detectado
   bool _isFaceVisible = false;
   bool _isFaceWellPositioned = false;
 
@@ -39,63 +38,53 @@ class _FaceCameraPageState extends State<FaceCameraPage> {
       onFaceDetected: (face) {
         setState(() {
           _isFaceVisible = face != null;
-          _isFaceWellPositioned = face != null && _isFaceCentered(face.boundingBox, MediaQuery.of(context).size);
-          
-
+          _isFaceWellPositioned = face != null &&
+              _isFaceCentered(face.boundingBox, MediaQuery.of(context).size);
         });
       },
     );
-
-
-    
   }
-
 
   bool _isFaceCentered(Rect boundingBox, Size screenSize) {
-  final centerX = boundingBox.center.dx;
-  final centerY = boundingBox.center.dy;
+    final centerX = boundingBox.center.dx;
+    final centerY = boundingBox.center.dy;
+    final screenCenterX = screenSize.width / 2;
+    final screenCenterY = screenSize.height / 2.7;
 
-  final screenCenterX = screenSize.width / 2;
-  final screenCenterY = screenSize.height / 2.7;
+    const toleranceX = 60;
+    const toleranceY = 80;
 
-  const toleranceX = 60; // ajuste fino aqui
-  const toleranceY = 80;
-
-  return (centerX - screenCenterX).abs() < toleranceX &&
-         (centerY - screenCenterY).abs() < toleranceY;
-}
-
+    return (centerX - screenCenterX).abs() < toleranceX &&
+        (centerY - screenCenterY).abs() < toleranceY;
+  }
 
   Future<void> _handleConfirmUpload() async {
-  if (_capturedImage == null || _isProcessing) return;
+    if (_capturedImage == null || _isProcessing) return;
 
-  setState(() => _isProcessing = true);
+    setState(() => _isProcessing = true);
 
-  try {
-    final token = AuthTokenService().token;
-    if (token != null) {
-      final resultado = await _uploadService.enviarImagem(_capturedImage!, token);
-
-      if (!mounted) return;
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => ResultadoPage(resultado: resultado),
-        ),
-      );
-
-      setState(() => _capturedImage = null);
-      await _controller.startImageStream();
-    } else {
-      _showMessage('❌ Token não encontrado', Colors.red);
+    try {
+      final token = AuthTokenService().token;
+      if (token != null) {
+        final resultado = await _uploadService.enviarImagem(_capturedImage!, token);
+        if (!mounted) return;
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ResultadoPage(resultado: resultado),
+          ),
+        );
+        setState(() => _capturedImage = null);
+        await _controller.startImageStream();
+      } else {
+        _showMessage('❌ Token não encontrado', Colors.red);
+      }
+    } catch (e) {
+      _showMessage('❌ Erro ao enviar imagem: $e', Colors.red);
+    } finally {
+      setState(() => _isProcessing = false);
     }
-  } catch (e) {
-    _showMessage('❌ Erro ao enviar imagem: $e', Colors.red);
-  } finally {
-    setState(() => _isProcessing = false);
   }
-}
-
 
   void _showMessage(String message, Color color) {
     if (!mounted) return;
@@ -114,10 +103,7 @@ class _FaceCameraPageState extends State<FaceCameraPage> {
             Stack(
               fit: StackFit.expand,
               children: [
-                Image.file(
-                  _capturedImage!,
-                  fit: BoxFit.cover,
-                ),
+                Image.file(_capturedImage!, fit: BoxFit.cover),
                 Positioned(
                   bottom: 40,
                   left: 0,
@@ -125,20 +111,19 @@ class _FaceCameraPageState extends State<FaceCameraPage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor:  const Color(0xFF034DA2),
+                          backgroundColor: const Color(0xFF034DA2),
                           shape: const CircleBorder(),
                           padding: const EdgeInsets.all(16),
                         ),
                         onPressed: _handleConfirmUpload,
-                        child: const Icon(Icons.check, color: Color.fromARGB(255, 255, 255, 255), size: 32),
+                        child: const Icon(Icons.check, color: Colors.white, size: 32),
                       ),
                       const SizedBox(width: 30),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color.fromARGB(255, 224, 10, 10),
+                          backgroundColor: Colors.red,
                           shape: const CircleBorder(),
                           padding: const EdgeInsets.all(16),
                         ),
@@ -146,9 +131,15 @@ class _FaceCameraPageState extends State<FaceCameraPage> {
                           await _controller.startImageStream();
                           setState(() => _capturedImage = null);
                         },
-                        child: const Icon(Icons.close, color: Color.fromARGB(255, 255, 255, 255), size: 32),
+                       child: const Text(
+                          '<',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 22, // tamanho mais controlado
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ),
-
                     ],
                   ),
                 ),
@@ -169,21 +160,36 @@ class _FaceCameraPageState extends State<FaceCameraPage> {
 
           if (_capturedImage == null) const FaceOverlay(),
 
-          if (_isProcessing)
-            const Center(child: CircularProgressIndicator()),
+          // Botão de voltar no canto superior esquerdo
+          Positioned(
+            top: MediaQuery.of(context).padding.top + 10,
+            left: 10,
+            child: SafeArea(
+              child: IconButton(
+                icon: const Icon(Icons.arrow_back, size: 30, color: Colors.white),
+                onPressed: () => Navigator.pop(context),
+              ),
+            ),
+          ),
+
+          if (_isProcessing) const Center(child: CircularProgressIndicator()),
         ],
       ),
     );
   }
 
   Widget _message(String msg) => Padding(
-        padding: const EdgeInsets.all(16),
-        child: Text(
-          msg,
-          textAlign: TextAlign.center,
-          style: const TextStyle(fontSize: 30, color: Color.fromARGB(255, 255, 0, 0), fontWeight: FontWeight.bold),
-        ),
-      );
+    padding: const EdgeInsets.all(16),
+    child: Text(
+      msg,
+      textAlign: TextAlign.center,
+      style: const TextStyle(
+        fontSize: 30,
+        color: Colors.red,
+        fontWeight: FontWeight.bold,
+      ),
+    ),
+  );
 
   @override
   void dispose() {
@@ -192,18 +198,13 @@ class _FaceCameraPageState extends State<FaceCameraPage> {
   }
 }
 
-// Overlay com foco circular
 class FaceOverlay extends StatelessWidget {
   const FaceOverlay({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Positioned.fill(
-      child: IgnorePointer(
-        child: CustomPaint(
-          painter: FaceOverlayPainter(),
-        ),
-      ),
+      child: IgnorePointer(child: CustomPaint(painter: FaceOverlayPainter())),
     );
   }
 }
@@ -217,36 +218,28 @@ class FaceOverlayPainter extends CustomPainter {
 
     final holeRadius = size.width * 0.35;
     final center = Offset(size.width / 2, size.height / 2.7);
+    final buttonRadius = 32.0;
+    final buttonPadding = 25.9;
 
-    // Define o raio e a posição dos círculos para os botões
-    final buttonRadius = 32.0; // Raio dos botões
-    final buttonPadding = 25.9; // Espaço entre os botões e a borda da tela
-
-    // Ajusta o retângulo para cobrir toda a tela
     final path = Path()..addRect(Rect.fromLTWH(0, 0, size.width, size.height));
 
-    // Exclui o círculo transparente no centro
     path.addOval(Rect.fromCircle(center: center, radius: holeRadius));
 
-    // Exclui o círculo do botão de confirmação
-    // Exclui o círculo do botão de confirmação
-final confirmButtonCenter = Offset(
-  size.width / 2 - buttonRadius * 2 - buttonPadding, // Reduz o espaçamento horizontal
-  size.height - buttonRadius - buttonPadding, // Posição vertical
-);
-path.addOval(Rect.fromCircle(center: confirmButtonCenter, radius: buttonRadius));
+    final confirmButtonCenter = Offset(
+      size.width / 2 - buttonRadius * 2 - buttonPadding,
+      size.height - buttonRadius - buttonPadding,
+    );
+    path.addOval(Rect.fromCircle(center: confirmButtonCenter, radius: buttonRadius));
 
-// Exclui o círculo do botão de cancelamento
-final cancelButtonCenter = Offset(
-  size.width / 2 + buttonRadius * 2 + buttonPadding, // Reduz o espaçamento horizontal
-  size.height - buttonRadius - buttonPadding, // Posição vertical
-);
-path.addOval(Rect.fromCircle(center: cancelButtonCenter, radius: buttonRadius));
+    final cancelButtonCenter = Offset(
+      size.width / 2 + buttonRadius * 2 + buttonPadding,
+      size.height - buttonRadius - buttonPadding,
+    );
+    path.addOval(Rect.fromCircle(center: cancelButtonCenter, radius: buttonRadius));
 
-    // Exclui o círculo do botão adicional (central)
     final additionalButtonCenter = Offset(
-      size.width / 2, // Posição horizontal (centro)
-      size.height - buttonRadius - buttonPadding, // Posição vertical
+      size.width / 2,
+      size.height - buttonRadius - buttonPadding,
     );
     path.addOval(Rect.fromCircle(center: additionalButtonCenter, radius: buttonRadius));
 
