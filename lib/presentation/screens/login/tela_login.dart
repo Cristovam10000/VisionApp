@@ -32,13 +32,15 @@ class TelaLogin extends StatelessWidget {
                     width: 143,
                     height: 121,
                   ),
-                  Text(
-                    StandardTexts.appTitle,
+                  RichText(
                     textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      fontSize: 32,
-                      fontWeight:
-                          FontWeight.w700 // Define o texto como negrito
+                    text: TextSpan(
+                      text: StandardTexts.appTitle, // Adiciona o título do app
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 32,
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 11),

@@ -37,6 +37,7 @@ class AppTheme {
   static ThemeData darkTheme = ThemeData(
     brightness: Brightness.dark,
     primaryColor: ColorPalette.branco,
+    fontFamily: GoogleFonts.pressStart2p().fontFamily,
     textTheme: GoogleFonts.montserratTextTheme().apply(
       // Define a fonte global
       bodyColor: ColorPalette.branco, // Cor padrão do texto
@@ -57,9 +58,11 @@ class AppTheme {
       labelStyle: TextStyle(color: ColorPalette.cinzaMedio), // Cor do label
       hintStyle: TextStyle(color: ColorPalette.cinzaMedio), // Cor do hint
       enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.all(Radius.circular(8)),
         borderSide: BorderSide(color: ColorPalette.cinzaMaisClaro),
       ),
       focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.all(Radius.circular(8)),
         borderSide: BorderSide(color: ColorPalette.lightbutton),
       ),
       floatingLabelStyle: TextStyle(
@@ -71,7 +74,25 @@ class AppTheme {
       helperStyle: TextStyle(
         color: ColorPalette.preto,
       ), // Cor do texto auxiliar
-      errorStyle: TextStyle(color: Colors.red), // Cor do texto de erro
+      errorStyle: TextStyle(
+        color: ColorPalette.vermelhoPaleta,
+        fontSize: 14,
+      ),
+      errorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.all(Radius.circular(8)),
+        borderSide: BorderSide(
+          color: ColorPalette.vermelhoPaleta,
+          width: 1.0,
+        ), // Borda de erro
+      ),
+      focusedErrorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.all(Radius.circular(8)),
+        borderSide: BorderSide(
+          color: ColorPalette.vermelhoPaleta,
+          width: 1.5,
+        ), // Borda de erro ao focar
+      ),
+      // Cor do texto de erro
     ),
   );
 }

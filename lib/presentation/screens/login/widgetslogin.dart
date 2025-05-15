@@ -5,6 +5,8 @@ import 'package:vision_app/core/constants/app_colors.dart';
 import '../../../services/auth_firebase.dart';
 import '../../../services/auth_backend.dart';
 import '../../../services/auth_token_service.dart';
+import 'package:vision_app/presentation/screens/login/popUp_cadastro.dart';
+import 'package:flutter/gestures.dart';
 
 class Logincontainer extends StatefulWidget {
   @override
@@ -17,12 +19,31 @@ class _LogincontainerState extends State<Logincontainer> {
   final emailController = TextEditingController();
   final senhaController = TextEditingController();
 
-  String? _mensagem;
-  Map<String, dynamic>? _perfil;
+  String? _mensagemErroCpf; // Mensagem de erro para CPF
+  String? _mensagemErroSenha; // Mensagem de erro para senha
 
   void _fazerLogin() async {
     final cpf = emailController.text.trim(); // Agora isso é o CPF
     final senha = senhaController.text;
+
+    setState(() {
+      _mensagemErroCpf = null; // Limpa mensagens de erro anteriores
+      _mensagemErroSenha = null;
+    });
+
+    if (cpf.isEmpty) {
+      setState(() {
+        _mensagemErroCpf = 'O CPF não pode estar vazio.';
+      });
+      return;
+    }
+
+    if (senha.isEmpty) {
+      setState(() {
+        _mensagemErroSenha = 'A senha não pode estar vazia.';
+      });
+      return;
+    }
 
     final emailFake = '$cpf@app.com'; // Converte CPF para e-mail
 
@@ -33,7 +54,8 @@ class _LogincontainerState extends State<Logincontainer> {
     );
     if (firebaseToken == null) {
       setState(() {
-        _mensagem = 'Erro ao fazer login no Firebase.';
+        _mensagemErroCpf = 'CPF ou senha incorretos.';
+        _mensagemErroSenha = 'CPF ou senha incorretos.';
       });
       return;
     }
@@ -42,7 +64,7 @@ class _LogincontainerState extends State<Logincontainer> {
     final backendJwt = await postWithToken(firebaseToken);
     if (backendJwt == null) {
       setState(() {
-        _mensagem = 'Falha na autenticação com o back-end.';
+        _mensagemErroCpf = 'Erro ao autenticar com o servidor.';
       });
       return;
     }
@@ -51,15 +73,15 @@ class _LogincontainerState extends State<Logincontainer> {
     final perfil = await getUserProfile(backendJwt);
     if (perfil == null) {
       setState(() {
-        _mensagem = 'Não foi possível obter o perfil.';
+        _mensagemErroCpf = 'Não foi possível obter o perfil.';
       });
       return;
     }
 
     // 4) Sucesso: atualiza UI
     setState(() {
-      _perfil = perfil;
-      _mensagem = 'Bem-vindo, ${perfil['nome']}!';
+      _mensagemErroCpf = null;
+      _mensagemErroSenha = null;
     });
 
     await AuthTokenService().saveToken(backendJwt);
@@ -84,7 +106,7 @@ class _LogincontainerState extends State<Logincontainer> {
           topLeft: Radius.circular(30),
           topRight: Radius.circular(30),
         ),
-        border: Border.all(color: Colors.grey, width: 1),
+        border: Border.all(color: ColorPalette.cinzaClaro, width: 1),
       ),
       child: Padding(
         padding: const EdgeInsets.only(
@@ -98,15 +120,16 @@ class _LogincontainerState extends State<Logincontainer> {
           children: <Widget>[
             TextField(
               style: const TextStyle(
-                color: Colors.black,
-                fontSize: 16,
+                color: ColorPalette.preto,
+                fontSize: 20,
                 fontWeight: FontWeight.w400,
               ),
-              controller: emailController, // Isso causa o problema
+              controller: emailController,
               keyboardType: TextInputType.number,
               decoration: InputDecoration(
                 labelText: 'Digite seu CPF',
                 border: const OutlineInputBorder(),
+                errorText: _mensagemErroCpf, // Exibe a mensagem de erro
               ),
             ),
             const SizedBox(height: 20),
@@ -114,8 +137,8 @@ class _LogincontainerState extends State<Logincontainer> {
             // CAMPO DE SENHA COM ÍCONE DE OLHO
             TextField(
               style: const TextStyle(
-                color: Colors.black,
-                fontSize: 12,
+                color: ColorPalette.preto,
+                fontSize: 16,
                 fontWeight: FontWeight.w400,
               ),
               obscureText: _obscurePassword,
@@ -123,143 +146,63 @@ class _LogincontainerState extends State<Logincontainer> {
               decoration: InputDecoration(
                 labelText: 'Digite sua senha',
                 border: const OutlineInputBorder(),
-                suffixIcon: IconButton(
-                  icon: Icon(
-                    _obscurePassword ? Icons.visibility_off : Icons.visibility,
-                    color: ColorPalette.preto,
+                suffixIcon: Padding(
+                  padding: const EdgeInsets.only(
+                    right: 17.0, top: 10, bottom: 12
+                  ), // Adiciona espaçamento à direita
+                  child: IconButton(
+                    icon: Icon(
+                      _obscurePassword
+                          ? Icons.visibility_off
+                          : Icons.visibility,
+                      color: ColorPalette.preto,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _obscurePassword = !_obscurePassword;
+                      });
+                    },
                   ),
-                  onPressed: () {
-                    setState(() {
-                      _obscurePassword = !_obscurePassword;
-                    });
-                  },
                 ),
+                errorText: _mensagemErroSenha, // Exibe a mensagem de erro
               ),
             ),
-
             const SizedBox(height: 20),
             Button(text: 'Entrar', onPressed: _fazerLogin),
             const SizedBox(height: 8),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text(
-                  'Não possui uma conta?',
-                  style: TextStyle(
-                    color: ColorPalette.cinzaMedio,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-                const SizedBox(width: 0),
-                TextButton(
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      barrierColor:
-                          Colors.transparent, // Deixa o fundo transparente
-                      builder: (BuildContext context) {
-                        return Stack(
-                          children: [
-                            // Fundo com o papel de parede
-                            Container(
-                              decoration: const BoxDecoration(
-                                image: DecorationImage(
-                                  image: AssetImage('assets/logo.png'),
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                            ),
-                            // Popup centralizado
-                            Center(
-                              child: Container(
-                                padding: const EdgeInsets.all(20),
-                                margin: const EdgeInsets.symmetric(
-                                  horizontal: 20,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(16),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withOpacity(0.2),
-                                      blurRadius: 10,
-                                      offset: const Offset(0, 4),
-                                    ),
-                                  ],
-                                ),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    // Ícone no topo
-                                    const Image(image: AssetImage('assets/IconApp.png')),
-                                    const SizedBox(height: 16),
-                                    // Título
-                                    const Text(
-                                      'Não tem cadastro?',
-                                      style: TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.black,
-                                      ),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                    const SizedBox(height: 8),
-                                    // Mensagem
-                                    const Text(
-                                      'Entre em contato com um superior para liberar seu acesso ao VisionApp.',
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w400,
-                                        color: Colors.black54,
-                                      ),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                    const SizedBox(height: 24),
-                                    // Botão
-                                    ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: ColorPalette.button,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            8,
-                                          ),
-                                        ),
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 32,
-                                          vertical: 12,
-                                        ),
-                                      ),
-                                      onPressed: () {
-                                        Navigator.of(
-                                          context,
-                                        ).pop(); // Fecha o popup
-                                      },
-                                      child: const Text(
-                                        'Entendido',
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
-                        );
-                      },
-                    );
-                  },
-                  child: const Text(
-                    'Cadastrar',
-                    style: TextStyle(
-                      color: ColorPalette.button,
+                RichText(
+                  text: TextSpan(
+                    text: 'Não possui uma conta ? ',
+                    style: const TextStyle(
+                      color: ColorPalette.cinzaMedio,
                       fontSize: 14,
-                      fontWeight: FontWeight.w700,
+                      fontWeight: FontWeight.w400,
+                      fontFamily: 'Montserrat',
                     ),
+                    children: [
+                      TextSpan(
+                        text: 'Cadastrar',
+                        style: const TextStyle(
+                          color: ColorPalette.button,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w700,
+                          fontFamily: 'Montserrat',
+                        ),
+                        recognizer:
+                            TapGestureRecognizer()
+                              ..onTap = () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => const TelaCadastro(),
+                                  ),
+                                );
+                              },
+                      ),
+                    ],
                   ),
                 ),
               ],
