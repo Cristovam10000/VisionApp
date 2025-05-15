@@ -3,6 +3,7 @@ import 'package:vision_app/presentation/screens/buscacpf/ficha_result_tela.dart'
 import 'package:vision_app/services/auth_token_service.dart';
 import 'package:vision_app/services/upload_service.dart';
 import 'package:vision_app/presentation/widgets/state/navbar.dart';
+import 'package:vision_app/presentation/screens/buscacpf/tela_busca_cpf.dart';
 
 // Seu primeiro widget personalizado: TelaHome
 class TelaHome extends StatefulWidget {
@@ -41,40 +42,6 @@ class _TelaHomeState extends State<TelaHome> {
         ? 'Token presente: ${t.substring(0, 10)}...'
         : 'Token ausente. Faça login novamente';
     });
-  }
-
-  Future<void> buscarFicha() async {
-    final cpf = _cpfCtrl.text.trim();
-    if (cpf.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Por favor, digite um CPF')),
-      );
-      return;
-    }
-    if (_token == null || _token!.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Token ausente. Faça login novamente.')),
-      );
-      return;
-    }
-
-    setState(() => _isLoading = true);
-    try {
-      final ficha = await _uploadService.buscarFichaPorCpf(cpf, _token!);
-      if (!mounted) return;
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (_) => FichaResultPage(ficha: ficha)),
-      );
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Erro ao buscar ficha: $e')),
-        );
-      }
-    } finally {
-      if (mounted) setState(() => _isLoading = false);
-    }
   }
 
 
@@ -131,30 +98,22 @@ class _TelaHomeState extends State<TelaHome> {
               label: const Text('Abrir Câmera'),
             ),
             const SizedBox(height: 40),
-            const Text('Buscar ficha por CPF',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 10),
-            TextField(
-              controller: _cpfCtrl,
-              decoration: const InputDecoration(
-                labelText: 'Digite o CPF',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.person),
-              ),
-              keyboardType: TextInputType.number,
-            ),
-            const SizedBox(height: 20),
-            _isLoading
-                ? const CircularProgressIndicator()
-                : ElevatedButton.icon(
-                    onPressed: (_token != null) ? buscarFicha : null,
-                    icon: const Icon(Icons.search),
-                    label: const Text('Buscar'),
-                  ),
+            ElevatedButton.icon(
+  onPressed: () {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => TelaBuscaCpf(token: _token),
+      ),
+    );
+  },
+  icon: const Icon(Icons.search),
+  label: const Text('Ir para Tela de Busca'),
+),
+     
           ],
         ),
-      ),
-       bottomNavigationBar: navbarContainer(), 
+      ), 
     );
 }
 
