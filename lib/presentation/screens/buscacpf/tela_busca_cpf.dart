@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:vision_app/presentation/screens/camera/popup_dialog_nada_consta.dart';
 import 'package:vision_app/presentation/screens/home/tela_home.dart';
+import 'package:vision_app/presentation/widgets/state/loading_dialog.dart';
 import 'package:vision_app/presentation/widgets/state/state.dart';
 import 'package:vision_app/services/upload_service.dart';
 import 'package:vision_app/presentation/screens/buscacpf/ficha_result_tela.dart';
@@ -21,46 +22,53 @@ class _TelaBuscaCpfState extends State<TelaBuscaCpf> {
   bool _isLoading = false;
 
   Future<void> buscarFicha() async {
-    final cpf = _cpfCtrl.text.trim();
-    if (cpf.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Por favor, digite um CPF')),
-      );
-      return;
-    }
-    if (widget.token == null || widget.token!.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Token ausente. Faça login novamente.')),
-      );
-      return;
-    }
+  final cpf = _cpfCtrl.text.trim();
 
-    setState(() => _isLoading = true);
-    try {
-      final ficha = await _uploadService.buscarFichaPorCpf(cpf, widget.token!);
-      if (!mounted) return;
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (_) => FichaResultPage(ficha: ficha, perfil: widget.perfil)),
-      );
-    } catch (e) {
+  if (cpf.isEmpty) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Por favor, digite um CPF')),
+    );
+    return;
+  }
+
+  if (widget.token == null || widget.token!.isEmpty) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Token ausente. Faça login novamente.')),
+    );
+    return;
+  }
+
+  showLoadingDialog(context, mensagem: 'Buscando ficha...');
+
+  try {
+    final ficha = await _uploadService.buscarFichaPorCpf(cpf, widget.token!);
+    if (!mounted) return;
+
+    Navigator.pop(context); // Fecha o loading antes de ir pra próxima tela
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => FichaResultPage(ficha: ficha, perfil: widget.perfil),
+      ),
+    );
+  } catch (e) {
+    if (mounted) {
+      Navigator.pop(context); // Fecha o loading
+
+      await showNadaConstaDialog(context); // Mostra aviso
+
       if (mounted) {
-        await showNadaConstaDialog(context); // Espera o usuário fechar o diálogo
-
-        if (mounted) {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => TelaHome(perfil: widget.perfil),
-            ),
-          );
-        }
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => TelaHome(perfil: widget.perfil),
+          ),
+        );
       }
-
-    } finally {
-      if (mounted) setState(() => _isLoading = false);
     }
   }
+}
 
   @override
   Widget build(BuildContext context) {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:face_camera/face_camera.dart';
 import 'package:vision_app/presentation/screens/camera/popup_dialog_error_foto.dart';
+import 'package:vision_app/presentation/widgets/state/loading_dialog.dart';
 import 'dart:io';
 import '../../../services/auth_token_service.dart';
 import '../../../services/upload_service.dart';
@@ -68,54 +69,62 @@ class _FaceCameraPageState extends State<FaceCameraPage> {
 }
 
 
-  Future<void> _handleConfirmUpload() async {
-    if (_capturedImage == null || _isProcessing || !_isFaceWellPositioned ) {
-      if (!mounted) return;
-      _showMessage('❌ Rosto não encontrado ou centralizado. Tente novamente.', const Color.fromARGB(255, 185, 134, 130));
-      return;
-    }
-
+Future<void> _handleConfirmUpload() async {
+  if (_capturedImage == null || _isProcessing || !_isFaceWellPositioned) {
+    if (!mounted) return;
+    _showMessage(
+      '❌ Rosto não encontrado ou centralizado. Tente novamente.',
+      const Color.fromARGB(255, 185, 134, 130),
+    );
+    return;
+  }
 
   setState(() => _isProcessing = true);
-  
+  showLoadingDialog(context, mensagem: 'Enviando imagem e aguardando resultado...');
+
   try {
     final token = AuthTokenService().token;
     if (token != null) {
-
       final resultado = await _uploadService.enviarImagem(_capturedImage!, token);
-      
+
       if (!mounted) return;
+
+      Navigator.pop(context); // Fecha o diálogo de loading
+
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => ResultadoPage(resultado: resultado, perfil: widget.perfil),
+          builder: (context) => ResultadoPage(
+            resultado: resultado,
+            perfil: widget.perfil,
+          ),
         ),
       ).then((_) async {
         await _controller.startImageStream();
         setState(() => _capturedImage = null);
       });
     } else {
+      Navigator.pop(context); // Fecha o diálogo de loading
       _showMessage('❌ Token não encontrado', Colors.red);
     }
   } catch (e) {
-  // _showMessage('❌ Erro ao enviar imagem: $e', Colors.red);
-    
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => ResultadoPage(
-            resultado: {'erro': e.toString()},
-            perfil: widget.perfil,
-          ),
-        ),
-      );
-      _capturedImage = null;
+    Navigator.pop(context); // Fecha o diálogo de loading
 
-  }
- finally {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ResultadoPage(
+          resultado: {'erro': e.toString()},
+          perfil: widget.perfil,
+        ),
+      ),
+    );
+    _capturedImage = null;
+  } finally {
     setState(() => _isProcessing = false);
   }
 }
+
 
 
  void _showMessage(String message, Color color) {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:vision_app/core/constants/app_colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:vision_app/presentation/screens/buscacpf/image_popup.dart';
 import 'package:vision_app/presentation/screens/home/tela_home.dart';
 
 class FichaResultPage extends StatelessWidget {
@@ -14,22 +15,24 @@ class FichaResultPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: ColorPalette.dark,
       appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () {
+        backgroundColor: Colors.transparent,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
             Navigator.pushAndRemoveUntil(
-      // ignore: use_build_context_synchronously
-                context,
-                MaterialPageRoute(
-                  builder:
-                      (context) => TelaHome(perfil: perfil), // Passa o Map diretamente
-                ),
-                (Route<dynamic> route) => false, // Remove todas as rotas anteriores
-              );
-            },
-          ),
+              // ignore: use_build_context_synchronously
+              context,
+              MaterialPageRoute(
+                builder:
+                    (context) =>
+                        TelaHome(perfil: perfil), // Passa o Map diretamente
+              ),
+              (Route<dynamic> route) =>
+                  false, // Remove todas as rotas anteriores
+            );
+          },
         ),
+      ),
 
       body:
           ficha.isEmpty
@@ -62,13 +65,27 @@ class FichaResultPage extends StatelessWidget {
                         ),
                         child: Column(
                           children: [
-                            CircleAvatar(
-                              radius: 75,
-                              backgroundImage: NetworkImage(
-                                ficha['foto_url'] ??
-                                    'https://i.imgur.com/j6xgQ7D.png',
+                            GestureDetector(
+                              onTap: () {
+                                showDialog(
+                                  context: context,
+                                  builder:
+                                      (context) => ImagePopup(
+                                        imageUrl:
+                                            ficha['foto_url'] ??
+                                            'https://i.imgur.com/j6xgQ7D.png',
+                                      ),
+                                );
+                              },
+                              child: CircleAvatar(
+                                radius: 75,
+                                backgroundImage: NetworkImage(
+                                  ficha['foto_url'] ??
+                                      'https://i.imgur.com/j6xgQ7D.png',
+                                ),
                               ),
                             ),
+
                             const SizedBox(height: 16),
                             RichText(
                               textAlign: TextAlign.center,
@@ -115,9 +132,7 @@ class FichaResultPage extends StatelessWidget {
 
                       // Container 2: CPF, Data de Nascimento, Nome da Mãe, Nome do Pai
                       Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 3,
-                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 3),
                         decoration: BoxDecoration(
                           color: ColorPalette.dark,
                           borderRadius: BorderRadius.circular(10),
