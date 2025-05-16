@@ -316,7 +316,7 @@ class CrimeCard extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              'Data: ${crime['data'] ?? 'Não informada'}',
+              'Data: ${crime['data_ocorrencia'] ?? 'Não informada'}',
               style: const TextStyle(color: Colors.white),
             ),
             const SizedBox(height: 4),
