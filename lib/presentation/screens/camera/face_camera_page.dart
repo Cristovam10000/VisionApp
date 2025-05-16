@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:face_camera/face_camera.dart';
+import 'package:vision_app/presentation/screens/camera/popup_dialog_error_foto.dart';
 import 'dart:io';
 import '../../../services/auth_token_service.dart';
 import '../../../services/upload_service.dart';
 import '../camera/informacoes.dart';
 
 class FaceCameraPage extends StatefulWidget {
-  const FaceCameraPage({super.key});
+  final Map<String, dynamic> perfil;
+  const FaceCameraPage({super.key, required this.perfil});
 
   @override
   _FaceCameraPageState createState() => _FaceCameraPageState();
@@ -27,10 +29,11 @@ class _FaceCameraPageState extends State<FaceCameraPage> {
     super.initState();
     _controller = FaceCameraController(
       autoCapture: false,
+      defaultFlashMode: CameraFlashMode.off,
       defaultCameraLens: CameraLens.back,
       enableAudio: false,
       onCapture: (file) {
-        if (file == null || _isProcessing || !_isFaceVisible || !_isFaceWellPositioned) return;
+        if (file == null || _isProcessing  ) return;
         setState(() {
           _capturedImage = file;
         });
@@ -66,46 +69,76 @@ class _FaceCameraPageState extends State<FaceCameraPage> {
 
 
   Future<void> _handleConfirmUpload() async {
-  if (_capturedImage == null || _isProcessing) return;
+    if (_capturedImage == null || _isProcessing || !_isFaceWellPositioned ) {
+      if (!mounted) return;
+      _showMessage('❌ Rosto não encontrado ou centralizado. Tente novamente.', const Color.fromARGB(255, 185, 134, 130));
+      return;
+    }
+
 
   setState(() => _isProcessing = true);
-
+  
   try {
     final token = AuthTokenService().token;
     if (token != null) {
-      final resultado = await _uploadService.enviarImagem(_capturedImage!, token);
 
+      final resultado = await _uploadService.enviarImagem(_capturedImage!, token);
+      
       if (!mounted) return;
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => ResultadoPage(resultado: resultado),
+          builder: (context) => ResultadoPage(resultado: resultado, perfil: widget.perfil),
         ),
-      );
-
-      setState(() => _capturedImage = null);
-      await _controller.startImageStream();
+      ).then((_) async {
+        await _controller.startImageStream();
+        setState(() => _capturedImage = null);
+      });
     } else {
       _showMessage('❌ Token não encontrado', Colors.red);
     }
   } catch (e) {
-    _showMessage('❌ Erro ao enviar imagem: $e', Colors.red);
-  } finally {
+  // _showMessage('❌ Erro ao enviar imagem: $e', Colors.red);
+    
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ResultadoPage(
+            resultado: {'erro': e.toString()},
+            perfil: widget.perfil,
+          ),
+        ),
+      );
+      _capturedImage = null;
+
+  }
+ finally {
     setState(() => _isProcessing = false);
   }
 }
 
 
-  void _showMessage(String message, Color color) {
-    if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message), backgroundColor: color),
-    );
-  }
+ void _showMessage(String message, Color color) {
+  if (!mounted) return;
+
+  Navigator.pop(context, true);
+  showErrorFotoDialog(context, widget.perfil);
+
+  
+
+}
+
 
   @override
   Widget build(BuildContext context) {
+    
     return Scaffold(
+      appBar: _capturedImage == null
+        ? AppBar(
+            backgroundColor: Colors.transparent,
+            elevation: 0, 
+          )
+        : null,
       body: Stack(
         fit: StackFit.expand,
         children: [
@@ -118,7 +151,7 @@ class _FaceCameraPageState extends State<FaceCameraPage> {
                   fit: BoxFit.cover,
                 ),
                 Positioned(
-                  bottom: 40,
+                  bottom: 72,
                   left: 0,
                   right: 0,
                   child: Row(
@@ -132,9 +165,10 @@ class _FaceCameraPageState extends State<FaceCameraPage> {
                           padding: const EdgeInsets.all(16),
                         ),
                         onPressed: _handleConfirmUpload,
+                        
                         child: const Icon(Icons.check, color: Color.fromARGB(255, 255, 255, 255), size: 32),
                       ),
-                      const SizedBox(width: 30),
+                      const SizedBox(width: 64),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color.fromARGB(255, 224, 10, 10),
@@ -142,10 +176,11 @@ class _FaceCameraPageState extends State<FaceCameraPage> {
                           padding: const EdgeInsets.all(16),
                         ),
                         onPressed: () async {
-                          await _controller.startImageStream();
-                          setState(() => _capturedImage = null);
+                          await _controller.startImageStream(); // reinicia a câmera
+                          setState(() => _capturedImage = null); // remove a imagem
+
                         },
-                        child: const Icon(Icons.close, color: Color.fromARGB(255, 255, 255, 255), size: 32),
+                        child: const Icon(Icons.close, color: Colors.white, size: 32),
                       ),
 
                     ],

@@ -10,6 +10,7 @@ class Logincontainer extends StatefulWidget {
   const Logincontainer({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _LogincontainerState createState() => _LogincontainerState();
 }
 
@@ -18,9 +19,6 @@ class _LogincontainerState extends State<Logincontainer> {
 
   final emailController = TextEditingController();
   final senhaController = TextEditingController();
-
-  String? _mensagem;
-  Map<String, dynamic>? _perfil;
 
   void _fazerLogin() async {
     final cpf = emailController.text.trim(); // Agora isso é o CPF
@@ -35,7 +33,6 @@ class _LogincontainerState extends State<Logincontainer> {
     );
     if (firebaseToken == null) {
       setState(() {
-        _mensagem = 'Erro ao fazer login no Firebase.';
       });
       return;
     }
@@ -44,7 +41,6 @@ class _LogincontainerState extends State<Logincontainer> {
     final backendJwt = await postWithToken(firebaseToken);
     if (backendJwt == null) {
       setState(() {
-        _mensagem = 'Falha na autenticação com o back-end.';
       });
       return;
     }
@@ -53,20 +49,18 @@ class _LogincontainerState extends State<Logincontainer> {
     final perfil = await getUserProfile(backendJwt);
     if (perfil == null) {
       setState(() {
-        _mensagem = 'Não foi possível obter o perfil.';
       });
       return;
     }
 
     // 4) Sucesso: atualiza UI
     setState(() {
-      _perfil = perfil;
-      _mensagem = 'Bem-vindo, ${perfil['nome']}!';
     });
 
     await AuthTokenService().saveToken(backendJwt);
 
     Navigator.pushAndRemoveUntil(
+      // ignore: use_build_context_synchronously
       context,
       MaterialPageRoute(
         builder:

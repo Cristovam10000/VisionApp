@@ -45,42 +45,46 @@ class Button extends StatelessWidget {
   }
 }
 
+
+// Botão com ícone e texto
 class HomeButton extends StatelessWidget {
-  final String text;
+  final IconData? icone;
+  final String? assetImagePath;
+  final String texto;
   final VoidCallback onPressed;
-  final Color? backgroundColor;
-  final Color? textColor;
-  final double? width;
-  final double? height;
 
   const HomeButton({
     super.key,
-    required this.text,
+    this.icone,
+    this.assetImagePath,
+    required this.texto,
     required this.onPressed,
-    this.backgroundColor,
-    this.textColor,
-    this.width,
-    this.height,
   });
 
   @override
-  Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: onPressed,
-      style: ElevatedButton.styleFrom(
-        backgroundColor: backgroundColor,
-        foregroundColor: textColor,
-        minimumSize: Size(
-          width ?? double.infinity,
-          height ?? 56,
-        ), // Padrão: largura total e altura 56
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(
-            12,
-          ), // Aqui define a borda arredondada
+    Widget build(BuildContext context) {
+      Widget? visual;
+      if (assetImagePath != null) {
+        visual = Image.asset(assetImagePath!, width: 70, height: 70);
+      } else if (icone != null) {
+        visual = Icon(icone, size: 50);
+      }
+
+      return ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          fixedSize: const Size(273, 150),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          padding: const EdgeInsets.all(16),
         ),
-      ),
-      child: Text(text, style: const TextStyle(fontSize: 18)),
-    );
-  }
+        onPressed: onPressed,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            if (visual != null) visual,
+            if (visual != null) const SizedBox(height: 20),
+            Text(texto, style: const TextStyle(fontSize: 14)),
+          ],
+        ),
+      );
+    }
 }

@@ -4,6 +4,7 @@ import 'package:mime/mime.dart' as mime;
 import 'package:http_parser/http_parser.dart';
 import 'dart:convert'; // Para JSON
 
+
 class UploadService {
   final String baseUrl = 'https://fastapi.ajvale.com.br';
   final String uploadEndpoint = '/buscar-similaridade-foto/';
@@ -45,6 +46,8 @@ class UploadService {
 
       print('Imagem enviada com sucesso!');
       print('Body: $responseData');
+
+
 
       return json.decode(responseData);
     } catch (e) {

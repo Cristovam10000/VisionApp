@@ -18,7 +18,8 @@ class AppRoutes {
         final perfil = settings.arguments as Map<String, dynamic>;
         return MaterialPageRoute(builder: (_) => TelaHome(perfil: perfil));
       case camera:
-        return MaterialPageRoute(builder: (_) => FaceCameraPage());
+        final perfil = settings.arguments as Map<String, dynamic>;
+        return MaterialPageRoute(builder: (_) => FaceCameraPage(perfil: perfil));
       default:
         return MaterialPageRoute(
           builder: (_) => const Scaffold(
