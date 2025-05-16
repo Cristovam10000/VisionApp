@@ -109,6 +109,7 @@ class _TelaHomeState extends State<TelaHome> {
   },
   icon: const Icon(Icons.search),
   label: const Text('Ir para Tela de Busca'),
+  
 ),
      
           ],

@@ -87,7 +87,7 @@ class _TelaBuscaCpfState extends State<TelaBuscaCpf> {
           ],
         ),
       ),
-       bottomNavigationBar: navbarContainer(), 
+     //  bottomNavigationBar: navbarContainer(), 
     );
   }
 

@@ -8,7 +8,7 @@ class ColorPalette {
 
   static const Color button = Color.fromRGBO(3,77,162, 1);
 
-  static const Color lightbutton = Color.fromRGBO(5, 121, 255, 1);
+  static const Color lightbutton = Color.fromRGBO(1, 144, 255, 1);
 
   static const Color darkbutton = Color.fromRGBO(1, 45, 96, 1);
 

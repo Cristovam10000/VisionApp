@@ -188,7 +188,7 @@ class _LogincontainerState extends State<Logincontainer> {
                         style: const TextStyle(
                           color: ColorPalette.button,
                           fontSize: 14,
-                          fontWeight: FontWeight.w700,
+                          fontWeight: FontWeight.bold,
                           fontFamily: 'Montserrat',
                         ),
                         recognizer:
