@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:vision_app/routes/splash_screen.dart';
 import 'firebase_options.dart';
-import 'routes/app_routes.dart';
 import 'package:face_camera/face_camera.dart'; 
 import 'core/theme/app_theme.dart';
 import 'package:flutter/services.dart';
@@ -41,8 +40,6 @@ class MyApp extends StatelessWidget {
       home: SplashScreen(),
       theme: AppTheme.darkTheme,
       debugShowCheckedModeBanner: false,
-      initialRoute: AppRoutes.login, // Tela inicial é o login
-      onGenerateRoute: AppRoutes.generate,
     );
   }
 }

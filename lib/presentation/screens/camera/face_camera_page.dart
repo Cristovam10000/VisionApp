@@ -22,7 +22,7 @@ class _FaceCameraPageState extends State<FaceCameraPage> {
   final UploadService _uploadService = UploadService();
 
   // Flags de rosto detectado
-  bool _isFaceVisible = false;
+  // bool _isFaceVisible = false;
   bool _isFaceWellPositioned = false;
 
   @override
@@ -41,7 +41,7 @@ class _FaceCameraPageState extends State<FaceCameraPage> {
       },
       onFaceDetected: (face) {
         setState(() {
-          _isFaceVisible = face != null;
+          // _isFaceVisible = face != null;
           _isFaceWellPositioned = face != null && _isFaceCentered(face.boundingBox, MediaQuery.of(context).size);
           
 

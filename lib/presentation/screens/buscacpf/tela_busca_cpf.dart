@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:vision_app/presentation/screens/camera/popup_dialog_nada_consta.dart';
 import 'package:vision_app/presentation/screens/home/tela_home.dart';
 import 'package:vision_app/presentation/widgets/state/loading_dialog.dart';
+import 'package:vision_app/presentation/widgets/state/navbar.dart';
 import 'package:vision_app/presentation/widgets/state/state.dart';
 import 'package:vision_app/services/upload_service.dart';
 import 'package:vision_app/presentation/screens/buscacpf/ficha_result_tela.dart';
@@ -20,55 +22,67 @@ class _TelaBuscaCpfState extends State<TelaBuscaCpf> {
   final _cpfCtrl = TextEditingController();
   final _uploadService = UploadService();
   bool _isLoading = false;
+  String? _cpfError; // <- Mensagem de erro
 
   Future<void> buscarFicha() async {
-  final cpf = _cpfCtrl.text.trim();
+    final cpf = _cpfCtrl.text.trim();
 
-  if (cpf.isEmpty) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Por favor, digite um CPF')),
-    );
-    return;
-  }
+    setState(() {
+      _cpfError = null; // Limpa erro anterior
+    });
 
-  if (widget.token == null || widget.token!.isEmpty) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Token ausente. Faça login novamente.')),
-    );
-    return;
-  }
+    if (cpf.isEmpty) {
+      setState(() {
+        _cpfError = 'Por favor, digite um CPF';
+      });
+      return;
+    }
 
-  showLoadingDialog(context, mensagem: 'Buscando ficha...');
+    if (cpf.length != 11) {
+      setState(() {
+        _cpfError = 'CPF deve ter 11 dígitos';
+      });
+      return;
+    }
 
-  try {
-    final ficha = await _uploadService.buscarFichaPorCpf(cpf, widget.token!);
-    if (!mounted) return;
+    if (widget.token == null || widget.token!.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Token ausente. Faça login novamente.')),
+      );
+      return;
+    }
 
-    Navigator.pop(context); // Fecha o loading antes de ir pra próxima tela
+    showLoadingDialog(context, mensagem: 'Buscando ficha...');
 
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => FichaResultPage(ficha: ficha, perfil: widget.perfil),
-      ),
-    );
-  } catch (e) {
-    if (mounted) {
+    try {
+      final ficha = await _uploadService.buscarFichaPorCpf(cpf, widget.token!);
+      if (!mounted) return;
+
       Navigator.pop(context); // Fecha o loading
 
-      await showNadaConstaDialog(context); // Mostra aviso
-
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => FichaResultPage(ficha: ficha, perfil: widget.perfil),
+        ),
+      );
+    } catch (e) {
       if (mounted) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => TelaHome(perfil: widget.perfil),
-          ),
-        );
+        Navigator.pop(context);
+
+        await showNadaConstaDialog(context);
+
+        if (mounted) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => TelaHome(perfil: widget.perfil),
+            ),
+          );
+        }
       }
     }
   }
-}
 
   @override
   Widget build(BuildContext context) {
@@ -115,10 +129,10 @@ class _TelaBuscaCpfState extends State<TelaBuscaCpf> {
                   ),
                   const SizedBox(height: 25),
                   TextField(
-                    autofocus: false,
                     controller: _cpfCtrl,
                     keyboardType: TextInputType.number,
-                    style: const TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                    style: const TextStyle(color: Colors.black),
                     decoration: InputDecoration(
                       hintText: 'Pesquisar',
                       hintStyle: const TextStyle(color: Colors.grey),
@@ -130,6 +144,7 @@ class _TelaBuscaCpfState extends State<TelaBuscaCpf> {
                         borderRadius: BorderRadius.circular(8),
                         borderSide: BorderSide.none,
                       ),
+                      errorText: _cpfError, // <- Aqui mostra o erro em vermelho
                     ),
                   ),
                   const SizedBox(height: 24),
@@ -137,7 +152,7 @@ class _TelaBuscaCpfState extends State<TelaBuscaCpf> {
                       ? const CircularProgressIndicator()
                       : SizedBox(
                           height: 48,
-                          child: Button(text: "Pesquisar", onPressed: buscarFicha)
+                          child: Button(text: "Pesquisar", onPressed: buscarFicha),
                         ),
                 ],
               ),
@@ -145,6 +160,7 @@ class _TelaBuscaCpfState extends State<TelaBuscaCpf> {
           ),
         ],
       ),
+      bottomNavigationBar: CustomNavbar(currentIndex: 2, perfil: widget.perfil,),
     );
   }
 

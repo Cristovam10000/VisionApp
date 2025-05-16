@@ -3,6 +3,7 @@ import 'package:vision_app/core/constants/app_colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:vision_app/presentation/screens/buscacpf/image_popup.dart';
 import 'package:vision_app/presentation/screens/home/tela_home.dart';
+import 'package:vision_app/presentation/widgets/state/navbar.dart';
 
 class FichaResultPage extends StatelessWidget {
   final Map<String, dynamic> ficha;
@@ -254,7 +255,9 @@ class FichaResultPage extends StatelessWidget {
                   ),
                 ],
               ),
+              bottomNavigationBar: CustomNavbar(currentIndex: 2, perfil: perfil), // <-- aqui você chama a Navbar
     );
+    
   }
 
   Widget infoLine(String label, dynamic value) {

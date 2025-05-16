@@ -64,6 +64,7 @@ class _ResultadoPageState extends State<ResultadoPage> {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
+        
             builder: (context) => FaceCameraPage(perfil: widget.perfil),
           ),
         );
