@@ -21,50 +21,186 @@ class FichaResultPage extends StatelessWidget {
                 ),
               )
               : ListView(
-                padding: const EdgeInsets.all(24),
+                padding: const EdgeInsets.only(
+                  top: 0,
+                  left: 40,
+                  right: 37,
+                  bottom: 24,
+                ),
                 children: [
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      CircleAvatar(
-                        radius: 48,
-                        backgroundImage: NetworkImage(
-                          ficha['foto_url'] ??
-                              'https://i.imgur.com/j6xgQ7D.png',
+                      // Container 1: Foto, Nome, Vulgo
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 12,
+                        ),
+                        decoration: BoxDecoration(
+                          color: ColorPalette.dark,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Column(
+                          children: [
+                            CircleAvatar(
+                              radius: 75,
+                              backgroundImage: NetworkImage(
+                                ficha['foto_url'] ??
+                                    'https://i.imgur.com/j6xgQ7D.png',
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+                            RichText(
+                              textAlign: TextAlign.center,
+                              text: TextSpan(
+                                children: [
+                                  TextSpan(
+                                    text:
+                                        ficha['nome'] ?? 'Nome não encontrado',
+                                    style: const TextStyle(
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 18),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SvgPicture.asset(
+                                  'assets/Iconperson.svg',
+                                  width: 20,
+                                  height: 20,
+                                  color: Colors.white,
+                                ),
+                                const SizedBox(width: 6),
+                                Text(
+                                  ficha['vulgo'] ?? 'Nenhum vulgo',
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
                       ),
+
+                      const SizedBox(height: 1),
+
+                      // Container 2: CPF, Data de Nascimento, Nome da Mãe, Nome do Pai
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 3,
+                        ),
+                        decoration: BoxDecoration(
+                          color: ColorPalette.dark,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            RichText(
+                              text: TextSpan(
+                                children: [
+                                  const TextSpan(
+                                    text: 'CPF: ',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                      fontSize: 19,
+                                    ),
+                                  ),
+                                  TextSpan(
+                                    text: ficha['cpf'] ?? 'Não informado',
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 19,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            RichText(
+                              text: TextSpan(
+                                children: [
+                                  const TextSpan(
+                                    text: 'Data de Nascimento: ',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                      fontSize: 19,
+                                    ),
+                                  ),
+                                  TextSpan(
+                                    text:
+                                        ficha['data_nascimento'] ??
+                                        'Não informado',
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 19,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            RichText(
+                              text: TextSpan(
+                                children: [
+                                  const TextSpan(
+                                    text: 'Nome da Mãe: ',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                      fontSize: 19,
+                                    ),
+                                  ),
+                                  TextSpan(
+                                    text: ficha['nome_mae'] ?? 'Não informado',
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 19,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            RichText(
+                              text: TextSpan(
+                                children: [
+                                  const TextSpan(
+                                    text: 'Nome do Pai: ',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                      fontSize: 19,
+                                    ),
+                                  ),
+                                  TextSpan(
+                                    text: ficha['nome_pai'] ?? 'Não informado',
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 19,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
                       const SizedBox(height: 16),
-                      Text(
-                        ficha['nome'] ?? 'Nome não encontrado',
-                        style: const TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      Text(
-                        ficha['vulgo'] ?? 'Vulgo não encontrado',
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.white70,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 8),
-                      SvgPicture.asset(
-                        'assets/Iconperson.svg', // Substitua pelo caminho correto do arquivo SVG
-                        width: 20,
-                        height: 20,
-                        color: Colors.white70, // Aplica uma tonalidade branca
-                      ),
-                      const SizedBox(height: 24),
-                      infoLine('CPF', ficha['cpf']),
-                      infoLine('Data de Nascimento', ficha['data_nascimento']),
-                      infoLine('Nome da Mãe', ficha['nome_mae']),
-                      infoLine('Nome do Pai', ficha['nome_pai']),
-                      const SizedBox(height: 24),
+
                       const Text(
                         'Resumo Criminal',
                         style: TextStyle(
@@ -73,7 +209,8 @@ class FichaResultPage extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: 24),
+
                       if (ficha['crimes'] != null)
                         ...List.generate(
                           ficha['crimes'].length,
