@@ -73,46 +73,55 @@ class _ResultadoPageState extends State<ResultadoPage> {
           ),
         );
       }
-    } else if (statusAmbiguidade == 'ambíguo' &&
-        widget.resultado['primeiro_encontrado'] != null &&
-        widget.resultado['segundo_encontrado'] != null) {
-      // Extrai as informações de primeiro e segundo encontrados
-      final primeiroEncontrado = widget.resultado['primeiro_encontrado'];
-      final segundoEncontrado = widget.resultado['segundo_encontrado'];
+    } else if (statusAmbiguidade == 'ambíguo') {
+      // Extrai todas as opções encontradas dinamicamente
+      final opcoes = [];
+      if (widget.resultado['primeiro_encontrado'] != null) {
+        opcoes.add({
+          'identidade': widget.resultado['primeiro_encontrado']['identidade'],
+          'ficha_criminal':
+              widget.resultado['primeiro_encontrado']['ficha_criminal'],
+          'crimes': widget.resultado['primeiro_encontrado']['crimes'],
+        });
+      }
+      if (widget.resultado['segundo_encontrado'] != null) {
+        opcoes.add({
+          'identidade': widget.resultado['segundo_encontrado']['identidade'],
+          'ficha_criminal':
+              widget.resultado['segundo_encontrado']['ficha_criminal'],
+          'crimes': widget.resultado['segundo_encontrado']['crimes'],
+        });
+      }
+      if (widget.resultado['terceiro_encontrado'] != null) {
+        opcoes.add({
+          'identidade': widget.resultado['terceiro_encontrado']['identidade'],
+          'ficha_criminal':
+              widget.resultado['terceiro_encontrado']['ficha_criminal'],
+          'crimes': widget.resultado['terceiro_encontrado']['crimes'],
+        });
+      }
 
-      // Cria uma lista de opções para passar para a página de ambiguidade
-      final opcoes = [
-        {
-          'identidade': primeiroEncontrado['identidade'],
-          'ficha_criminal': primeiroEncontrado['ficha_criminal'],
-          'crimes': primeiroEncontrado['crimes'],
-        },
-        {
-          'identidade': segundoEncontrado['identidade'],
-          'ficha_criminal': segundoEncontrado['ficha_criminal'],
-          'crimes': segundoEncontrado['crimes'],
-        },
-      ];
-
-      // Navega diretamente para a página de ambiguidade
-      final opcaoSelecionada = await Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => AmbiguityPage(opcoes: opcoes)),
-      );
-
-      if (opcaoSelecionada != null) {
-        // Processa a opção selecionada
-        debugPrint('Opção selecionada: $opcaoSelecionada');
-        Navigator.push(
+      // Verifica se há opções para exibir
+      if (opcoes.isNotEmpty) {
+        // Navega diretamente para a página de ambiguidade
+        final opcaoSelecionada = await Navigator.push(
           context,
           MaterialPageRoute(
-            builder:
-                (context) => FichaResultPage(
-                  ficha: opcaoSelecionada,
-                  perfil: widget.perfil,
-                ),
+            builder: (context) => AmbiguityPage(opcoes: opcoes),
           ),
         );
+        if (opcaoSelecionada != null) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder:
+                  (context) => FichaResultPage(
+                    ficha: opcaoSelecionada,
+                    perfil: widget.perfil,
+                  ),
+            ),
+          );
+        }
       }
     }
   }

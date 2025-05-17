@@ -7,34 +7,37 @@ import 'package:vision_app/presentation/screens/home/tela_home.dart';
 class FichaResultPage extends StatelessWidget {
   final Map<String, dynamic> ficha;
   final Map<String, dynamic> perfil;
+  final bool fromAmbiguity;
 
-  const FichaResultPage({super.key, required this.ficha, required this.perfil});
+  const FichaResultPage({super.key, required this.ficha, required this.perfil, this.fromAmbiguity = false,});
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+@override
+Widget build(BuildContext context) {
+  return Scaffold(
+    backgroundColor: ColorPalette.dark,
+    appBar: AppBar(
+      title: const Text('Ficha do Criminoso'),
       backgroundColor: ColorPalette.dark,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
+      leading: IconButton(
+        icon: const Icon(Icons.arrow_back),
+        onPressed: () {
+          if (fromAmbiguity) {
+            // Volta para a TelaAmbiguidade
+            Navigator.pop(context);
+          } else {
+            // Volta para a TelaHome e limpa a pilha de navegação
             Navigator.pushAndRemoveUntil(
-              // ignore: use_build_context_synchronously
               context,
               MaterialPageRoute(
-                builder:
-                    (context) =>
-                        TelaHome(perfil: perfil), // Passa o Map diretamente
+                builder: (context) => TelaHome(perfil: perfil),
               ),
-              (Route<dynamic> route) =>
-                  false, // Remove todas as rotas anteriores
+              (Route<dynamic> route) => false,
             );
-          },
-        ),
+          }
+        },
       ),
-
-      body:
+    ),
+    body:
           ficha.isEmpty
               ? const Center(
                 child: Text(
@@ -254,7 +257,9 @@ class FichaResultPage extends StatelessWidget {
                   ),
                 ],
               ),
+             // bottomNavigationBar: CustomNavbar(currentIndex: 2, perfil: perfil), // <-- aqui você chama a Navbar
     );
+    
   }
 
   Widget infoLine(String label, dynamic value) {
@@ -337,7 +342,8 @@ class CrimeCard extends StatelessWidget {
             ),
           ],
         ),
-      ),
+        
+    ),
     );
   }
 }
