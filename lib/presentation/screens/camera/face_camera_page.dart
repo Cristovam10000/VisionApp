@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:face_camera/face_camera.dart';
+import 'package:vision_app/presentation/screens/camera/popup_dialog_error_foto.dart';
+import 'package:vision_app/presentation/screens/home/tela_home.dart';
+import 'package:vision_app/presentation/widgets/state/loading_dialog.dart';
 import 'dart:io';
 import '../../../services/auth_token_service.dart';
 import '../../../services/upload_service.dart';
 import '../camera/informacoes.dart';
 
 class FaceCameraPage extends StatefulWidget {
-  const FaceCameraPage({super.key});
+  final Map<String, dynamic> perfil;
+  const FaceCameraPage({super.key, required this.perfil});
 
   @override
   _FaceCameraPageState createState() => _FaceCameraPageState();
@@ -19,25 +23,27 @@ class _FaceCameraPageState extends State<FaceCameraPage> {
   final UploadService _uploadService = UploadService();
 
   // Flags de rosto detectado
-  bool _isFaceVisible = false;
+  // bool _isFaceVisible = false;
   bool _isFaceWellPositioned = false;
 
   @override
   void initState() {
     super.initState();
+    _capturedImage= null;
     _controller = FaceCameraController(
       autoCapture: false,
+      defaultFlashMode: CameraFlashMode.off,
       defaultCameraLens: CameraLens.back,
       enableAudio: false,
       onCapture: (file) {
-        if (file == null || _isProcessing || !_isFaceVisible || !_isFaceWellPositioned) return;
+        if (file == null || _isProcessing  ) return;
         setState(() {
           _capturedImage = file;
         });
       },
       onFaceDetected: (face) {
         setState(() {
-          _isFaceVisible = face != null;
+          // _isFaceVisible = face != null;
           _isFaceWellPositioned = face != null && _isFaceCentered(face.boundingBox, MediaQuery.of(context).size);
           
 
@@ -65,47 +71,102 @@ class _FaceCameraPageState extends State<FaceCameraPage> {
 }
 
 
-  Future<void> _handleConfirmUpload() async {
-  if (_capturedImage == null || _isProcessing) return;
+Future<void> _handleConfirmUpload() async {
+  if (_capturedImage == null || _isProcessing || !_isFaceWellPositioned) {
+    if (!mounted) return;
+    _showMessage(
+      '❌ Rosto não encontrado ou centralizado. Tente novamente.',
+      const Color.fromARGB(255, 185, 134, 130),
+    );
+    return;
+  }
 
   setState(() => _isProcessing = true);
+  showLoadingDialog(context, mensagem: 'Enviando imagem e aguardando resultado...');
 
   try {
     final token = AuthTokenService().token;
     if (token != null) {
       final resultado = await _uploadService.enviarImagem(_capturedImage!, token);
 
-      if (!mounted) return;
+      Navigator.pop(context);
+
+      if (resultado['statusCode'] == 200) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ResultadoPage(
+              resultado: resultado['body'],
+              perfil: widget.perfil,
+            ),
+          ),
+        );
+      } else {
+        _showMessage('❌ Erro ao enviar imagem. Código: ${resultado['statusCode']}', Colors.red);
+      }
+
+
+      // Se tudo certo, segue normalmente
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => ResultadoPage(resultado: resultado),
+          builder: (context) => ResultadoPage(
+            resultado: resultado,
+            perfil: widget.perfil,
+          ),
         ),
-      );
-
-      setState(() => _capturedImage = null);
-      await _controller.startImageStream();
+      ).then((_) async {
+        await _controller.startImageStream();
+        setState(() => _capturedImage = null);
+      });
     } else {
+      Navigator.pop(context);
       _showMessage('❌ Token não encontrado', Colors.red);
+
+      
     }
   } catch (e) {
-    _showMessage('❌ Erro ao enviar imagem: $e', Colors.red);
+    Navigator.pop(context);
+    _showMessage('❌ Erro: ${e.toString()}', Colors.red);
   } finally {
     setState(() => _isProcessing = false);
   }
 }
 
 
-  void _showMessage(String message, Color color) {
-    if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message), backgroundColor: color),
-    );
-  }
+
+ void _showMessage(String message, Color color) {
+  if (!mounted) return;
+
+  Navigator.pop(context, true);
+  showErrorFotoDialog(context, widget.perfil);
+
+  
+
+}
+
 
   @override
   Widget build(BuildContext context) {
+    
     return Scaffold(
+      appBar: _capturedImage == null
+        ? AppBar(
+        backgroundColor: Colors.transparent,
+        // leading: IconButton(
+        //   icon: const Icon(Icons.arrow_back),
+        //   onPressed: () {
+        //       Navigator.pushAndRemoveUntil(
+        //         context,
+        //         MaterialPageRoute(builder: (context) => TelaHome(perfil: widget.perfil,)),
+        //         (Route<dynamic> route) => false, // Remove todas
+        //       );
+
+
+        //   },
+        // ),
+      )
+        : null,
       body: Stack(
         fit: StackFit.expand,
         children: [
@@ -118,7 +179,7 @@ class _FaceCameraPageState extends State<FaceCameraPage> {
                   fit: BoxFit.cover,
                 ),
                 Positioned(
-                  bottom: 40,
+                  bottom: 72,
                   left: 0,
                   right: 0,
                   child: Row(
@@ -132,9 +193,10 @@ class _FaceCameraPageState extends State<FaceCameraPage> {
                           padding: const EdgeInsets.all(16),
                         ),
                         onPressed: _handleConfirmUpload,
+                        
                         child: const Icon(Icons.check, color: Color.fromARGB(255, 255, 255, 255), size: 32),
                       ),
-                      const SizedBox(width: 30),
+                      const SizedBox(width: 64),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color.fromARGB(255, 224, 10, 10),
@@ -142,10 +204,11 @@ class _FaceCameraPageState extends State<FaceCameraPage> {
                           padding: const EdgeInsets.all(16),
                         ),
                         onPressed: () async {
-                          await _controller.startImageStream();
-                          setState(() => _capturedImage = null);
+                          await _controller.startImageStream(); // reinicia a câmera
+                          setState(() => _capturedImage = null); // remove a imagem
+
                         },
-                        child: const Icon(Icons.close, color: Color.fromARGB(255, 255, 255, 255), size: 32),
+                        child: const Icon(Icons.close, color: Colors.white, size: 32),
                       ),
 
                     ],
@@ -156,12 +219,14 @@ class _FaceCameraPageState extends State<FaceCameraPage> {
           else
             SmartFaceCamera(
               controller: _controller,
+              indicatorShape: IndicatorShape.none,
+              showCameraLensControl: false,
+              messageStyle: const TextStyle(
+                fontSize: 40,
+                color: Color.fromARGB(255, 255, 255, 255),
+              ),
               messageBuilder: (context, face) {
-                if (!_isFaceVisible) {
-                  return _message('Nenhum rosto detectado');
-                } else if (!_isFaceWellPositioned) {
-                  return _message('Centralize o rosto corretamente');
-                }
+                
                 return const SizedBox.shrink();
               },
             ),
@@ -175,14 +240,14 @@ class _FaceCameraPageState extends State<FaceCameraPage> {
     );
   }
 
-  Widget _message(String msg) => Padding(
-        padding: const EdgeInsets.all(16),
-        child: Text(
-          msg,
-          textAlign: TextAlign.center,
-          style: const TextStyle(fontSize: 30, color: Color.fromARGB(255, 255, 0, 0), fontWeight: FontWeight.bold),
-        ),
-      );
+  // Widget _message(String msg) => Padding(
+  //       padding: const EdgeInsets.all(16),
+  //       child: Text(
+  //         msg,
+  //         textAlign: TextAlign.center,
+  //         style: const TextStyle(fontSize: 30, color: Color.fromARGB(255, 255, 0, 0), fontWeight: FontWeight.bold),
+  //       ),
+  //     );
 
   @override
   void dispose() {
@@ -207,6 +272,7 @@ class FaceOverlay extends StatelessWidget {
   }
 }
 
+// ...existing code...
 class FaceOverlayPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
@@ -214,46 +280,54 @@ class FaceOverlayPainter extends CustomPainter {
       ..color = const Color.fromARGB(255, 54, 54, 54).withOpacity(0.6)
       ..style = PaintingStyle.fill;
 
-    final holeRadius = size.width * 0.35;
-    final center = Offset(size.width / 2, size.height / 2.7);
+    // Dimensões e posição do retângulo central
+    final rectWidth = 282.0;
+    final rectHeight = 452.0;
+    final rectLeft = 47.0;
+    final rectTop = 121.0;
+    final borderRadius = 280.0;
 
-    // Define o raio e a posição dos círculos para os botões
-    final buttonRadius = 32.0; // Raio dos botões
-    final buttonPadding = 25.9; // Espaço entre os botões e a borda da tela
+    // Círculos para os botões
+    final buttonRadius = 38.0;
+    final ycapture = size.height - 62;
+    final yflash = size.height - 62;
+    final captureX = size.width / 1.715;
+    final flashX = size.width / 3;
 
-    // Ajusta o retângulo para cobrir toda a tela
-    final path = Path()..addRect(Rect.fromLTWH(0, 0, size.width, size.height));
+    // === CRIA O PATH COM FUROS ===
+    final path = Path()
+      ..fillType = PathFillType.evenOdd
+      ..addRect(Rect.fromLTWH(0, 0, size.width, size.height)); // fundo todo
 
-    // Exclui o círculo transparente no centro
-    path.addOval(Rect.fromCircle(center: center, radius: holeRadius));
+    // Furo retangular arredondado
+    final rect = Rect.fromLTWH(rectLeft, rectTop, rectWidth, rectHeight);
+    final rrect = RRect.fromRectAndRadius(rect, Radius.circular(borderRadius));
+    path.addRRect(rrect);
 
-    // Exclui o círculo do botão de confirmação
-    // Exclui o círculo do botão de confirmação
-final confirmButtonCenter = Offset(
-  size.width / 2 - buttonRadius * 2 - buttonPadding, // Reduz o espaçamento horizontal
-  size.height - buttonRadius - buttonPadding, // Posição vertical
-);
-path.addOval(Rect.fromCircle(center: confirmButtonCenter, radius: buttonRadius));
+    // Furos circulares dos botões
+    path.addOval(Rect.fromCircle(center: Offset(captureX, ycapture), radius: buttonRadius));
+    path.addOval(Rect.fromCircle(center: Offset(flashX, yflash), radius: buttonRadius));
 
-// Exclui o círculo do botão de cancelamento
-final cancelButtonCenter = Offset(
-  size.width / 2 + buttonRadius * 2 + buttonPadding, // Reduz o espaçamento horizontal
-  size.height - buttonRadius - buttonPadding, // Posição vertical
-);
-path.addOval(Rect.fromCircle(center: cancelButtonCenter, radius: buttonRadius));
-
-    // Exclui o círculo do botão adicional (central)
-    final additionalButtonCenter = Offset(
-      size.width / 2, // Posição horizontal (centro)
-      size.height - buttonRadius - buttonPadding, // Posição vertical
-    );
-    path.addOval(Rect.fromCircle(center: additionalButtonCenter, radius: buttonRadius));
-
-    path.fillType = PathFillType.evenOdd;
-
+    // Desenha o path com furos
     canvas.drawPath(path, paint);
+
+    // Borda do retângulo
+    final borderPaint = Paint()
+      ..color = const Color.fromARGB(255, 8, 60, 102)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 4.0;
+    canvas.drawRRect(rrect, borderPaint);
+
+    // Bordas dos círculos dos botões (opcional)
+    final circleBorderPaint = Paint()
+      ..color = Colors.transparent
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2;
+    canvas.drawCircle(Offset(captureX, ycapture), buttonRadius, circleBorderPaint);
+    canvas.drawCircle(Offset(flashX, yflash), buttonRadius, circleBorderPaint);
   }
 
   @override
   bool shouldRepaint(CustomPainter oldDelegate) => false;
 }
+

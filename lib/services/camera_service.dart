@@ -1,5 +1,5 @@
 import 'package:camera/camera.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
+
 
 class CameraService {
   late CameraController _controller;
@@ -8,10 +8,6 @@ class CameraService {
 
   Future<bool> initializeCamera() async {
 
-     if (kIsWeb) {
-      print('Aviso: Funcionalidade de câmera pode ter limitações na web');
-      // Tratamento específico para web, se necessário
-    }
     try {
       final cameras = await availableCameras();
       if (cameras.isEmpty) {

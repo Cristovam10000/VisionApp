@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:vision_app/presentation/widgets/state/splash_screen.dart';
 import 'firebase_options.dart';
-import 'routes/app_routes.dart';
 import 'package:face_camera/face_camera.dart'; 
 import 'core/theme/app_theme.dart';
 import 'package:flutter/services.dart';
@@ -33,14 +33,14 @@ void main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'VisionApp',
+      home: SplashScreen(),
       theme: AppTheme.darkTheme,
       debugShowCheckedModeBanner: false,
-      initialRoute: AppRoutes.login, // Tela inicial é o login
-      onGenerateRoute: AppRoutes.generate,
     );
   }
 }
