@@ -280,33 +280,35 @@ class FaceOverlayPainter extends CustomPainter {
       ..color = const Color.fromARGB(255, 54, 54, 54).withOpacity(0.6)
       ..style = PaintingStyle.fill;
 
-    // Dimensões e posição do retângulo (ajuste para proporção da tela)
+    // Dimensões e posição do retângulo central
     final rectWidth = 282.0;
     final rectHeight = 452.0;
     final rectLeft = 47.0;
     final rectTop = 121.0;
     final borderRadius = 280.0;
 
-    // === Círculos para os botões ===
+    // Círculos para os botões
     final buttonRadius = 38.0;
     final ycapture = size.height - 62;
     final yflash = size.height - 62;
     final captureX = size.width / 1.715;
     final flashX = size.width / 3;
 
-    // Path cobrindo toda a tela
-    final path = Path()..addRect(Rect.fromLTWH(0, 0, size.width, size.height));
+    // === CRIA O PATH COM FUROS ===
+    final path = Path()
+      ..fillType = PathFillType.evenOdd
+      ..addRect(Rect.fromLTWH(0, 0, size.width, size.height)); // fundo todo
 
-    // Recorte do retângulo central com bordas arredondadas
+    // Furo retangular arredondado
     final rect = Rect.fromLTWH(rectLeft, rectTop, rectWidth, rectHeight);
     final rrect = RRect.fromRectAndRadius(rect, Radius.circular(borderRadius));
     path.addRRect(rrect);
 
-    // Recorte dos círculos dos botões (deixa "vazado" no overlay)
+    // Furos circulares dos botões
     path.addOval(Rect.fromCircle(center: Offset(captureX, ycapture), radius: buttonRadius));
     path.addOval(Rect.fromCircle(center: Offset(flashX, yflash), radius: buttonRadius));
 
-    path.fillType = PathFillType.evenOdd;
+    // Desenha o path com furos
     canvas.drawPath(path, paint);
 
     // Borda do retângulo
@@ -316,12 +318,11 @@ class FaceOverlayPainter extends CustomPainter {
       ..strokeWidth = 4.0;
     canvas.drawRRect(rrect, borderPaint);
 
-    // Bordas dos círculos dos botões
+    // Bordas dos círculos dos botões (opcional)
     final circleBorderPaint = Paint()
       ..color = Colors.transparent
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2;
-
     canvas.drawCircle(Offset(captureX, ycapture), buttonRadius, circleBorderPaint);
     canvas.drawCircle(Offset(flashX, yflash), buttonRadius, circleBorderPaint);
   }
@@ -329,4 +330,4 @@ class FaceOverlayPainter extends CustomPainter {
   @override
   bool shouldRepaint(CustomPainter oldDelegate) => false;
 }
-// ...existing code...
+

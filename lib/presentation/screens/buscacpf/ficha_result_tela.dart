@@ -1,10 +1,10 @@
-
 import 'package:flutter/material.dart';
 import 'package:vision_app/core/constants/app_colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:vision_app/presentation/screens/buscacpf/image_popup.dart';
 import 'package:vision_app/presentation/screens/buscacpf/tela_busca_cpf.dart';
 import 'package:vision_app/presentation/screens/home/tela_home.dart';
+import 'package:vision_app/presentation/widgets/state/navbar.dart';
 
 class FichaResultPage extends StatelessWidget {
   final Map<String, dynamic> ficha;
@@ -13,35 +13,40 @@ class FichaResultPage extends StatelessWidget {
 
   final bool fromAmbiguity;
 
-  const FichaResultPage({super.key, required this.ficha, required this.perfil, this.token, this.fromAmbiguity = false,});
+  const FichaResultPage({
+    super.key,
+    required this.ficha,
+    required this.perfil,
+    this.token,
+    this.fromAmbiguity = false,
+  });
 
-@override
-Widget build(BuildContext context) {
-  return Scaffold(
-    backgroundColor: ColorPalette.dark,
-    appBar: AppBar(
-      title: const Text('Ficha do Criminoso'),
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
       backgroundColor: ColorPalette.dark,
-      leading: IconButton(
-        icon: const Icon(Icons.arrow_back),
-        onPressed: () {
-          if (fromAmbiguity) {
-            // Volta para a TelaAmbiguidade
-            Navigator.pop(context);
-          } else {
-            // Volta para a TelaHome e limpa a pilha de navegação
-            Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(
-                builder: (context) => TelaHome(perfil: perfil),
-              ),
-              (Route<dynamic> route) => false,
-            );
-          }
-        },
+      appBar: AppBar(
+        backgroundColor: ColorPalette.dark,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            if (fromAmbiguity) {
+              // Volta para a TelaAmbiguidade
+              Navigator.pop(context);
+            } else {
+              // Volta para a TelaHome e limpa a pilha de navegação
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => TelaHome(perfil: perfil),
+                ),
+                (Route<dynamic> route) => false,
+              );
+            }
+          },
+        ),
       ),
-    ),
-    body:
+      body:
           ficha.isEmpty
               ? const Center(
                 child: Text(
@@ -122,7 +127,9 @@ Widget build(BuildContext context) {
                                 ),
                                 const SizedBox(width: 6),
                                 Text(
-                                  ficha['vulgo'] ?? 'Nenhum vulgo',
+                                  ficha['vulgo'] ??
+                                      ficha['ficha_criminal']?['vulgo'] ??
+                                      'Vulgo não encontrado',
                                   style: const TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.w500,
@@ -261,9 +268,8 @@ Widget build(BuildContext context) {
                   ),
                 ],
               ),
-             // bottomNavigationBar: CustomNavbar(currentIndex: 2, perfil: perfil), // <-- aqui você chama a Navbar
+      bottomNavigationBar: CustomNavbar(currentIndex: 2, perfil: perfil),
     );
-    
   }
 
   Widget infoLine(String label, dynamic value) {
@@ -346,8 +352,7 @@ class CrimeCard extends StatelessWidget {
             ),
           ],
         ),
-        
-    ),
+      ),
     );
   }
 }
