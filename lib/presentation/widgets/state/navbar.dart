@@ -18,16 +18,16 @@ class CustomNavbar extends StatelessWidget {
 
     switch (index) {
       case 0:
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (_) => TelaHome(perfil: perfil,)));
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => TelaHome(perfil: perfil,)));
         break;
       case 1:
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (_) => FaceCameraPage(perfil: perfil,)));
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => FaceCameraPage(perfil: perfil,)));
         break;
       case 2:
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (_) => TelaBuscaCpf(token: token, perfil: perfil)));
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => TelaBuscaCpf(token: token, perfil: perfil)));
         break;
     }
   }

@@ -24,6 +24,13 @@ class _TelaBuscaCpfState extends State<TelaBuscaCpf> {
   bool _isLoading = false;
   String? _cpfError; // <- Mensagem de erro
 
+  @override
+  void initState() {
+    super.initState();
+    _cpfCtrl.clear(); // Limpa o campo CPF ao entrar na tela
+  }
+
+
   Future<void> buscarFicha() async {
     final cpf = _cpfCtrl.text.trim();
 
@@ -57,10 +64,8 @@ class _TelaBuscaCpfState extends State<TelaBuscaCpf> {
     try {
       final ficha = await _uploadService.buscarFichaPorCpf(cpf, widget.token!);
       if (!mounted) return;
-
-      Navigator.pop(context); // Fecha o loading
-
-      Navigator.push(
+      
+      Navigator.pushReplacement(
         context,
         MaterialPageRoute(
           builder: (_) => FichaResultPage(ficha: ficha, perfil: widget.perfil),
@@ -73,11 +78,13 @@ class _TelaBuscaCpfState extends State<TelaBuscaCpf> {
         await showNadaConstaDialog(context);
 
         if (mounted) {
-          Navigator.pushReplacement(
+          Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(
               builder: (context) => TelaHome(perfil: widget.perfil),
             ),
+            (Route<dynamic> route) => false, // Remove todas
+
           );
         }
       }
@@ -91,8 +98,18 @@ class _TelaBuscaCpfState extends State<TelaBuscaCpf> {
       backgroundColor: const Color(0xFF0F1218),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: const BackButton(color: Colors.white),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => TelaHome(perfil: widget.perfil),
+                ),
+              );
+
+          },
+        ),
       ),
       body: Column(
         children: [

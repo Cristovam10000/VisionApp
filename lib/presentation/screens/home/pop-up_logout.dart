@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:vision_app/presentation/screens/login/tela_login.dart';
 import '../../widgets/state/state.dart';
-import '../../../routes/app_routes.dart';
+
 
 
 void mostrarDialogoLogout(BuildContext context) {
@@ -60,10 +61,11 @@ void mostrarDialogoLogout(BuildContext context) {
                   color: Colors.white,) , 
                   onPressed: () {
                   Navigator.of(context).pop();
-                  Navigator.pushNamedAndRemoveUntil(
+                  Navigator.push(
                     context,
-                    AppRoutes.login,
-                    (route) => false,
+                    MaterialPageRoute(
+                      builder: (context) => TelaLogin()
+                    ),
                   );
                 },)
             ),

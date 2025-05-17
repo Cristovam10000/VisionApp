@@ -3,6 +3,7 @@ import 'package:vision_app/presentation/screens/home/tela_home.dart';
 import 'package:vision_app/presentation/widgets/state/loading_dialog.dart';
 import 'package:vision_app/presentation/widgets/state/state.dart';
 import 'package:vision_app/core/constants/app_colors.dart';
+import 'package:vision_app/storage/local_storage.dart';
 import '../../../services/auth_firebase.dart';
 import '../../../services/auth_backend.dart';
 import '../../../services/auth_token_service.dart';
@@ -95,6 +96,9 @@ void _fazerLogin() async {
 
       await AuthTokenService().saveToken(backendJwt);
 
+      await LocalStorageService().saveLoginData(backendJwt, cpf);
+
+
       Navigator.pop(context); // Fecha o loading antes de navegar
 
       Navigator.pushAndRemoveUntil(
@@ -110,6 +114,8 @@ void _fazerLogin() async {
       );
     }
   }
+
+
 
   @override
   Widget build(BuildContext context) {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:face_camera/face_camera.dart';
 import 'package:vision_app/presentation/screens/camera/popup_dialog_error_foto.dart';
+import 'package:vision_app/presentation/screens/home/tela_home.dart';
 import 'package:vision_app/presentation/widgets/state/loading_dialog.dart';
 import 'dart:io';
 import '../../../services/auth_token_service.dart';
@@ -28,6 +29,7 @@ class _FaceCameraPageState extends State<FaceCameraPage> {
   @override
   void initState() {
     super.initState();
+    _capturedImage= null;
     _controller = FaceCameraController(
       autoCapture: false,
       defaultFlashMode: CameraFlashMode.off,
@@ -87,10 +89,24 @@ Future<void> _handleConfirmUpload() async {
     if (token != null) {
       final resultado = await _uploadService.enviarImagem(_capturedImage!, token);
 
-      if (!mounted) return;
+      Navigator.pop(context);
 
-      Navigator.pop(context); // Fecha o diálogo de loading
+      if (resultado['statusCode'] == 200) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ResultadoPage(
+              resultado: resultado['body'],
+              perfil: widget.perfil,
+            ),
+          ),
+        );
+      } else {
+        _showMessage('❌ Erro ao enviar imagem. Código: ${resultado['statusCode']}', Colors.red);
+      }
 
+
+      // Se tudo certo, segue normalmente
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -104,22 +120,14 @@ Future<void> _handleConfirmUpload() async {
         setState(() => _capturedImage = null);
       });
     } else {
-      Navigator.pop(context); // Fecha o diálogo de loading
+      Navigator.pop(context);
       _showMessage('❌ Token não encontrado', Colors.red);
+
+      
     }
   } catch (e) {
-    Navigator.pop(context); // Fecha o diálogo de loading
-
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ResultadoPage(
-          resultado: {'erro': e.toString()},
-          perfil: widget.perfil,
-        ),
-      ),
-    );
-    _capturedImage = null;
+    Navigator.pop(context);
+    _showMessage('❌ Erro: ${e.toString()}', Colors.red);
   } finally {
     setState(() => _isProcessing = false);
   }
@@ -144,9 +152,20 @@ Future<void> _handleConfirmUpload() async {
     return Scaffold(
       appBar: _capturedImage == null
         ? AppBar(
-            backgroundColor: Colors.transparent,
-            elevation: 0, 
-          )
+        backgroundColor: Colors.transparent,
+        // leading: IconButton(
+        //   icon: const Icon(Icons.arrow_back),
+        //   onPressed: () {
+        //       Navigator.pushAndRemoveUntil(
+        //         context,
+        //         MaterialPageRoute(builder: (context) => TelaHome(perfil: widget.perfil,)),
+        //         (Route<dynamic> route) => false, // Remove todas
+        //       );
+
+
+        //   },
+        // ),
+      )
         : null,
       body: Stack(
         fit: StackFit.expand,

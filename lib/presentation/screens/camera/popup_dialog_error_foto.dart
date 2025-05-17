@@ -42,14 +42,15 @@ Future<void> showErrorFotoDialog(BuildContext context, Map<String, dynamic> perf
                 child: Button(text: "Ok", 
                 onPressed: () {
                 
-                  Navigator.pop(context, true);
                     
-                  Navigator.push(
+                  Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(
                       builder: (context) => FaceCameraPage(perfil: perfil),
                     ),
+                    (Route<dynamic> route) => false, // Remove todas
                   );
+                  
                     // true = sinal para limpar imagem
 
                   }

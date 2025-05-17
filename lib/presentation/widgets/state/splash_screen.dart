@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:vision_app/presentation/screens/home/tela_home.dart';
 import 'package:vision_app/presentation/screens/login/tela_login.dart';
+import 'package:vision_app/services/auth_backend.dart';
+import 'package:vision_app/storage/local_storage.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -10,8 +13,9 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
+    _checkLogin();
     // Espera 3 segundos e navega para a tela de login
-    Future.delayed(Duration(seconds: 4), () {
+    Future.delayed(Duration(seconds: 2), () {
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (_) => TelaLogin()),
@@ -19,6 +23,21 @@ class _SplashScreenState extends State<SplashScreen> {
       );
     });
   }
+
+  void _checkLogin() async {
+  final token = await LocalStorageService().getToken();
+  if (token != null) {
+    final perfil = await getUserProfile(token);
+    if (perfil != null) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (_) => TelaHome(perfil: perfil),
+        ),
+      );
+    }
+  }
+}
 
   @override
   Widget build(BuildContext context) {

@@ -1,41 +1,47 @@
+
 import 'package:flutter/material.dart';
 import 'package:vision_app/core/constants/app_colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:vision_app/presentation/screens/buscacpf/image_popup.dart';
+import 'package:vision_app/presentation/screens/buscacpf/tela_busca_cpf.dart';
 import 'package:vision_app/presentation/screens/home/tela_home.dart';
-import 'package:vision_app/presentation/widgets/state/navbar.dart';
 
 class FichaResultPage extends StatelessWidget {
   final Map<String, dynamic> ficha;
   final Map<String, dynamic> perfil;
+  final String? token;
 
-  const FichaResultPage({super.key, required this.ficha, required this.perfil});
+  final bool fromAmbiguity;
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  const FichaResultPage({super.key, required this.ficha, required this.perfil, this.token, this.fromAmbiguity = false,});
+
+@override
+Widget build(BuildContext context) {
+  return Scaffold(
+    backgroundColor: ColorPalette.dark,
+    appBar: AppBar(
+      title: const Text('Ficha do Criminoso'),
       backgroundColor: ColorPalette.dark,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
+      leading: IconButton(
+        icon: const Icon(Icons.arrow_back),
+        onPressed: () {
+          if (fromAmbiguity) {
+            // Volta para a TelaAmbiguidade
+            Navigator.pop(context);
+          } else {
+            // Volta para a TelaHome e limpa a pilha de navegação
             Navigator.pushAndRemoveUntil(
-              // ignore: use_build_context_synchronously
               context,
               MaterialPageRoute(
-                builder:
-                    (context) =>
-                        TelaHome(perfil: perfil), // Passa o Map diretamente
+                builder: (context) => TelaHome(perfil: perfil),
               ),
-              (Route<dynamic> route) =>
-                  false, // Remove todas as rotas anteriores
+              (Route<dynamic> route) => false,
             );
-          },
-        ),
+          }
+        },
       ),
-
-      body:
+    ),
+    body:
           ficha.isEmpty
               ? const Center(
                 child: Text(
@@ -255,7 +261,7 @@ class FichaResultPage extends StatelessWidget {
                   ),
                 ],
               ),
-              bottomNavigationBar: CustomNavbar(currentIndex: 2, perfil: perfil), // <-- aqui você chama a Navbar
+             // bottomNavigationBar: CustomNavbar(currentIndex: 2, perfil: perfil), // <-- aqui você chama a Navbar
     );
     
   }
@@ -340,7 +346,8 @@ class CrimeCard extends StatelessWidget {
             ),
           ],
         ),
-      ),
+        
+    ),
     );
   }
 }

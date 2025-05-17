@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:vision_app/routes/splash_screen.dart';
+import 'package:vision_app/presentation/widgets/state/splash_screen.dart';
 import 'firebase_options.dart';
 import 'package:face_camera/face_camera.dart'; 
 import 'core/theme/app_theme.dart';
@@ -32,6 +32,7 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
+
 
   @override
   Widget build(BuildContext context) {
