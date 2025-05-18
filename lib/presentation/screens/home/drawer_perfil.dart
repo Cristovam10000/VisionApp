@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:vision_app/core/constants/app_texts.dart';
 import 'package:vision_app/presentation/screens/home/pop-up_logout.dart';
+import 'package:vision_app/presentation/widgets/state/infotextline.dart';
 
 class CustomDrawer extends StatelessWidget {
   final String nomeCompleto;
@@ -98,18 +99,4 @@ class CustomDrawer extends StatelessWidget {
     );
   }
 
-  Widget infoTextLine(String label, String value) {
-    return RichText(
-      text: TextSpan(
-        style: const TextStyle(fontSize: 18, color: Colors.white),
-        children: [
-          TextSpan(
-            text: label,
-            style: const TextStyle(fontWeight: FontWeight.bold),
-          ),
-          TextSpan(text: value),
-        ],
-      ),
-    );
-  }
 }

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:vision_app/presentation/screens/home/tela_home.dart';
 import 'package:vision_app/presentation/screens/login/tela_login.dart';
 import 'package:vision_app/services/auth_backend_service.dart';
-import 'package:vision_app/storage/local_storage.dart';
+import 'package:vision_app/services/local_storage_service.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
