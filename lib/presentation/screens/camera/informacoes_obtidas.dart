@@ -35,7 +35,6 @@ class _ResultadoPageState extends State<ResultadoPage> {
     final statusFace = widget.resultado['status']?.toString().toLowerCase();
     final statusCpf = widget.resultado['detail']?.toString().toLowerCase();
     final statusErro = widget.resultado['erro']?.toString();
-    final opcoes = widget.resultado['opcoes'];
 
     if (statusFace == 'nenhuma similaridade forte' ||
         statusCpf == 'cpf não encontrado na tabela identidade.') {
@@ -77,8 +76,7 @@ class _ResultadoPageState extends State<ResultadoPage> {
       }
 
       if (opcoes.isNotEmpty) {
-        print("teste:");
-        print(opcoes);
+
         final opcaoSelecionada = await Navigator.push(
           context,
           MaterialPageRoute(
@@ -123,8 +121,6 @@ class _ResultadoPageState extends State<ResultadoPage> {
       'crimes': crimes,
     };
 
-    print("teste");
-    print(ficha);
 
     return FichaResultPage(ficha: ficha, perfil: widget.perfil);
   }

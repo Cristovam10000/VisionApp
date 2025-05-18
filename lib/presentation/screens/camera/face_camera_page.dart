@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:face_camera/face_camera.dart';
 import 'package:vision_app/presentation/screens/camera/popup_dialog_error_foto.dart';
-import 'package:vision_app/presentation/screens/home/tela_home.dart';
 import 'package:vision_app/presentation/widgets/state/loading_dialog.dart';
 import 'dart:io';
 import '../../../services/auth_token_service.dart';
