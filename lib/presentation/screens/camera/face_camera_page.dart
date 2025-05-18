@@ -271,7 +271,7 @@ class FaceOverlay extends StatelessWidget {
   }
 }
 
-// ...existing code...
+
 class FaceOverlayPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
