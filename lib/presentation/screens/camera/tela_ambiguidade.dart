@@ -87,20 +87,24 @@ class AmbiguityPage extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => FichaResultPage(
-                              ficha: {
-                                'cpf': identidade['cpf'],
-                                'nome': identidade['nome'],
-                                'nome_mae': identidade['nome_mae'],
-                                'nome_pai': identidade['nome_pai'],
-                                'data_nascimento': identidade['data_nascimento'],
-                                'foto_url': identidade['url_face'],
-                                'vulgo': opcao['ficha_criminal']['vulgo'],
-                                'crimes': opcao['crimes'],
-                              },
-                              perfil: perfil,
-                              fromAmbiguity: true,
-                            ),
+                            builder:
+                                (context) => FichaResultPage(
+                                  ficha: {
+                                    'cpf': opcao['identidade']['cpf'],
+                                    'nome': opcao['identidade']['nome'],
+                                    'nome_mae': opcao['identidade']['nome_mae'],
+                                    'nome_pai': opcao['identidade']['nome_pai'],
+                                    'data_nascimento':
+                                        opcao['identidade']['data_nascimento'],
+                                    'foto_url': opcao['identidade']['url_face'],
+                                    'vulgo':
+                                        opcao['ficha_criminal']['ficha_criminal']['vulgo'],
+                                    'crimes':
+                                        opcao['crimes'], // ou opcao['ficha_criminal']['crimes']
+                                  },
+                                  perfil: perfil,
+                                  fromAmbiguity: true,
+                                ),
                           ),
                         );
                       },
@@ -111,9 +115,7 @@ class AmbiguityPage extends StatelessWidget {
             ),
           ],
         ),
-        
       ),
-
     );
   }
 }

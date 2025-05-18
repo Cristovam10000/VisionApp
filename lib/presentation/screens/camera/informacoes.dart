@@ -77,6 +77,8 @@ class _ResultadoPageState extends State<ResultadoPage> {
       }
 
       if (opcoes.isNotEmpty) {
+        print("teste:");
+        print(opcoes);
         final opcaoSelecionada = await Navigator.push(
           context,
           MaterialPageRoute(
@@ -84,6 +86,7 @@ class _ResultadoPageState extends State<ResultadoPage> {
                 (context) =>
                     AmbiguityPage(opcoes: opcoes, perfil: widget.perfil),
           ),
+          
         );
 
         if (opcaoSelecionada != null) {
@@ -119,6 +122,9 @@ class _ResultadoPageState extends State<ResultadoPage> {
       'vulgo': fichaInfo['vulgo'],
       'crimes': crimes,
     };
+
+    print("teste");
+    print(ficha);
 
     return FichaResultPage(ficha: ficha, perfil: widget.perfil);
   }
