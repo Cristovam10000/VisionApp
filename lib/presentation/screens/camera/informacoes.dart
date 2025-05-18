@@ -21,8 +21,6 @@ class ResultadoPage extends StatefulWidget {
 }
 
 class _ResultadoPageState extends State<ResultadoPage> {
-
-
   @override
   void initState() {
     super.initState();
@@ -32,12 +30,12 @@ class _ResultadoPageState extends State<ResultadoPage> {
   }
 
   void _verificarResultado() async {
-    final statusAmbiguidade = widget.resultado['status']?.toString().toLowerCase();
+    final statusAmbiguidade =
+        widget.resultado['status']?.toString().toLowerCase();
     final statusFace = widget.resultado['status']?.toString().toLowerCase();
     final statusCpf = widget.resultado['detail']?.toString().toLowerCase();
     final statusErro = widget.resultado['erro']?.toString();
     final opcoes = widget.resultado['opcoes'];
-
 
     if (statusFace == 'nenhuma similaridade forte' ||
         statusCpf == 'cpf não encontrado na tabela identidade.') {
@@ -65,42 +63,29 @@ class _ResultadoPageState extends State<ResultadoPage> {
         );
       }
     } else if (statusAmbiguidade == 'ambíguo') {
-      // Extrai todas as opções encontradas dinamicamente
-      final opcoes = [];
-      if (widget.resultado['primeiro_encontrado'] != null) {
+      final opcoes = <Map<String, dynamic>>[];
+
+      final List<dynamic> pessoas =
+          widget.resultado['possiveis_identidades'] ?? [];
+
+      for (final pessoa in pessoas) {
         opcoes.add({
-          'identidade': widget.resultado['primeiro_encontrado']['identidade'],
-          'ficha_criminal':
-              widget.resultado['primeiro_encontrado']['ficha_criminal'],
-          'crimes': widget.resultado['primeiro_encontrado']['crimes'],
-        });
-      }
-      if (widget.resultado['segundo_encontrado'] != null) {
-        opcoes.add({
-          'identidade': widget.resultado['segundo_encontrado']['identidade'],
-          'ficha_criminal':
-              widget.resultado['segundo_encontrado']['ficha_criminal'],
-          'crimes': widget.resultado['segundo_encontrado']['crimes'],
-        });
-      }
-      if (widget.resultado['terceiro_encontrado'] != null) {
-        opcoes.add({
-          'identidade': widget.resultado['terceiro_encontrado']['identidade'],
-          'ficha_criminal':
-              widget.resultado['terceiro_encontrado']['ficha_criminal'],
-          'crimes': widget.resultado['terceiro_encontrado']['crimes'],
+          'identidade': pessoa['identidade'],
+          'ficha_criminal': pessoa['ficha_criminal'],
+          'crimes': pessoa['ficha_criminal']?['crimes'] ?? [],
         });
       }
 
-      // Verifica se há opções para exibir
       if (opcoes.isNotEmpty) {
-        // Navega diretamente para a página de ambiguidade
         final opcaoSelecionada = await Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => AmbiguityPage(opcoes: opcoes, perfil: widget.perfil,),
+            builder:
+                (context) =>
+                    AmbiguityPage(opcoes: opcoes, perfil: widget.perfil),
           ),
         );
+
         if (opcaoSelecionada != null) {
           Navigator.push(
             context,
