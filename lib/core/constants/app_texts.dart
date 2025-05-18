@@ -5,5 +5,5 @@ class StandardTexts {
   // Define o título do aplicativo como "VisionApp".
 
   static const String appSubtitle =
-      'In sit amet lorem maximus, rhoncus dui vel, pharetra magna. Mauris  ornare quis nibh et fringilla. Nulla sollicitudin maximus sem. ';
+      'Abordagens mais seguras com reconhecimento facial inteligente. Tecnologias que apoiam o trabalho policial com precisão e agilidade.';
 }

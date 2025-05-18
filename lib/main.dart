@@ -32,11 +32,11 @@ void main() async {
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
 
   // Inicialização do aplicativo
-  runApp(const MyApp());
+  runApp(const VisionApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class VisionApp extends StatelessWidget {
+  const VisionApp({super.key});
 
 
   @override

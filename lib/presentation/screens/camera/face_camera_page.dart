@@ -154,18 +154,6 @@ Future<void> _handleConfirmUpload() async {
       appBar: _capturedImage == null
         ? AppBar(
         backgroundColor: Colors.transparent,
-        // leading: IconButton(
-        //   icon: const Icon(Icons.arrow_back),
-        //   onPressed: () {
-        //       Navigator.pushAndRemoveUntil(
-        //         context,
-        //         MaterialPageRoute(builder: (context) => TelaHome(perfil: widget.perfil,)),
-        //         (Route<dynamic> route) => false, // Remove todas
-        //       );
-
-
-        //   },
-        // ),
       )
         : null,
       body: Stack(

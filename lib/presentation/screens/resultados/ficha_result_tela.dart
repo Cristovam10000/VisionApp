@@ -270,15 +270,6 @@ class FichaResultPage extends StatelessWidget {
     );
   }
 
-  Widget infoLine(String label, dynamic value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      child: Text(
-        '$label: ${value ?? 'Não informado'}',
-        style: const TextStyle(color: Colors.white, fontSize: 16),
-      ),
-    );
-  }
 }
 
 class CrimeCard extends StatelessWidget {

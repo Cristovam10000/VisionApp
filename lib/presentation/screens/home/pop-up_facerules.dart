@@ -2,18 +2,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:vision_app/presentation/screens/camera/face_camera_page.dart';
+import 'package:vision_app/presentation/widgets/state/infotextline.dart';
 import 'package:vision_app/presentation/widgets/state/state.dart';
 
-
-Widget infoText(String text) {
-  return Row(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Text("• ", style: TextStyle(fontSize: 16, color: Color.fromARGB(255, 25, 124, 238), fontWeight: FontWeight.bold)),
-      Expanded(child: Text(text, style: TextStyle(fontSize: 16, color: Colors.black))),
-    ],
-  );
-}
 
 void mostrarPopUpRegrasFace({
   required BuildContext context,
