@@ -6,7 +6,7 @@ import 'package:vision_app/presentation/widgets/state/loading_dialog.dart';
 import 'dart:io';
 import '../../../services/auth_token_service.dart';
 import '../../../services/upload_service.dart';
-import '../camera/informacoes.dart';
+import 'informacoes_obtidas.dart';
 
 class FaceCameraPage extends StatefulWidget {
   final Map<String, dynamic> perfil;

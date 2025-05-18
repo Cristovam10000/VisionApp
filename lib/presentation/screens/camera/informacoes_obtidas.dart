@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:vision_app/presentation/screens/buscacpf/ficha_result_tela.dart';
+import 'package:vision_app/presentation/screens/resultados/ficha_result_tela.dart';
 import 'package:vision_app/presentation/screens/camera/face_camera_page.dart';
 import 'package:vision_app/presentation/screens/camera/popup_dialog_error_foto.dart';
 import 'package:vision_app/presentation/screens/camera/popup_dialog_nada_consta.dart';

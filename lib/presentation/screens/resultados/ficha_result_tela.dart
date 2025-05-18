@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:vision_app/core/constants/app_colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:vision_app/presentation/screens/buscacpf/image_popup.dart';
-import 'package:vision_app/presentation/screens/buscacpf/tela_busca_cpf.dart';
+import 'package:vision_app/presentation/screens/resultados/image_popup.dart';
 import 'package:vision_app/presentation/screens/home/tela_home.dart';
 import 'package:vision_app/presentation/widgets/state/navbar.dart';
 

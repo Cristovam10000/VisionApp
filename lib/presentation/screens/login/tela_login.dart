@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vision_app/core/constants/app_texts.dart';
-import 'widgetslogin.dart';
+import 'fazer_login.dart';
 
 class TelaLogin extends StatelessWidget {
   const TelaLogin({super.key});

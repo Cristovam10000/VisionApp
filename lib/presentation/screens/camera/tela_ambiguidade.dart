@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vision_app/presentation/screens/home/tela_home.dart';
-import 'package:vision_app/presentation/screens/buscacpf/ficha_result_tela.dart';
+import 'package:vision_app/presentation/screens/resultados/ficha_result_tela.dart';
 
 class AmbiguityPage extends StatelessWidget {
   final Map<String, dynamic> perfil;
