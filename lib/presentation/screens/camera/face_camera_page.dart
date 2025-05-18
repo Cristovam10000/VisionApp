@@ -30,14 +30,14 @@ class _FaceCameraPageState extends State<FaceCameraPage> {
   @override
   void initState() {
     super.initState();
-    _capturedImage= null;
+    _capturedImage = null;
     _controller = FaceCameraController(
       autoCapture: false,
       defaultFlashMode: CameraFlashMode.off,
-      defaultCameraLens: CameraLens.back,
+      defaultCameraLens: CameraLens.back, 
       enableAudio: false,
       onCapture: (file) {
-        if (file == null || _isProcessing  ) return;
+        if (file == null || _isProcessing) return;
         setState(() {
           _capturedImage = file;
         });
@@ -45,117 +45,110 @@ class _FaceCameraPageState extends State<FaceCameraPage> {
       onFaceDetected: (face) {
         setState(() {
           // _isFaceVisible = face != null;
-          _isFaceWellPositioned = face != null && _isFaceCentered(face.boundingBox, MediaQuery.of(context).size);
-          
-
+          _isFaceWellPositioned =
+              face != null &&
+              _isFaceCentered(face.boundingBox, MediaQuery.of(context).size);
         });
       },
     );
-
-
-    
   }
-
 
   bool _isFaceCentered(Rect boundingBox, Size screenSize) {
-  final centerX = boundingBox.center.dx;
-  final centerY = boundingBox.center.dy;
+    final centerX = boundingBox.center.dx;
+    final centerY = boundingBox.center.dy;
 
-  final screenCenterX = screenSize.width / 2;
-  final screenCenterY = screenSize.height / 2.7;
+    final screenCenterX = screenSize.width / 2;
+    final screenCenterY = screenSize.height / 2.7;
 
-  const toleranceX = 60; // ajuste fino aqui
-  const toleranceY = 80;
+    const toleranceX = 60; // ajuste fino aqui
+    const toleranceY = 80;
 
-  return (centerX - screenCenterX).abs() < toleranceX &&
-         (centerY - screenCenterY).abs() < toleranceY;
-}
-
-
-Future<void> _handleConfirmUpload() async {
-  if (_capturedImage == null || _isProcessing || !_isFaceWellPositioned) {
-    if (!mounted) return;
-    _showMessage(
-      '❌ Rosto não encontrado ou centralizado. Tente novamente.',
-      const Color.fromARGB(255, 185, 134, 130),
-    );
-    return;
+    return (centerX - screenCenterX).abs() < toleranceX &&
+        (centerY - screenCenterY).abs() < toleranceY;
   }
 
-  setState(() => _isProcessing = true);
-  showLoadingDialog(context, mensagem: 'Enviando imagem e aguardando resultado...');
+  Future<void> _handleConfirmUpload() async {
+    if (_capturedImage == null || _isProcessing || !_isFaceWellPositioned) {
+      if (!mounted) return;
+      _showMessage(
+        '❌ Rosto não encontrado ou centralizado. Tente novamente.',
+        const Color.fromARGB(255, 185, 134, 130),
+      );
+      return;
+    }
 
-  try {
-    final token = AuthTokenService().token;
-    if (token != null) {
-      final resultado = await _uploadService.enviarImagem(_capturedImage!, token);
+    setState(() => _isProcessing = true);
+    showLoadingDialog(
+      context,
+      mensagem: 'Enviando imagem e aguardando resultado...',
+    );
 
-      Navigator.pop(context);
+    try {
+      final token = AuthTokenService().token;
+      if (token != null) {
+        final resultado = await _uploadService.enviarImagem(
+          _capturedImage!,
+          token,
+        );
 
-      if (resultado['statusCode'] == 200) {
+        Navigator.pop(context);
+
+        if (resultado['statusCode'] == 200) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder:
+                  (context) => ResultadoPage(
+                    resultado: resultado['body'],
+                    perfil: widget.perfil,
+                  ),
+            ),
+          );
+        } else {
+          _showMessage(
+            '❌ Erro ao enviar imagem. Código: ${resultado['statusCode']}',
+            Colors.red,
+          );
+        }
+
+        // Se tudo certo, segue normalmente
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => ResultadoPage(
-              resultado: resultado['body'],
-              perfil: widget.perfil,
-            ),
+            builder:
+                (context) =>
+                    ResultadoPage(resultado: resultado, perfil: widget.perfil),
           ),
-        );
+        ).then((_) async {
+          await _controller.startImageStream();
+          setState(() => _capturedImage = null);
+        });
       } else {
-        _showMessage('❌ Erro ao enviar imagem. Código: ${resultado['statusCode']}', Colors.red);
+        Navigator.pop(context);
+        _showMessage('❌ Token não encontrado', Colors.red);
       }
-
-
-      // Se tudo certo, segue normalmente
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => ResultadoPage(
-            resultado: resultado,
-            perfil: widget.perfil,
-          ),
-        ),
-      ).then((_) async {
-        await _controller.startImageStream();
-        setState(() => _capturedImage = null);
-      });
-    } else {
+    } catch (e) {
       Navigator.pop(context);
-      _showMessage('❌ Token não encontrado', Colors.red);
-
-      
+      _showMessage('❌ Erro: ${e.toString()}', Colors.red);
+    } finally {
+      setState(() => _isProcessing = false);
     }
-  } catch (e) {
-    Navigator.pop(context);
-    _showMessage('❌ Erro: ${e.toString()}', Colors.red);
-  } finally {
-    setState(() => _isProcessing = false);
   }
-}
 
+  void _showMessage(String message, Color color) {
+    if (!mounted) return;
 
-
- void _showMessage(String message, Color color) {
-  if (!mounted) return;
-
-  Navigator.pop(context, true);
-  showErrorFotoDialog(context, widget.perfil);
-
-  
-
-}
-
+    Navigator.pop(context, true);
+    showErrorFotoDialog(context, widget.perfil);
+  }
 
   @override
   Widget build(BuildContext context) {
-    
     return Scaffold(
-      appBar: _capturedImage == null
-        ? AppBar(
-        backgroundColor: Colors.transparent,
-      )
-        : null,
+      appBar:
+          _capturedImage == null
+              ? AppBar(backgroundColor: Colors.transparent)
+              : null,
       body: Stack(
         fit: StackFit.expand,
         children: [
@@ -163,10 +156,7 @@ Future<void> _handleConfirmUpload() async {
             Stack(
               fit: StackFit.expand,
               children: [
-                Image.file(
-                  _capturedImage!,
-                  fit: BoxFit.cover,
-                ),
+                Image.file(_capturedImage!, fit: BoxFit.cover),
                 Positioned(
                   bottom: 72,
                   left: 0,
@@ -174,32 +164,45 @@ Future<void> _handleConfirmUpload() async {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor:  const Color(0xFF034DA2),
+                          backgroundColor: const Color(0xFF034DA2),
                           shape: const CircleBorder(),
                           padding: const EdgeInsets.all(16),
                         ),
                         onPressed: _handleConfirmUpload,
-                        
-                        child: const Icon(Icons.check, color: Color.fromARGB(255, 255, 255, 255), size: 32),
+
+                        child: const Icon(
+                          Icons.check,
+                          color: Color.fromARGB(255, 255, 255, 255),
+                          size: 32,
+                        ),
                       ),
                       const SizedBox(width: 64),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color.fromARGB(255, 224, 10, 10),
+                          backgroundColor: const Color.fromARGB(
+                            255,
+                            224,
+                            10,
+                            10,
+                          ),
                           shape: const CircleBorder(),
                           padding: const EdgeInsets.all(16),
                         ),
                         onPressed: () async {
-                          await _controller.startImageStream(); // reinicia a câmera
-                          setState(() => _capturedImage = null); // remove a imagem
-
+                          await _controller
+                              .startImageStream(); // reinicia a câmera
+                          setState(
+                            () => _capturedImage = null,
+                          ); // remove a imagem
                         },
-                        child: const Icon(Icons.close, color: Colors.white, size: 32),
+                        child: const Icon(
+                          Icons.close,
+                          color: Colors.white,
+                          size: 32,
+                        ),
                       ),
-
                     ],
                   ),
                 ),
@@ -214,29 +217,15 @@ Future<void> _handleConfirmUpload() async {
                 fontSize: 40,
                 color: Color.fromARGB(255, 255, 255, 255),
               ),
-              messageBuilder: (context, face) {
-                
-                return const SizedBox.shrink();
-              },
             ),
 
           if (_capturedImage == null) const FaceOverlay(),
 
-          if (_isProcessing)
-            const Center(child: CircularProgressIndicator()),
+          if (_isProcessing) const Center(child: CircularProgressIndicator()),
         ],
       ),
     );
   }
-
-  // Widget _message(String msg) => Padding(
-  //       padding: const EdgeInsets.all(16),
-  //       child: Text(
-  //         msg,
-  //         textAlign: TextAlign.center,
-  //         style: const TextStyle(fontSize: 30, color: Color.fromARGB(255, 255, 0, 0), fontWeight: FontWeight.bold),
-  //       ),
-  //     );
 
   @override
   void dispose() {
@@ -252,22 +241,18 @@ class FaceOverlay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Positioned.fill(
-      child: IgnorePointer(
-        child: CustomPaint(
-          painter: FaceOverlayPainter(),
-        ),
-      ),
+      child: IgnorePointer(child: CustomPaint(painter: FaceOverlayPainter())),
     );
   }
 }
 
-
 class FaceOverlayPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = const Color.fromARGB(255, 54, 54, 54).withOpacity(0.6)
-      ..style = PaintingStyle.fill;
+    final paint =
+        Paint()
+          ..color = const Color.fromARGB(255, 54, 54, 54).withOpacity(0.6)
+          ..style = PaintingStyle.fill;
 
     // Dimensões e posição do retângulo central
     final rectWidth = 282.0;
@@ -284,9 +269,10 @@ class FaceOverlayPainter extends CustomPainter {
     final flashX = size.width / 3;
 
     // === CRIA O PATH COM FUROS ===
-    final path = Path()
-      ..fillType = PathFillType.evenOdd
-      ..addRect(Rect.fromLTWH(0, 0, size.width, size.height)); // fundo todo
+    final path =
+        Path()
+          ..fillType = PathFillType.evenOdd
+          ..addRect(Rect.fromLTWH(0, 0, size.width, size.height)); // fundo todo
 
     // Furo retangular arredondado
     final rect = Rect.fromLTWH(rectLeft, rectTop, rectWidth, rectHeight);
@@ -294,29 +280,38 @@ class FaceOverlayPainter extends CustomPainter {
     path.addRRect(rrect);
 
     // Furos circulares dos botões
-    path.addOval(Rect.fromCircle(center: Offset(captureX, ycapture), radius: buttonRadius));
-    path.addOval(Rect.fromCircle(center: Offset(flashX, yflash), radius: buttonRadius));
+    path.addOval(
+      Rect.fromCircle(center: Offset(captureX, ycapture), radius: buttonRadius),
+    );
+    path.addOval(
+      Rect.fromCircle(center: Offset(flashX, yflash), radius: buttonRadius),
+    );
 
     // Desenha o path com furos
     canvas.drawPath(path, paint);
 
     // Borda do retângulo
-    final borderPaint = Paint()
-      ..color = const Color.fromARGB(255, 8, 60, 102)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 4.0;
+    final borderPaint =
+        Paint()
+          ..color = const Color.fromARGB(255, 8, 60, 102)
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 4.0;
     canvas.drawRRect(rrect, borderPaint);
 
     // Bordas dos círculos dos botões (opcional)
-    final circleBorderPaint = Paint()
-      ..color = Colors.transparent
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 2;
-    canvas.drawCircle(Offset(captureX, ycapture), buttonRadius, circleBorderPaint);
+    final circleBorderPaint =
+        Paint()
+          ..color = Colors.transparent
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 2;
+    canvas.drawCircle(
+      Offset(captureX, ycapture),
+      buttonRadius,
+      circleBorderPaint,
+    );
     canvas.drawCircle(Offset(flashX, yflash), buttonRadius, circleBorderPaint);
   }
 
   @override
   bool shouldRepaint(CustomPainter oldDelegate) => false;
 }
-
