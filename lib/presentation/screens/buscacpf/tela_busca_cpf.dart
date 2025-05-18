@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:vision_app/presentation/screens/camera/popup_dialog_nada_consta.dart';
@@ -12,7 +14,7 @@ class TelaBuscaCpf extends StatefulWidget {
   final String? token;
   final Map<String, dynamic> perfil;
 
-  const TelaBuscaCpf({Key? key, required this.token, required this.perfil}) : super(key: key);
+  const TelaBuscaCpf({super.key, required this.token, required this.perfil});
 
   @override
   _TelaBuscaCpfState createState() => _TelaBuscaCpfState();
@@ -21,7 +23,7 @@ class TelaBuscaCpf extends StatefulWidget {
 class _TelaBuscaCpfState extends State<TelaBuscaCpf> {
   final _cpfCtrl = TextEditingController();
   final _uploadService = UploadService();
-  bool _isLoading = false;
+  final bool _isLoading = false;
   String? _cpfError; // <- Mensagem de erro
 
   @override

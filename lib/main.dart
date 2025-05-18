@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:vision_app/presentation/widgets/state/splash_screen.dart';
@@ -13,14 +14,18 @@ void main() async {
   try {
     await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   } catch (e) {
-    print('Erro ao inicializar Firebase: $e');
+    if (kDebugMode) {
+      print('Erro ao inicializar Firebase: $e');
+    }
   }
 
   // Inicialização do FaceCamera
   try {
     await FaceCamera.initialize();
   } catch (e) {
-    print('Erro ao inicializar FaceCamera: $e');
+    if (kDebugMode) {
+      print('Erro ao inicializar FaceCamera: $e');
+    }
   }
 
   // Configuração do modo de interface do sistema

@@ -9,12 +9,12 @@ class CustomDrawer extends StatelessWidget {
   final String matricula;
 
   const CustomDrawer({
-    Key? key,
+    super.key,
     required this.nomeCompleto,
     required this.cargo,
     required this.classe,
     required this.matricula,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

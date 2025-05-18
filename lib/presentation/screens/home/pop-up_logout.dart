@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'package:flutter/material.dart';
 import 'package:vision_app/presentation/screens/login/tela_login.dart';
 import '../../widgets/state/state.dart';

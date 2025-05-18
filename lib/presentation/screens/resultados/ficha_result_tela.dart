@@ -122,7 +122,6 @@ class FichaResultPage extends StatelessWidget {
                                   'assets/Iconperson.svg',
                                   width: 20,
                                   height: 20,
-                                  color: Colors.white,
                                 ),
                                 const SizedBox(width: 6),
                                 Text(

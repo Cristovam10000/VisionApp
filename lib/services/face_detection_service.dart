@@ -20,14 +20,18 @@ class FaceDetectionService {
       // Correção: Melhor abordagem para converter CameraImage para InputImage
       final inputImage = _convertCameraImageToInputImage(cameraImage, rotation);
       if (inputImage == null) {
-        print('Erro: Não foi possível converter a imagem.');
+        if (kDebugMode) {
+          print('Erro: Não foi possível converter a imagem.');
+        }
         return [];
       }
 
       // Processa a imagem e retorna a lista de faces detectadas
       return await _faceDetector.processImage(inputImage);
     } catch (e) {
-      print('Erro ao detectar faces: $e');
+      if (kDebugMode) {
+        print('Erro ao detectar faces: $e');
+      }
       return [];
     }
   }
@@ -37,7 +41,9 @@ class FaceDetectionService {
     try {
       final format = InputImageFormatValue.fromRawValue(cameraImage.format.raw);
       if (format == null) {
-        print('Formato de imagem desconhecido: ${cameraImage.format.raw}');
+        if (kDebugMode) {
+          print('Formato de imagem desconhecido: ${cameraImage.format.raw}');
+        }
         return null;
       }
 
@@ -66,7 +72,9 @@ class FaceDetectionService {
         ),
       );
     } catch (e) {
-      print('Erro ao converter imagem: $e');
+      if (kDebugMode) {
+        print('Erro ao converter imagem: $e');
+      }
       return null;
     }
   }

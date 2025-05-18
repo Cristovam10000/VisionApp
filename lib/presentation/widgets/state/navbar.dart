@@ -9,7 +9,7 @@ class CustomNavbar extends StatelessWidget {
   final Map<String, dynamic> perfil;
   final String? token;
 
-  const CustomNavbar({Key? key, required this.currentIndex, required this.perfil, this.token}) : super(key: key);
+  const CustomNavbar({super.key, required this.currentIndex, required this.perfil, this.token});
 
 
 

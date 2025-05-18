@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:mime/mime.dart' as mime;
 import 'package:http_parser/http_parser.dart';
@@ -44,14 +45,20 @@ class UploadService {
         throw Exception('Falha ao enviar imagem: ${response.statusCode}');
       }
 
-      print('Imagem enviada com sucesso!');
-      print('Body: $responseData');
+      if (kDebugMode) {
+        print('Imagem enviada com sucesso!');
+      }
+      if (kDebugMode) {
+        print('Body: $responseData');
+      }
 
 
 
       return json.decode(responseData);
     } catch (e) {
-      print('Erro ao enviar imagem: $e');
+      if (kDebugMode) {
+        print('Erro ao enviar imagem: $e');
+      }
       rethrow;
     }
   }
@@ -69,10 +76,13 @@ class UploadService {
         },
       );
 
-      print('🔐 Token: $token');
-      print('📞 URL: $url');
-      print('Status code: ${response.statusCode}');
-      print('Body: ${response.body}');
+      if (kDebugMode) {
+        print('🔐 Token: $token');
+        print('📞 URL: $url');
+        print('Status code: ${response.statusCode}');
+        print('Body: ${response.body}');
+      }
+
       
       if (response.statusCode != 200) {
         throw Exception('Erro ao buscar ficha: ${response.statusCode}');
@@ -80,7 +90,9 @@ class UploadService {
 
       return json.decode(response.body);
     } catch (e) {
-      print('Erro: $e');
+      if (kDebugMode) {
+        print('Erro: $e');
+      }
       rethrow;
     }
   }

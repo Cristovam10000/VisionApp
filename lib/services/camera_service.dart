@@ -1,4 +1,5 @@
 import 'package:camera/camera.dart';
+import 'package:flutter/foundation.dart';
 
 
 class CameraService {
@@ -11,7 +12,9 @@ class CameraService {
     try {
       final cameras = await availableCameras();
       if (cameras.isEmpty) {
-        print('Nenhuma câmera disponível');
+        if (kDebugMode) {
+          print('Nenhuma câmera disponível');
+        }
         return false;
       }
       
@@ -19,7 +22,9 @@ class CameraService {
       await _controller.initialize();
       return true;
     } catch (e) {
-      print('Erro ao inicializar câmera: $e');
+      if (kDebugMode) {
+        print('Erro ao inicializar câmera: $e');
+      }
       return false;
     }
   }
