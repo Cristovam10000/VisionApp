@@ -5,8 +5,9 @@ import 'package:vision_app/presentation/screens/resultados/ficha_result_tela.dar
 class AmbiguityPage extends StatelessWidget {
   final Map<String, dynamic> perfil;
   final List<dynamic> opcoes;
+  final String token;
 
-  const AmbiguityPage({super.key, required this.opcoes, required this.perfil});
+  const AmbiguityPage({super.key, required this.opcoes, required this.perfil, required this.token});
 
   @override
   Widget build(BuildContext context) {
@@ -103,7 +104,7 @@ class AmbiguityPage extends StatelessWidget {
                                         opcao['crimes'], // ou opcao['ficha_criminal']['crimes']
                                   },
                                   perfil: perfil,
-                                  fromAmbiguity: true,
+                                  fromAmbiguity: true, token: token,
                                 ),
                           ),
                         );

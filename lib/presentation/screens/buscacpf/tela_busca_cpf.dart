@@ -11,7 +11,7 @@ import 'package:vision_app/services/upload_service.dart';
 import 'package:vision_app/presentation/screens/resultados/ficha_result_tela.dart';
 
 class TelaBuscaCpf extends StatefulWidget {
-  final String? token;
+  final String token;
   final Map<String, dynamic> perfil;
 
   const TelaBuscaCpf({super.key, required this.token, required this.perfil});
@@ -54,7 +54,7 @@ class _TelaBuscaCpfState extends State<TelaBuscaCpf> {
       return;
     }
 
-    if (widget.token == null || widget.token!.isEmpty) {
+    if (widget.token.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Token ausente. Faça login novamente.')),
       );
@@ -64,13 +64,13 @@ class _TelaBuscaCpfState extends State<TelaBuscaCpf> {
     showLoadingDialog(context, mensagem: 'Buscando ficha...');
 
     try {
-      final ficha = await _uploadService.buscarFichaPorCpf(cpf, widget.token!);
+      final ficha = await _uploadService.buscarFichaPorCpf(cpf, widget.token);
       if (!mounted) return;
       
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (_) => FichaResultPage(ficha: ficha, perfil: widget.perfil),
+          builder: (_) => FichaResultPage(ficha: ficha, perfil: widget.perfil, token: widget.token),
         ),
       );
     } catch (e) {
@@ -100,18 +100,18 @@ class _TelaBuscaCpfState extends State<TelaBuscaCpf> {
       backgroundColor: const Color(0xFF0F1218),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => TelaHome(perfil: widget.perfil),
-                ),
-              );
+        // leading: IconButton(
+        //   icon: const Icon(Icons.arrow_back),
+        //   onPressed: () {
+        //       Navigator.push(
+        //         context,
+        //         MaterialPageRoute(
+        //           builder: (context) => TelaHome(perfil: widget.perfil),
+        //         ),
+        //       );
 
-          },
-        ),
+        //   },
+        // ),
       ),
       body: Column(
         children: [
@@ -179,7 +179,7 @@ class _TelaBuscaCpfState extends State<TelaBuscaCpf> {
           ),
         ],
       ),
-      bottomNavigationBar: CustomNavbar(currentIndex: 2, perfil: widget.perfil,),
+      bottomNavigationBar: CustomNavbar(currentIndex: 2, perfil: widget.perfil, token: widget.token),
     );
   }
 

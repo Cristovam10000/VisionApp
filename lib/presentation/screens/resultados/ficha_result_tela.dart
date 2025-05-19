@@ -4,21 +4,42 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:vision_app/presentation/screens/resultados/image_popup.dart';
 import 'package:vision_app/presentation/screens/home/tela_home.dart';
 import 'package:vision_app/presentation/widgets/state/navbar.dart';
+import 'package:vision_app/services/auth_token_service.dart';
 
-class FichaResultPage extends StatelessWidget {
+class FichaResultPage extends StatefulWidget {
   final Map<String, dynamic> ficha;
   final Map<String, dynamic> perfil;
-  final String? token;
-
+  final String token;
   final bool fromAmbiguity;
 
   const FichaResultPage({
     super.key,
     required this.ficha,
     required this.perfil,
-    this.token,
+    required this.token,
     this.fromAmbiguity = false,
   });
+
+  @override
+  State<FichaResultPage> createState() => _FichaResultPageState();
+}
+
+class _FichaResultPageState extends State<FichaResultPage> {
+
+  @override
+  void initState() {
+    super.initState();
+// pega o token do widget e guarda no state
+    _verificarToken(); // atualiza se precisar
+  }
+
+  Future<void> _verificarToken() async {
+    final t = await AuthTokenService().getToken();
+    setState(() {
+// atualiza o token com setState
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -29,15 +50,13 @@ class FichaResultPage extends StatelessWidget {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            if (fromAmbiguity) {
-              // Volta para a TelaAmbiguidade
+            if (widget.fromAmbiguity) {
               Navigator.pop(context);
             } else {
-              // Volta para a TelaHome e limpa a pilha de navegação
               Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => TelaHome(perfil: perfil),
+                  builder: (context) => TelaHome(perfil: widget.perfil),
                 ),
                 (Route<dynamic> route) => false,
               );
@@ -45,231 +64,172 @@ class FichaResultPage extends StatelessWidget {
           },
         ),
       ),
-      body:
-          ficha.isEmpty
-              ? const Center(
-                child: Text(
-                  'Nenhuma informação encontrada.',
-                  style: TextStyle(color: Colors.white),
-                ),
-              )
-              : ListView(
-                padding: const EdgeInsets.only(
-                  top: 0,
-                  left: 40,
-                  right: 37,
-                  bottom: 24,
-                ),
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      // Container 1: Foto, Nome, Vulgo
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 12,
-                        ),
-                        decoration: BoxDecoration(
-                          color: ColorPalette.dark,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Column(
-                          children: [
-                            GestureDetector(
-                              onTap: () {
-                                showDialog(
-                                  context: context,
-                                  builder:
-                                      (context) => ImagePopup(
-                                        imageUrl:
-                                            ficha['foto_url'] ??
-                                            'https://i.imgur.com/j6xgQ7D.png',
-                                      ),
-                                );
-                              },
-                              child: CircleAvatar(
-                                radius: 75,
-                                backgroundImage: NetworkImage(
-                                  ficha['foto_url'] ??
+      body: widget.ficha.isEmpty
+          ? const Center(
+              child: Text(
+                'Nenhuma informação encontrada.',
+                style: TextStyle(color: Colors.white),
+              ),
+            )
+          : ListView(
+              padding: const EdgeInsets.only(
+                top: 0,
+                left: 40,
+                right: 37,
+                bottom: 24,
+              ),
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    // Foto, Nome, Vulgo
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 12,
+                      ),
+                      decoration: BoxDecoration(
+                        color: ColorPalette.dark,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Column(
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              showDialog(
+                                context: context,
+                                builder: (context) => ImagePopup(
+                                  imageUrl: widget.ficha['foto_url'] ??
                                       'https://i.imgur.com/j6xgQ7D.png',
                                 ),
+                              );
+                            },
+                            child: CircleAvatar(
+                              radius: 75,
+                              backgroundImage: NetworkImage(
+                                widget.ficha['foto_url'] ??
+                                    'https://i.imgur.com/j6xgQ7D.png',
                               ),
                             ),
-
-                            const SizedBox(height: 16),
-                            RichText(
-                              textAlign: TextAlign.center,
-                              text: TextSpan(
-                                children: [
-                                  TextSpan(
-                                    text:
-                                        ficha['nome'] ?? 'Nome não encontrado',
-                                    style: const TextStyle(
-                                      fontSize: 24,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(height: 18),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
+                          ),
+                          const SizedBox(height: 16),
+                          RichText(
+                            textAlign: TextAlign.center,
+                            text: TextSpan(
                               children: [
-                                SvgPicture.asset(
-                                  'assets/Iconperson.svg',
-                                  width: 20,
-                                  height: 20,
-                                ),
-                                const SizedBox(width: 6),
-                                Text(
-                                  ficha['vulgo'] ??
-                                      ficha['ficha_criminal']?['vulgo'] ??
-                                      'Vulgo não encontrado',
+                                TextSpan(
+                                  text: widget.ficha['nome'] ??
+                                      'Nome não encontrado',
                                   style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500,
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.bold,
                                     color: Colors.white,
                                   ),
                                 ),
                               ],
                             ),
-                          ],
+                          ),
+                          const SizedBox(height: 18),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SvgPicture.asset(
+                                'assets/Iconperson.svg',
+                                width: 20,
+                                height: 20,
+                              ),
+                              const SizedBox(width: 6),
+                              Text(
+                                widget.ficha['vulgo'] ??
+                                    widget.ficha['ficha_criminal']?['vulgo'] ??
+                                    'Vulgo não encontrado',
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    const SizedBox(height: 1),
+
+                    // Dados pessoais
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 3),
+                      decoration: BoxDecoration(
+                        color: ColorPalette.dark,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _buildInfoRow('CPF', widget.ficha['cpf']),
+                          const SizedBox(height: 8),
+                          _buildInfoRow(
+                              'Data de Nascimento', widget.ficha['data_nascimento']),
+                          const SizedBox(height: 8),
+                          _buildInfoRow('Nome da Mãe', widget.ficha['nome_mae']),
+                          const SizedBox(height: 8),
+                          _buildInfoRow('Nome do Pai', widget.ficha['nome_pai']),
+                        ],
+                      ),
+                    ),
+
+                    const SizedBox(height: 30),
+
+                    const Text(
+                      'Resumo Criminal',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 18),
+
+                    if (widget.ficha['crimes'] != null)
+                      ...List.generate(
+                        widget.ficha['crimes'].length,
+                        (index) => CrimeCard(
+                          crime: widget.ficha['crimes'][index],
                         ),
                       ),
-
-                      const SizedBox(height: 1),
-
-                      // Container 2: CPF, Data de Nascimento, Nome da Mãe, Nome do Pai
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 3),
-                        decoration: BoxDecoration(
-                          color: ColorPalette.dark,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            RichText(
-                              text: TextSpan(
-                                children: [
-                                  const TextSpan(
-                                    text: 'CPF: ',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white,
-                                      fontSize: 19,
-                                    ),
-                                  ),
-                                  TextSpan(
-                                    text: ficha['cpf'] ?? 'Não informado',
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 19,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            RichText(
-                              text: TextSpan(
-                                children: [
-                                  const TextSpan(
-                                    text: 'Data de Nascimento: ',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white,
-                                      fontSize: 19,
-                                    ),
-                                  ),
-                                  TextSpan(
-                                    text:
-                                        ficha['data_nascimento'] ??
-                                        'Não informado',
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 19,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            RichText(
-                              text: TextSpan(
-                                children: [
-                                  const TextSpan(
-                                    text: 'Nome da Mãe: ',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white,
-                                      fontSize: 19,
-                                    ),
-                                  ),
-                                  TextSpan(
-                                    text: ficha['nome_mae'] ?? 'Não informado',
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 19,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            RichText(
-                              text: TextSpan(
-                                children: [
-                                  const TextSpan(
-                                    text: 'Nome do Pai: ',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white,
-                                      fontSize: 19,
-                                    ),
-                                  ),
-                                  TextSpan(
-                                    text: ficha['nome_pai'] ?? 'Não informado',
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 19,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-
-                      const SizedBox(height: 30),
-
-                      const Text(
-                        'Resumo Criminal',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 18),
-
-                      if (ficha['crimes'] != null)
-                        ...List.generate(
-                          ficha['crimes'].length,
-                          (index) => CrimeCard(crime: ficha['crimes'][index]),
-                        ),
-                    ],
-                  ),
-                ],
-              ),
-      bottomNavigationBar: CustomNavbar(currentIndex: 2, perfil: perfil),
+                  ],
+                ),
+              ],
+            ),
+      bottomNavigationBar:
+          CustomNavbar(currentIndex: -1, perfil: widget.perfil, token: widget.token),
     );
   }
 
+  Widget _buildInfoRow(String label, String? value) {
+    return RichText(
+      text: TextSpan(
+        children: [
+          TextSpan(
+            text: '$label: ',
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+              fontSize: 19,
+            ),
+          ),
+          TextSpan(
+            text: value ?? 'Não informado',
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 19,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 class CrimeCard extends StatelessWidget {
@@ -300,15 +260,12 @@ class CrimeCard extends StatelessWidget {
                   ),
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 4,
-                  ),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color:
-                        crime['status'] == 'Em Aberto'
-                            ? ColorPalette.vermelhoPaleta
-                            : Colors.grey,
+                    color: crime['status'] == 'Em Aberto'
+                        ? ColorPalette.vermelhoPaleta
+                        : Colors.grey,
                     borderRadius: BorderRadius.circular(6),
                   ),
                   child: Text(

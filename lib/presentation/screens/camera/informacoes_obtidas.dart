@@ -11,11 +11,13 @@ import 'package:vision_app/presentation/screens/home/tela_home.dart';
 class ResultadoPage extends StatefulWidget {
   final Map<String, dynamic> resultado;
   final Map<String, dynamic> perfil;
+  final String token;
 
   const ResultadoPage({
     super.key,
     required this.resultado,
     required this.perfil,
+    required this.token,
   });
 
   @override
@@ -84,7 +86,7 @@ class _ResultadoPageState extends State<ResultadoPage> {
           MaterialPageRoute(
             builder:
                 (context) =>
-                    AmbiguityPage(opcoes: opcoes, perfil: widget.perfil),
+                    AmbiguityPage(opcoes: opcoes, perfil: widget.perfil, token: widget.token),
           ),
           
         );
@@ -97,6 +99,7 @@ class _ResultadoPageState extends State<ResultadoPage> {
                   (context) => FichaResultPage(
                     ficha: opcaoSelecionada,
                     perfil: widget.perfil,
+                    token: widget.token
                   ),
             ),
           );
@@ -124,6 +127,6 @@ class _ResultadoPageState extends State<ResultadoPage> {
     };
 
 
-    return FichaResultPage(ficha: ficha, perfil: widget.perfil);
+    return FichaResultPage(ficha: ficha, perfil: widget.perfil, token: widget.token);
   }
 }

@@ -101,6 +101,7 @@ class _FaceCameraPageState extends State<FaceCameraPage> {
                   (context) => ResultadoPage(
                     resultado: resultado['body'],
                     perfil: widget.perfil,
+                    token: token
                   ),
             ),
           );
@@ -117,7 +118,7 @@ class _FaceCameraPageState extends State<FaceCameraPage> {
           MaterialPageRoute(
             builder:
                 (context) =>
-                    ResultadoPage(resultado: resultado, perfil: widget.perfil),
+                    ResultadoPage(resultado: resultado, perfil: widget.perfil, token: token),
           ),
         ).then((_) async {
           await _controller.startImageStream();
