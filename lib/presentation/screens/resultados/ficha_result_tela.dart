@@ -25,21 +25,19 @@ class FichaResultPage extends StatefulWidget {
 }
 
 class _FichaResultPageState extends State<FichaResultPage> {
-
   @override
   void initState() {
     super.initState();
-// pega o token do widget e guarda no state
+    // pega o token do widget e guarda no state
     _verificarToken(); // atualiza se precisar
   }
 
   Future<void> _verificarToken() async {
     final t = await AuthTokenService().getToken();
     setState(() {
-// atualiza o token com setState
+      // atualiza o token com setState
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -64,146 +62,167 @@ class _FichaResultPageState extends State<FichaResultPage> {
           },
         ),
       ),
-      body: widget.ficha.isEmpty
-          ? const Center(
-              child: Text(
-                'Nenhuma informação encontrada.',
-                style: TextStyle(color: Colors.white),
-              ),
-            )
-          : ListView(
-              padding: const EdgeInsets.only(
-                top: 0,
-                left: 40,
-                right: 37,
-                bottom: 24,
-              ),
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    // Foto, Nome, Vulgo
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 12,
-                      ),
-                      decoration: BoxDecoration(
-                        color: ColorPalette.dark,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Column(
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              showDialog(
-                                context: context,
-                                builder: (context) => ImagePopup(
-                                  imageUrl: widget.ficha['foto_url'] ??
+      body:
+          widget.ficha.isEmpty
+              ? const Center(
+                child: Text(
+                  'Nenhuma informação encontrada.',
+                  style: TextStyle(color: Colors.white),
+                ),
+              )
+              : ListView(
+                padding: const EdgeInsets.only(
+                  top: 0,
+                  left: 40,
+                  right: 37,
+                  bottom: 24,
+                ),
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      // Foto, Nome, Vulgo
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 12,
+                        ),
+                        decoration: BoxDecoration(
+                          color: ColorPalette.dark,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Column(
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                showDialog(
+                                  context: context,
+                                  builder:
+                                      (context) => ImagePopup(
+                                        imageUrl:
+                                            widget.ficha['foto_url'] ??
+                                            'https://i.imgur.com/j6xgQ7D.png',
+                                      ),
+                                );
+                              },
+                              child: CircleAvatar(
+                                radius: 75,
+                                backgroundImage: NetworkImage(
+                                  widget.ficha['foto_url'] ??
                                       'https://i.imgur.com/j6xgQ7D.png',
                                 ),
-                              );
-                            },
-                            child: CircleAvatar(
-                              radius: 75,
-                              backgroundImage: NetworkImage(
-                                widget.ficha['foto_url'] ??
-                                    'https://i.imgur.com/j6xgQ7D.png',
                               ),
                             ),
-                          ),
-                          const SizedBox(height: 16),
-                          RichText(
-                            textAlign: TextAlign.center,
-                            text: TextSpan(
+                            const SizedBox(height: 16),
+                            RichText(
+                              textAlign: TextAlign.center,
+                              text: TextSpan(
+                                children: [
+                                  TextSpan(
+                                    text:
+                                        widget.ficha['nome'] ??
+                                        'Nome não encontrado',
+                                    style: const TextStyle(
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 18),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                TextSpan(
-                                  text: widget.ficha['nome'] ??
-                                      'Nome não encontrado',
+                                SvgPicture.asset(
+                                  'assets/Iconperson.svg',
+                                  width: 20,
+                                  height: 20,
+                                ),
+                                const SizedBox(width: 6),
+                                Text(
+                                  widget.ficha['vulgo'] ??
+                                      (widget.ficha['ficha_criminal'] is Map
+                                          ? widget.ficha['ficha_criminal']!['vulgo'] ??
+                                              (widget.ficha['ficha_criminal']!['ficha_criminal']
+                                                      is Map
+                                                  ? widget
+                                                      .ficha['ficha_criminal']!['ficha_criminal']!['vulgo']
+                                                  : null)
+                                          : null) ??
+                                      'Sem Vulgo',
                                   style: const TextStyle(
-                                    fontSize: 24,
-                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
                                     color: Colors.white,
                                   ),
                                 ),
                               ],
                             ),
-                          ),
-                          const SizedBox(height: 18),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              SvgPicture.asset(
-                                'assets/Iconperson.svg',
-                                width: 20,
-                                height: 20,
-                              ),
-                              const SizedBox(width: 6),
-                              Text(
-                                widget.ficha['vulgo'] ??
-                                    widget.ficha['ficha_criminal']?['vulgo'] ??
-                                    'Vulgo não encontrado',
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    const SizedBox(height: 1),
-
-                    // Dados pessoais
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 3),
-                      decoration: BoxDecoration(
-                        color: ColorPalette.dark,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _buildInfoRow('CPF', widget.ficha['cpf']),
-                          const SizedBox(height: 8),
-                          _buildInfoRow(
-                              'Data de Nascimento', widget.ficha['data_nascimento']),
-                          const SizedBox(height: 8),
-                          _buildInfoRow('Nome da Mãe', widget.ficha['nome_mae']),
-                          const SizedBox(height: 8),
-                          _buildInfoRow('Nome do Pai', widget.ficha['nome_pai']),
-                        ],
-                      ),
-                    ),
-
-                    const SizedBox(height: 30),
-
-                    const Text(
-                      'Resumo Criminal',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 18),
-
-                    if (widget.ficha['crimes'] != null)
-                      ...List.generate(
-                        widget.ficha['crimes'].length,
-                        (index) => CrimeCard(
-                          crime: widget.ficha['crimes'][index],
+                          ],
                         ),
                       ),
-                  ],
-                ),
-              ],
-            ),
-      bottomNavigationBar:
-          CustomNavbar(currentIndex: -1, perfil: widget.perfil, token: widget.token),
+
+                      const SizedBox(height: 1),
+
+                      // Dados pessoais
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 3),
+                        decoration: BoxDecoration(
+                          color: ColorPalette.dark,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _buildInfoRow('CPF', widget.ficha['cpf']),
+                            const SizedBox(height: 8),
+                            _buildInfoRow(
+                              'Data de Nascimento',
+                              widget.ficha['data_nascimento'],
+                            ),
+                            const SizedBox(height: 8),
+                            _buildInfoRow(
+                              'Nome da Mãe',
+                              widget.ficha['nome_mae'],
+                            ),
+                            const SizedBox(height: 8),
+                            _buildInfoRow(
+                              'Nome do Pai',
+                              widget.ficha['nome_pai'],
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      const SizedBox(height: 30),
+
+                      const Text(
+                        'Resumo Criminal',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 18),
+
+                      if (widget.ficha['crimes'] != null)
+                        ...List.generate(
+                          widget.ficha['crimes'].length,
+                          (index) =>
+                              CrimeCard(crime: widget.ficha['crimes'][index]),
+                        ),
+                    ],
+                  ),
+                ],
+              ),
+      bottomNavigationBar: CustomNavbar(
+        currentIndex: -1,
+        perfil: widget.perfil,
+        token: widget.token,
+      ),
     );
   }
 
@@ -221,10 +240,7 @@ class _FichaResultPageState extends State<FichaResultPage> {
           ),
           TextSpan(
             text: value ?? 'Não informado',
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 19,
-            ),
+            style: const TextStyle(color: Colors.white, fontSize: 19),
           ),
         ],
       ),
@@ -260,12 +276,15 @@ class CrimeCard extends StatelessWidget {
                   ),
                 ),
                 Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
-                    color: crime['status'] == 'Em Aberto'
-                        ? ColorPalette.vermelhoPaleta
-                        : Colors.grey,
+                    color:
+                        crime['status'] == 'Em Aberto'
+                            ? ColorPalette.vermelhoPaleta
+                            : Colors.grey,
                     borderRadius: BorderRadius.circular(6),
                   ),
                   child: Text(

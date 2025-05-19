@@ -89,8 +89,8 @@ class _ResultadoPageState extends State<ResultadoPage> {
                     AmbiguityPage(opcoes: opcoes, perfil: widget.perfil, token: widget.token),
           ),
           
+        
         );
-
         if (opcaoSelecionada != null) {
           Navigator.push(
             context,
