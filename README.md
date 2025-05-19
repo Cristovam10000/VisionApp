@@ -1,85 +1,107 @@
-# 🔐 Sistema de Segurança Inteligente com Reconhecimento Facial
+<h1 align="center"> FaceCheck </h1>
 
-Este projeto tem como objetivo desenvolver um sistema de segurança inteligente voltado ao controle de acesso e monitoramento de indivíduos, integrando tecnologias de reconhecimento facial, autenticação via Firebase e um dashboard informativo com gestão de dados criminais.
+<div align="center">
 
-## 📌 Objetivo
+![Badge em Desenvolvimento](http://img.shields.io/static/v1?label=STATUS&message=EM%20DESENVOLVIMENTO&color=GREEN&style=for-the-badge)
+![Static Badge](https://img.shields.io/badge/Flutter-blue?style=for-the-badge&logo=flutter)
+![Static Badge](https://img.shields.io/badge/firebase-red?style=for-the-badge&logo=firebase&logoColor=yellow)
 
-Desenvolver uma aplicação de reconhecimento facial que permita aos oficiais de polícia realizarem consultas ágeis e precisas de antecedentes criminais
-durante abordagens, garantindo eficiência operacional sem comprometer a privacidade e os direitos individuais dos cidadãos.
+</div>
 
+## Sumário
 
----
+* [Integrantes](#integrantes)
+* [Descrição](#descrição)
+* [Requisitos](#requisitos)
+* [Tecnologias](#tecnologias)
+* [Fluxo do Software](#fluxo-do-software)
+* [Dificuldades](#dificuldades)
+* [Resultados](#resultados)
+* [Conclusao](#conclusao)
 
-## 🧱 Tecnologias Utilizadas
+## Integrantes
 
-### 🔧 Backend – FastAPI
-- FastAPI para construção da API REST
-- SQLAlchemy e Pydantic para modelagem e validação
-- Banco de dados relacional (PostgreSQL)
-- Firebase Authentication (verificação JWT)
-- Reconhecimento facial via OpenCV + deep learning
-- Documentação automática com Swagger
+- Anderson do Vale - [and3510](https://github.com/and3510) 
+- Beatriz Barreto - [whosbea](https://github.com/whosbea)
+- Cristovam Paulo - [cristovam10000](https://github.com/cristovam10000)
+- Gustavo do Vale - [gustavodovale](https://github.com/gustavodovale)
+- Lucas Cesar
 
-### 📱 Frontend – Flutter
-- Flutter com arquitetura em camadas (Model, View, Controller)
-- Integração com API REST via `http` ou `dio`
-- Firebase Auth (login e autenticação)
-- Navegação com `go_router` (ou `Navigator`)
-- Layouts responsivos para tablets e smartphones
+## Descrição
 
----
-
-## 🧠 Funcionalidades
-
-### ✅ Back-End (API)
-- 🔐 Autenticação via Firebase JWT
-- 📸 Upload e reconhecimento facial com retorno de CPF
-- 👤 CRUD de ficha criminal (ligada a uma pessoa)
-- 🛑 Alertas de segurança por CPF
-- 📁 Upload de imagens e associação com registros
-
-### 📱 Front-End (App Flutter)
-- 🔐 Tela de login com Firebase
-- 📑 Visualização da ficha criminal de cada pessoa
-- 🚨 Visualização e alerta de ocorrência
-- 📷 Scanner de rosto e envio de imagem para API
-- 🔍 Pesquisa por CPF
-
----
-
-## 🔄 Fluxo de Integração
-
-1. **Login** → Firebase retorna token JWT
-2. **Acesso à API** → Token é enviado via `Authorization: Bearer`
-3. **Reconhecimento Facial** → App envia imagem → API retorna CPF → App busca ficha criminal
+Desenvolvimento de um aplicativo de segurança pública que utiliza reconhecimento facial baseado em IA para identificação de indivíduos durante abordagens policiais. O sistema compara a imagem capturada com um banco de dados oficial e exibe informações como nome, CPF e pendências judiciais. Caso haja mandado de prisão ativo, um alerta é enviado ao policial, agilizando a tomada de decisão.
 
 
----
+## Requisitos
 
-## 🗃️ Estrutura da API
 
-A documentação completa está disponível via Swagger no endpoint `/docs` assim que a API estiver rodando.
+#### **1. Captura de Imagem**  
+- Permitir a captura de imagem em tempo real via câmera do dispositivo móvel.  
+- Processar a imagem capturada para extração das características faciais.  
 
-Principais endpoints:
+#### **2. Processamento e Reconhecimento Facial**  
+- Identificar pontos-chave do rosto para comparação com registros armazenados.  
+- Realizar a correspondência entre a imagem capturada e as fotos cadastradas no banco de dados.  
 
-- `POST /login/verify-token/` – Verifica validade do JWT
-- `POST /pessoa/` – Cria novo registro de pessoa
-- `GET /pessoa/{cpf}` – Retorna dados de uma pessoa
-- `POST /ficha-criminal/` – Cadastra ficha criminal
-- `POST /reconhecimento-facial/` – Envia imagem para identificação
+#### **3. Consulta e Validação da Identidade**  
+- Consultar o banco de dados e validar a identidade do indivíduo.  
+- Recuperar e exibir as seguintes informações em caso de correspondência:  
+  - Nome completo  
+  - Nome da mãe  
+  - CPF  
 
----
+#### **4. Verificação de Pendências Judiciais**  
+- Verificar automaticamente se há registros de busca ou mandados de prisão ativos.  
+- Realizar a consulta de forma automática e em tempo real.  
 
-## ⚙️ Executando o Projeto
+#### **5. Exibição de Resultados**  
+- Exibir a confirmação da identidade na interface do usuário.  
+- Gerar um alerta para o policial caso haja alguma pendência judicial.  
 
-```bash
-# Requisitos
-Python 3.10+
-MySQL em execução
-Firebase configurado
+#### **6. Segurança e Privacidade**  
+- Restringir o acesso ao sistema apenas a usuários autorizados.  
+- Registrar todas as consultas para fins de auditoria e segurança.  
+- Garantir que o armazenamento e processamento das informações sigam normas de proteção de dados.  
 
-# Instalar dependências
-pip install -r requirements.txt
 
-# Rodar servidor
-uvicorn main:app --reload
+## Tecnologias
+
+- Dart
+- Flutter
+- Firebase
+
+## Fluxo do Software
+
+<div align="center"> 
+
+</div>
+
+## Funcionalidades
+
+### Back-End (API)
+- Autenticação via Firebase JWT
+- Upload e reconhecimento facial com retorno de CPF
+- CRUD de ficha criminal (ligada a uma pessoa)
+- Alertas de segurança por CPF
+- Upload de imagens e associação com registros
+
+### Front-End (App Flutter)
+- Tela de login com Firebase
+- Visualização da ficha criminal de cada pessoa com mandato aberto
+- Visualização e alerta de ocorrência
+- Scanner de rosto e envio de imagem para API
+- Pesquisa por CPF
+
+
+
+## Dificuldades
+
+- Tempo de Realização e Testes
+
+
+## Resultados
+
+
+## Conclusao
+
+
