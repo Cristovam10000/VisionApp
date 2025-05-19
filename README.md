@@ -102,6 +102,8 @@ Desenvolvimento de um aplicativo de segurança pública que utiliza reconhecimen
 
 ## Resultados
 
+<div align="center"> 
+
 <p float="left">
   <img src="images/buscaCpf.jpeg" width="200"/>
   <img src="images/home.jpeg" width="200"/>
@@ -114,7 +116,7 @@ Desenvolvimento de um aplicativo de segurança pública que utiliza reconhecimen
   <img src="images/perfilCriminoso.jpeg" width="200"/>
 </p>
 
-
+</div>
 
 
 
