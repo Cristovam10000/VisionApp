@@ -1,4 +1,4 @@
-<h1 align="center"> FaceCheck </h1>
+<h1 align="center"> VisionApp - Mobile </h1>
 
 <div align="center">
 
