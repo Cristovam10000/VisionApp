@@ -109,7 +109,7 @@ class _TelaBuscaCpfState extends State<TelaBuscaCpf> {
         //           builder: (context) => TelaHome(perfil: widget.perfil),
         //         ),
         //       );
-
+    
         //   },
         // ),
       ),

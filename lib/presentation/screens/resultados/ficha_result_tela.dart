@@ -163,9 +163,9 @@ class _FichaResultPageState extends State<FichaResultPage> {
                           ],
                         ),
                       ),
-
+    
                       const SizedBox(height: 1),
-
+    
                       // Dados pessoais
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 3),
@@ -195,9 +195,9 @@ class _FichaResultPageState extends State<FichaResultPage> {
                           ],
                         ),
                       ),
-
+    
                       const SizedBox(height: 30),
-
+    
                       const Text(
                         'Resumo Criminal',
                         style: TextStyle(
@@ -207,7 +207,7 @@ class _FichaResultPageState extends State<FichaResultPage> {
                         ),
                       ),
                       const SizedBox(height: 18),
-
+    
                       if (widget.ficha['crimes'] != null)
                         ...List.generate(
                           widget.ficha['crimes'].length,
