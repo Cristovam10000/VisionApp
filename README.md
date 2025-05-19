@@ -35,30 +35,30 @@ Desenvolvimento de um aplicativo de segurança pública que utiliza reconhecimen
 ## Requisitos
 
 
-#### **1. Captura de Imagem**  
+### **1. Captura de Imagem**  
 - Permitir a captura de imagem em tempo real via câmera do dispositivo móvel.  
 - Processar a imagem capturada para extração das características faciais.  
 
-#### **2. Processamento e Reconhecimento Facial**  
+### **2. Processamento e Reconhecimento Facial**  
 - Identificar pontos-chave do rosto para comparação com registros armazenados.  
 - Realizar a correspondência entre a imagem capturada e as fotos cadastradas no banco de dados.  
 
-#### **3. Consulta e Validação da Identidade**  
+### **3. Consulta e Validação da Identidade**  
 - Consultar o banco de dados e validar a identidade do indivíduo.  
 - Recuperar e exibir as seguintes informações em caso de correspondência:  
   - Nome completo  
   - Nome da mãe  
   - CPF  
 
-#### **4. Verificação de Pendências Judiciais**  
+### **4. Verificação de Pendências Judiciais**  
 - Verificar automaticamente se há registros de busca ou mandados de prisão ativos.  
 - Realizar a consulta de forma automática e em tempo real.  
 
-#### **5. Exibição de Resultados**  
+### **5. Exibição de Resultados**  
 - Exibir a confirmação da identidade na interface do usuário.  
 - Gerar um alerta para o policial caso haja alguma pendência judicial.  
 
-#### **6. Segurança e Privacidade**  
+### **6. Segurança e Privacidade**  
 - Restringir o acesso ao sistema apenas a usuários autorizados.  
 - Registrar todas as consultas para fins de auditoria e segurança.  
 - Garantir que o armazenamento e processamento das informações sigam normas de proteção de dados.  
@@ -93,10 +93,11 @@ Desenvolvimento de um aplicativo de segurança pública que utiliza reconhecimen
 - Pesquisa por CPF
 
 
-
 ## Dificuldades
 
-- Tempo de Realização e Testes
+- Integração com API
+- Configuração da Camera no Aplicativo
+- Configuração da Detecção do Rosto pela Camera
 
 
 ## Resultados
