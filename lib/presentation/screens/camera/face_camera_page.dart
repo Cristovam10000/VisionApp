@@ -2,6 +2,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:face_camera/face_camera.dart';
+import 'package:vision_app/presentation/screens/camera/face_camera_controller_setup.dart';
+import 'package:vision_app/presentation/screens/camera/face_overlay.dart';
+import 'package:vision_app/presentation/screens/camera/face_utils.dart';
 import 'package:vision_app/presentation/screens/camera/popup_dialog_error_foto.dart';
 import 'package:vision_app/presentation/widgets/state/loading_dialog.dart';
 import 'dart:io';
@@ -31,11 +34,7 @@ class _FaceCameraPageState extends State<FaceCameraPage> {
   void initState() {
     super.initState();
     _capturedImage = null;
-    _controller = FaceCameraController(
-      autoCapture: false,
-      defaultFlashMode: CameraFlashMode.off,
-      defaultCameraLens: CameraLens.back, 
-      enableAudio: false,
+    _controller = setupFaceCameraController(
       onCapture: (file) {
         if (file == null || _isProcessing) return;
         setState(() {
@@ -44,28 +43,14 @@ class _FaceCameraPageState extends State<FaceCameraPage> {
       },
       onFaceDetected: (face) {
         setState(() {
-          // _isFaceVisible = face != null;
           _isFaceWellPositioned =
               face != null &&
-              _isFaceCentered(face.boundingBox, MediaQuery.of(context).size);
+              isFaceCentered(face.boundingBox, MediaQuery.of(context).size);
         });
       },
     );
   }
 
-  bool _isFaceCentered(Rect boundingBox, Size screenSize) {
-    final centerX = boundingBox.center.dx;
-    final centerY = boundingBox.center.dy;
-
-    final screenCenterX = screenSize.width / 2;
-    final screenCenterY = screenSize.height / 2.7;
-
-    const toleranceX = 60; // ajuste fino aqui
-    const toleranceY = 80;
-
-    return (centerX - screenCenterX).abs() < toleranceX &&
-        (centerY - screenCenterY).abs() < toleranceY;
-  }
 
   Future<void> _handleConfirmUpload() async {
     if (_capturedImage == null || _isProcessing || !_isFaceWellPositioned) {
@@ -101,7 +86,7 @@ class _FaceCameraPageState extends State<FaceCameraPage> {
                   (context) => ResultadoPage(
                     resultado: resultado['body'],
                     perfil: widget.perfil,
-                    token: token
+                    token: token,
                   ),
             ),
           );
@@ -117,8 +102,11 @@ class _FaceCameraPageState extends State<FaceCameraPage> {
           context,
           MaterialPageRoute(
             builder:
-                (context) =>
-                    ResultadoPage(resultado: resultado, perfil: widget.perfil, token: token),
+                (context) => ResultadoPage(
+                  resultado: resultado,
+                  perfil: widget.perfil,
+                  token: token,
+                ),
           ),
         ).then((_) async {
           await _controller.startImageStream();
@@ -233,86 +221,4 @@ class _FaceCameraPageState extends State<FaceCameraPage> {
     _controller.dispose();
     super.dispose();
   }
-}
-
-// Overlay com foco circular
-class FaceOverlay extends StatelessWidget {
-  const FaceOverlay({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Positioned.fill(
-      child: IgnorePointer(child: CustomPaint(painter: FaceOverlayPainter())),
-    );
-  }
-}
-
-class FaceOverlayPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint =
-        Paint()
-          ..color = const Color.fromARGB(255, 54, 54, 54).withOpacity(0.6)
-          ..style = PaintingStyle.fill;
-
-    // Dimensões e posição do retângulo central
-    final rectWidth = 282.0;
-    final rectHeight = 452.0;
-    final rectLeft = 47.0;
-    final rectTop = 121.0;
-    final borderRadius = 280.0;
-
-    // Círculos para os botões
-    final buttonRadius = 38.0;
-    final ycapture = size.height - 62;
-    final yflash = size.height - 62;
-    final captureX = size.width / 1.715;
-    final flashX = size.width / 3;
-
-    // === CRIA O PATH COM FUROS ===
-    final path =
-        Path()
-          ..fillType = PathFillType.evenOdd
-          ..addRect(Rect.fromLTWH(0, 0, size.width, size.height)); // fundo todo
-
-    // Furo retangular arredondado
-    final rect = Rect.fromLTWH(rectLeft, rectTop, rectWidth, rectHeight);
-    final rrect = RRect.fromRectAndRadius(rect, Radius.circular(borderRadius));
-    path.addRRect(rrect);
-
-    // Furos circulares dos botões
-    path.addOval(
-      Rect.fromCircle(center: Offset(captureX, ycapture), radius: buttonRadius),
-    );
-    path.addOval(
-      Rect.fromCircle(center: Offset(flashX, yflash), radius: buttonRadius),
-    );
-
-    // Desenha o path com furos
-    canvas.drawPath(path, paint);
-
-    // Borda do retângulo
-    final borderPaint =
-        Paint()
-          ..color = const Color.fromARGB(255, 8, 60, 102)
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = 4.0;
-    canvas.drawRRect(rrect, borderPaint);
-
-    // Bordas dos círculos dos botões (opcional)
-    final circleBorderPaint =
-        Paint()
-          ..color = Colors.transparent
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = 2;
-    canvas.drawCircle(
-      Offset(captureX, ycapture),
-      buttonRadius,
-      circleBorderPaint,
-    );
-    canvas.drawCircle(Offset(flashX, yflash), buttonRadius, circleBorderPaint);
-  }
-
-  @override
-  bool shouldRepaint(CustomPainter oldDelegate) => false;
 }

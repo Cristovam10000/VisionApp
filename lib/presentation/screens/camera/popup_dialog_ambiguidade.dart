@@ -1,8 +1,9 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:vision_app/presentation/widgets/state/state.dart';
 
 Future<void> showAmbiguousFaceDialog(BuildContext context) async {
-  final TextEditingController cpfController = TextEditingController();
 
   return showDialog(
     context: context,
