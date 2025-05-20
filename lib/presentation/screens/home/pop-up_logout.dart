@@ -59,7 +59,7 @@ void mostrarDialogoLogout(BuildContext context) {
             const SizedBox(height: 28),
             SizedBox(
               width: double.infinity,
-              child: Button(text: "Sair do Aplicativo", backgroundColor: Colors.red, textStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 18,
+              child: Button(text: "Sair da sua Conta", backgroundColor: Colors.red, textStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 18,
                   color: Colors.white,) , 
                   onPressed: () {
                   Navigator.of(context).pop();
