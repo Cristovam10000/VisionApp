@@ -1,4 +1,3 @@
-import 'package:face_camera/face_camera.dart';
 import 'package:flutter/material.dart';
 
 /// Verifica se o rosto detectado está centralizado na tela

@@ -31,10 +31,4 @@ class AuthTokenService {
     await prefs.setString(_tokenKey, token);
   }
 
-  // Limpar o token (logout)
-  Future<void> clearToken() async {
-    _cachedToken = null;
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove(_tokenKey);
-  }
 }

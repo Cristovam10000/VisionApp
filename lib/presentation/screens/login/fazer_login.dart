@@ -98,7 +98,7 @@ void _fazerLogin() async {
 
       await AuthTokenService().saveToken(backendJwt);
 
-      await LocalStorageService().saveLoginData(backendJwt, cpf);
+      await LocalStorageService().saveLoginData(backendJwt);
 
 
       Navigator.pop(context); // Fecha o loading antes de navegar
