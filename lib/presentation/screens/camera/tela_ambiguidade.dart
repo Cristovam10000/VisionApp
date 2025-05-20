@@ -1,18 +1,38 @@
 import 'package:flutter/material.dart';
+import 'package:vision_app/presentation/screens/camera/popup_dialog_ambiguidade.dart';
 import 'package:vision_app/presentation/screens/home/tela_home.dart';
 import 'package:vision_app/presentation/screens/resultados/ficha_result_tela.dart';
+import 'package:vision_app/presentation/widgets/state/navbar.dart'; // Certifique-se de importar isso
 
-class AmbiguityPage extends StatelessWidget {
+class AmbiguityPage extends StatefulWidget {
   final Map<String, dynamic> perfil;
   final List<dynamic> opcoes;
   final String token;
 
-  const AmbiguityPage({super.key, required this.opcoes, required this.perfil, required this.token});
+  const AmbiguityPage({
+    super.key,
+    required this.opcoes,
+    required this.perfil,
+    required this.token,
+  });
+
+  @override
+  State<AmbiguityPage> createState() => _AmbiguityPageState();
+}
+
+class _AmbiguityPageState extends State<AmbiguityPage> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      showAmbiguousFaceDialog(context);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 11, 16, 24),
+      backgroundColor: const Color.fromARGB(255, 11, 16, 24),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -21,7 +41,9 @@ class AmbiguityPage extends StatelessWidget {
           onPressed: () {
             Navigator.pushAndRemoveUntil(
               context,
-              MaterialPageRoute(builder: (context) => TelaHome(perfil: perfil)),
+              MaterialPageRoute(
+                builder: (context) => TelaHome(perfil: widget.perfil),
+              ),
               (Route<dynamic> route) => false,
             );
           },
@@ -32,7 +54,6 @@ class AmbiguityPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // Título reposicionado manualmente
             const SizedBox(height: 10),
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 16.0),
@@ -48,15 +69,13 @@ class AmbiguityPage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 30),
-
-            // Lista com rolagem
             Expanded(
               child: ListView.separated(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
-                itemCount: opcoes.length,
+                itemCount: widget.opcoes.length,
                 separatorBuilder: (_, __) => const SizedBox(height: 16),
                 itemBuilder: (context, index) {
-                  final opcao = opcoes[index];
+                  final opcao = widget.opcoes[index];
                   final identidade = opcao['identidade'];
 
                   return Container(
@@ -88,24 +107,21 @@ class AmbiguityPage extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder:
-                                (context) => FichaResultPage(
-                                  ficha: {
-                                    'cpf': opcao['identidade']['cpf'],
-                                    'nome': opcao['identidade']['nome'],
-                                    'nome_mae': opcao['identidade']['nome_mae'],
-                                    'nome_pai': opcao['identidade']['nome_pai'],
-                                    'data_nascimento':
-                                        opcao['identidade']['data_nascimento'],
-                                    'foto_url': opcao['identidade']['url_face'],
-                                    'vulgo':
-                                        opcao['ficha_criminal']['ficha_criminal']['vulgo'],
-                                    'crimes':
-                                        opcao['crimes'], // ou opcao['ficha_criminal']['crimes']
-                                  },
-                                  perfil: perfil,
-                                  fromAmbiguity: true, token: token,
-                                ),
+                            builder: (context) => FichaResultPage(
+                              ficha: {
+                                'cpf': identidade['cpf'],
+                                'nome': identidade['nome'],
+                                'nome_mae': identidade['nome_mae'],
+                                'nome_pai': identidade['nome_pai'],
+                                'data_nascimento': identidade['data_nascimento'],
+                                'foto_url': identidade['url_face'],
+                                'vulgo': opcao['ficha_criminal']['ficha_criminal']['vulgo'],
+                                'crimes': opcao['crimes'],
+                              },
+                              perfil: widget.perfil,
+                              fromAmbiguity: true,
+                              token: widget.token,
+                            ),
                           ),
                         );
                       },
@@ -116,6 +132,11 @@ class AmbiguityPage extends StatelessWidget {
             ),
           ],
         ),
+      ),
+      bottomNavigationBar: CustomNavbar(
+        currentIndex: -1, // Mantém desativado
+        perfil: widget.perfil,
+        token: widget.token,
       ),
     );
   }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:vision_app/core/constants/app_colors.dart';
 import 'package:vision_app/presentation/screens/buscacpf/tela_busca_cpf.dart';
 import 'package:vision_app/presentation/screens/camera/face_camera_page.dart';
+import 'package:vision_app/presentation/screens/home/pop-up_facerules.dart';
 import 'package:vision_app/presentation/screens/home/tela_home.dart';
 
 class CustomNavbar extends StatelessWidget {
@@ -27,12 +28,7 @@ class CustomNavbar extends StatelessWidget {
         );
         break;
       case 1:
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => FaceCameraPage(perfil: perfil),
-          ),
-        );
+        mostrarPopUpRegrasFace(context: context, perfil: perfil);
         break;
       case 2:
         Navigator.push(
