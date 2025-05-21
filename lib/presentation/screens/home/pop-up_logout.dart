@@ -64,6 +64,7 @@ void mostrarDialogoLogout(BuildContext context) {
                   color: ColorPalette.branco,) , 
                   onPressed: () {
                   Navigator.of(context).pop();
+                  FocusScope.of(context).unfocus();
                   Navigator.push(
                     context,
                     MaterialPageRoute(

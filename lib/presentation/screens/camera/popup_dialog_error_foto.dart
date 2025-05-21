@@ -3,7 +3,7 @@ import 'package:vision_app/core/constants/app_colors.dart';
 import 'package:vision_app/presentation/screens/camera/face_camera_page.dart';
 import 'package:vision_app/presentation/widgets/state/state.dart';
 
-Future<void> showErrorFotoDialog(BuildContext context, Map<String, dynamic> perfil) async {
+Future<void> showErrorFotoDialog(BuildContext context, Map<String, dynamic>? perfil) async {
 
   return showDialog(
     context: context,

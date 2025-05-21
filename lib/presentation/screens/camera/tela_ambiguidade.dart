@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:vision_app/core/constants/app_colors.dart';
+import 'package:vision_app/presentation/screens/buscacpf/tela_busca_cpf.dart';
 import 'package:vision_app/presentation/screens/camera/popup_dialog_ambiguidade.dart';
 import 'package:vision_app/presentation/screens/home/tela_home.dart';
 import 'package:vision_app/presentation/screens/resultados/ficha_result_tela.dart';
 import 'package:vision_app/presentation/widgets/state/navbar.dart'; // Certifique-se de importar isso
 
 class AmbiguityPage extends StatefulWidget {
-  final Map<String, dynamic> perfil;
+  final Map<String, dynamic>? perfil;
   final List<dynamic> opcoes;
   final String token;
 
   const AmbiguityPage({
     super.key,
     required this.opcoes,
-    required this.perfil,
+    this.perfil,
     required this.token,
   });
 
@@ -26,7 +27,7 @@ class _AmbiguityPageState extends State<AmbiguityPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      showAmbiguousFaceDialog(context);
+      showAmbiguousFaceDialog(context, token: widget.token,);
     });
   }
 
@@ -108,21 +109,24 @@ class _AmbiguityPageState extends State<AmbiguityPage> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => FichaResultPage(
-                              ficha: {
-                                'cpf': identidade['cpf'],
-                                'nome': identidade['nome'],
-                                'nome_mae': identidade['nome_mae'],
-                                'nome_pai': identidade['nome_pai'],
-                                'data_nascimento': identidade['data_nascimento'],
-                                'foto_url': identidade['url_face'],
-                                'vulgo': opcao['ficha_criminal']['ficha_criminal']['vulgo'],
-                                'crimes': opcao['crimes'],
-                              },
-                              perfil: widget.perfil,
-                              fromAmbiguity: true,
-                              token: widget.token,
-                            ),
+                            builder:
+                                (context) => FichaResultPage(
+                                  ficha: {
+                                    'cpf': identidade['cpf'],
+                                    'nome': identidade['nome'],
+                                    'nome_mae': identidade['nome_mae'],
+                                    'nome_pai': identidade['nome_pai'],
+                                    'data_nascimento':
+                                        identidade['data_nascimento'],
+                                    'foto_url': identidade['url_face'],
+                                    'vulgo':
+                                        opcao['ficha_criminal']['ficha_criminal']['vulgo'],
+                                    'crimes': opcao['crimes'],
+                                  },
+                                  perfil: widget.perfil,
+                                  fromAmbiguity: true,
+                                  token: widget.token,
+                                ),
                           ),
                         );
                       },

@@ -57,6 +57,23 @@ void _fazerLogin() async {
     }
 
 
+    else if (senha.isEmpty && cpf.length != 11) {
+      Navigator.pop(context); // Fecha o loading antes de sair
+      setState(() {
+        _mensagemErroCpf = 'CPF deve ter 11 dígitos';
+        _mensagemErroSenha = 'O Senha estar vazio.';
+      });
+      return;
+    }
+
+    if (cpf.length != 11) {
+      Navigator.pop(context); // Fecha o loading antes de sair
+      setState(() {
+        _mensagemErroCpf = 'CPF deve ter 11 dígitos';
+      });
+      return;
+    }
+
     else if (senha.isEmpty) {
       Navigator.pop(context); // Fecha o loading antes de sair
       setState(() {
@@ -72,7 +89,7 @@ void _fazerLogin() async {
       if (firebaseToken == null) {
         Navigator.pop(context);
         setState(() {
-          _mensagemErroCpf = 'CPF pode está icorreto';
+          _mensagemErroCpf = 'CPF pode está incorreto';
           _mensagemErroSenha = 'Senha pode está incorreta';
         });
         return;

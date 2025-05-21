@@ -19,6 +19,7 @@ class _SplashScreenState extends State<SplashScreen> {
     _checkLogin();
     // Espera 3 segundos e navega para a tela de login
     Future.delayed(Duration(seconds: 2), () {
+      FocusScope.of(context).unfocus();
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (_) => TelaLogin()),

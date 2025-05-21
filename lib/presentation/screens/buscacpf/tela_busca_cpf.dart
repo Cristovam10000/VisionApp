@@ -13,9 +13,9 @@ import 'package:vision_app/presentation/screens/resultados/ficha_result_tela.dar
 
 class TelaBuscaCpf extends StatefulWidget {
   final String token;
-  final Map<String, dynamic> perfil;
+  final Map<String, dynamic>? perfil;
 
-  const TelaBuscaCpf({super.key, required this.token, required this.perfil});
+  const TelaBuscaCpf({super.key, required this.token, this.perfil});
 
   @override
   _TelaBuscaCpfState createState() => _TelaBuscaCpfState();
@@ -67,7 +67,7 @@ class _TelaBuscaCpfState extends State<TelaBuscaCpf> {
     try {
       final ficha = await _uploadService.buscarFichaPorCpf(cpf, widget.token);
       if (!mounted) return;
-      
+      FocusScope.of(context).unfocus();
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
@@ -81,6 +81,7 @@ class _TelaBuscaCpfState extends State<TelaBuscaCpf> {
         await showNadaConstaDialog(context);
 
         if (mounted) {
+          FocusScope.of(context).unfocus();
           Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(

@@ -14,8 +14,8 @@ import '../../../services/upload_service.dart';
 import 'informacoes_obtidas.dart';
 
 class FaceCameraPage extends StatefulWidget {
-  final Map<String, dynamic> perfil;
-  const FaceCameraPage({super.key, required this.perfil});
+  final Map<String, dynamic>? perfil;
+  const FaceCameraPage({super.key, this.perfil});
 
   @override
   _FaceCameraPageState createState() => _FaceCameraPageState();

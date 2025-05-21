@@ -8,12 +8,12 @@ import '../../widgets/state/state.dart';
 
 class TelaHome extends StatefulWidget {
   final String? nomeUsuario;
-  final Map<String, dynamic> perfil;
+  final Map<String, dynamic>? perfil;
 
   const TelaHome({
     super.key,
     this.nomeUsuario,
-    required this.perfil,
+    this.perfil,
   });
 
   @override
@@ -50,15 +50,15 @@ class _TelaHomeState extends State<TelaHome> {
     final args = ModalRoute.of(context)?.settings.arguments;
 
     nome = (widget.nomeUsuario ??
-            (args is String ? args : (widget.perfil['nome'] ?? 'Usuário')))
+            (args is String ? args : (widget.perfil?['nome'] ?? 'Usuário')))
         .toString()
         .split(' ')
         .first;
 
-    nomeCompleto = widget.perfil['nome'] ?? 'Nome não informado';
-    cargo = widget.perfil['cargo'] ?? 'Cargo não informado';
-    classe = widget.perfil['nivel_classe'] ?? 'Classe não informada';
-    matricula = widget.perfil['matricula'] ?? 'Matrícula não informada';
+    nomeCompleto = widget.perfil?['nome'] ?? 'Nome não informado';
+    cargo = widget.perfil?['cargo'] ?? 'Cargo não informado';
+    classe = widget.perfil?['nivel_classe'] ?? 'Classe não informada';
+    matricula = widget.perfil?['matricula'] ?? 'Matrícula não informada';
   }
 
   @override
@@ -100,6 +100,7 @@ class _TelaHomeState extends State<TelaHome> {
                 assetImagePath: 'assets/lupa_cpf.png',
                 texto: 'Busca por CPF',
                 onPressed: () {
+                  FocusScope.of(context).unfocus();
                   Navigator.push(
                     context,
                     MaterialPageRoute(

@@ -8,14 +8,14 @@ import 'package:vision_app/services/auth_token_service.dart';
 
 class FichaResultPage extends StatefulWidget {
   final Map<String, dynamic> ficha;
-  final Map<String, dynamic> perfil;
+  final Map<String, dynamic>? perfil;
   final String token;
   final bool fromAmbiguity;
 
   const FichaResultPage({
     super.key,
     required this.ficha,
-    required this.perfil,
+    this.perfil,
     required this.token,
     this.fromAmbiguity = false,
   });

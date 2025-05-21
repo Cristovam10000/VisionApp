@@ -9,7 +9,7 @@ import 'package:vision_app/presentation/widgets/state/state.dart';
 
 void mostrarPopUpRegrasFace({
   required BuildContext context,
-  required Map<String, dynamic> perfil,
+  required Map<String, dynamic>? perfil,
 }) {
   showDialog(
     context: context,

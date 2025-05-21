@@ -6,13 +6,13 @@ import 'package:vision_app/presentation/screens/home/tela_home.dart';
 
 class CustomNavbar extends StatelessWidget {
   final int currentIndex;
-  final Map<String, dynamic> perfil;
+  final Map<String, dynamic>? perfil;
   final String token;
 
   const CustomNavbar({
     super.key,
     required this.currentIndex,
-    required this.perfil,
+    this.perfil,
     required this.token,
   });
 
