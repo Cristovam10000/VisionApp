@@ -31,15 +31,15 @@ class _FichaResultPageState extends State<FichaResultPage> {
   void initState() {
     super.initState();
     // pega o token do widget e guarda no state
-    _verificarToken(); // atualiza se precisar
+    // _verificarToken(); // atualiza se precisar
   }
 
-  Future<void> _verificarToken() async {
-    final t = await AuthTokenService().getToken();
-    setState(() {
+  // Future<void> _verificarToken() async {
+  //   final t = await AuthTokenService().getToken();
+  //   setState(() {
       
-    });
-  }
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
