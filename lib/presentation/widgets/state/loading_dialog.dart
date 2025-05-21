@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:vision_app/core/constants/app_colors.dart';
 
 void showLoadingDialog(BuildContext context, {String? mensagem}) {
   showDialog(
     context: context,
     barrierDismissible: false,
-    barrierColor: const Color(0xFF132D46), // escurece o fundo da tela
+    barrierColor: ColorPalette.azulMarinho, // escurece o fundo da tela
     builder: (BuildContext context) {
       return const Center(
         child: SizedBox(
@@ -12,7 +13,7 @@ void showLoadingDialog(BuildContext context, {String? mensagem}) {
           width: 50,
           child: CircularProgressIndicator(
             strokeWidth: 3,
-            color: Colors.white,
+            color: ColorPalette.branco,
           ),
         ),
       );

@@ -10,6 +10,12 @@ import 'package:flutter/services.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  // Forçar orientação apenas para retrato (portrait)
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
+
   // Inicialização do Firebase
   try {
     await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
@@ -37,7 +43,6 @@ void main() async {
 
 class VisionApp extends StatelessWidget {
   const VisionApp({super.key});
-
 
   @override
   Widget build(BuildContext context) {

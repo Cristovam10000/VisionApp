@@ -1,19 +1,20 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
+import 'package:vision_app/core/constants/app_colors.dart';
 import 'package:vision_app/presentation/widgets/state/state.dart';
 
 Future<void> showAmbiguousFaceDialog(BuildContext context) async {
 
   return showDialog(
     context: context,
-    barrierColor: Colors.black.withOpacity(0.6),
+    barrierColor: ColorPalette.preto.withOpacity(0.6),
     builder: (BuildContext context) {
       return Dialog(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
         ),
-        backgroundColor: Colors.white,
+        backgroundColor: ColorPalette.branco,
         child: Padding(
           padding: const EdgeInsets.all(24.0),
           child: Column(
@@ -24,7 +25,7 @@ Future<void> showAmbiguousFaceDialog(BuildContext context) async {
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  color: Colors.black,
+                  color: ColorPalette.preto,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -33,7 +34,7 @@ Future<void> showAmbiguousFaceDialog(BuildContext context) async {
                 "Não foi possível identificar com precisão o rosto. Por favor, use a função 'Buscar por CPF' para garantir uma verificação precisa.",
                 style: TextStyle(
                   fontSize: 16,
-                  color: Colors.black87,
+                  color: ColorPalette.preto,
                 ),
                 textAlign: TextAlign.center,
               ),

@@ -1,6 +1,7 @@
 // ignore_for_file: use_key_in_widget_constructors, library_private_types_in_public_api, use_build_context_synchronously
 
 import 'package:flutter/material.dart';
+import 'package:vision_app/core/constants/app_colors.dart';
 import 'package:vision_app/presentation/screens/home/tela_home.dart';
 import 'package:vision_app/presentation/screens/login/tela_login.dart';
 import 'package:vision_app/services/auth_backend_service.dart';
@@ -44,7 +45,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF151B22), // Cor de fundo da tela
+      backgroundColor: ColorPalette.dark, // Cor de fundo da tela
       body: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -56,7 +57,7 @@ class _SplashScreenState extends State<SplashScreen> {
             ),
             SizedBox(height: 20), // Espaço entre o ícone e o loading
             CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+              valueColor: AlwaysStoppedAnimation<Color>(ColorPalette.lightbutton),
               strokeWidth: 6.0,
             ),
           ],

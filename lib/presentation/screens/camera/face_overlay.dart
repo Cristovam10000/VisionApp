@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vision_app/core/constants/app_colors.dart';
 
 // Overlay com foco circular
 class FaceOverlay extends StatelessWidget {
@@ -61,7 +62,7 @@ class FaceOverlayPainter extends CustomPainter {
     // Borda do retângulo
     final borderPaint =
         Paint()
-          ..color = const Color.fromARGB(255, 8, 60, 102)
+          ..color = ColorPalette.darkbutton
           ..style = PaintingStyle.stroke
           ..strokeWidth = 4.0;
     canvas.drawRRect(rrect, borderPaint);

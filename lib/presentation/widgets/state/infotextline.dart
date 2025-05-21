@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:vision_app/core/constants/app_colors.dart';
 
 Widget infoTextLine(String label, String value) {
   return RichText(
     text: TextSpan(
-      style: const TextStyle(fontSize: 18, color: Colors.white),
+      style: const TextStyle(fontSize: 18, color: ColorPalette.branco),
       children: [
         TextSpan(
           text: label,
@@ -23,12 +24,12 @@ Widget infoText(String text) {
         "• ",
         style: TextStyle(
           fontSize: 16,
-          color: Color.fromARGB(255, 25, 124, 238),
+          color: ColorPalette.lightbutton,
           fontWeight: FontWeight.bold,
         ),
       ),
       Expanded(
-        child: Text(text, style: TextStyle(fontSize: 16, color: Colors.black)),
+        child: Text(text, style: TextStyle(fontSize: 16, color: ColorPalette.preto)),
       ),
     ],
   );

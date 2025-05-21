@@ -54,8 +54,8 @@ class CustomNavbar extends StatelessWidget {
         child: BottomNavigationBar(
           backgroundColor: ColorPalette.navbar,
           selectedItemColor:
-              nenhumSelecionado ? Colors.white : ColorPalette.lightbutton,
-          unselectedItemColor: Colors.white,
+              nenhumSelecionado ? ColorPalette.branco : ColorPalette.lightbutton,
+          unselectedItemColor: ColorPalette.branco,
           currentIndex: nenhumSelecionado ? 0 : currentIndex,
           onTap: (index) => _navigate(context, index),
           iconSize: 30,

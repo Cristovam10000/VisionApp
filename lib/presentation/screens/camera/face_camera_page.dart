@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:face_camera/face_camera.dart';
+import 'package:vision_app/core/constants/app_colors.dart';
 import 'package:vision_app/presentation/screens/camera/face_camera_controller_setup.dart';
 import 'package:vision_app/presentation/screens/camera/face_overlay.dart';
 import 'package:vision_app/presentation/screens/camera/face_utils.dart';
@@ -155,7 +156,7 @@ class _FaceCameraPageState extends State<FaceCameraPage> {
                     children: [
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF034DA2),
+                          backgroundColor: ColorPalette.verdePaleta,
                           shape: const CircleBorder(),
                           padding: const EdgeInsets.all(16),
                         ),
@@ -163,19 +164,14 @@ class _FaceCameraPageState extends State<FaceCameraPage> {
 
                         child: const Icon(
                           Icons.check,
-                          color: Color.fromARGB(255, 255, 255, 255),
+                          color: ColorPalette.branco,
                           size: 32,
                         ),
                       ),
                       const SizedBox(width: 64),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color.fromARGB(
-                            255,
-                            224,
-                            10,
-                            10,
-                          ),
+                          backgroundColor: ColorPalette.vermelhoPaleta,
                           shape: const CircleBorder(),
                           padding: const EdgeInsets.all(16),
                         ),
@@ -188,7 +184,7 @@ class _FaceCameraPageState extends State<FaceCameraPage> {
                         },
                         child: const Icon(
                           Icons.close,
-                          color: Colors.white,
+                          color: ColorPalette.branco,
                           size: 32,
                         ),
                       ),
@@ -204,7 +200,7 @@ class _FaceCameraPageState extends State<FaceCameraPage> {
               showCameraLensControl: false,
               messageStyle: const TextStyle(
                 fontSize: 40,
-                color: Color.fromARGB(255, 255, 255, 255),
+                color: ColorPalette.branco,
               ),
             ),
 

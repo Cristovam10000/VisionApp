@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:vision_app/core/constants/app_colors.dart';
 import 'package:vision_app/presentation/screens/camera/popup_dialog_nada_consta.dart';
 import 'package:vision_app/presentation/screens/home/tela_home.dart';
 import 'package:vision_app/presentation/widgets/state/loading_dialog.dart';
@@ -97,7 +98,7 @@ class _TelaBuscaCpfState extends State<TelaBuscaCpf> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      backgroundColor: const Color(0xFF0F1218),
+      backgroundColor: ColorPalette.dark,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         // leading: IconButton(
@@ -123,7 +124,7 @@ class _TelaBuscaCpfState extends State<TelaBuscaCpf> {
               style: TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.bold,
-                color: Colors.white,
+                color: ColorPalette.branco,
               ),
             ),
           ),
@@ -133,7 +134,7 @@ class _TelaBuscaCpfState extends State<TelaBuscaCpf> {
             child: Container(
               padding: const EdgeInsets.all(45),
               decoration: BoxDecoration(
-                color: const Color(0xFF0F253F),
+                color: ColorPalette.azulMarinho,
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Column(
@@ -143,7 +144,7 @@ class _TelaBuscaCpfState extends State<TelaBuscaCpf> {
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                      color: ColorPalette.branco,
                     ),
                   ),
                   const SizedBox(height: 25),
@@ -151,13 +152,13 @@ class _TelaBuscaCpfState extends State<TelaBuscaCpf> {
                     controller: _cpfCtrl,
                     keyboardType: TextInputType.number,
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                    style: const TextStyle(color: Colors.black),
+                    style: const TextStyle(color: ColorPalette.preto),
                     decoration: InputDecoration(
                       hintText: 'Pesquisar',
-                      hintStyle: const TextStyle(color: Colors.grey),
-                      prefixIcon: const Icon(Icons.search, color: Colors.grey),
+                      hintStyle: const TextStyle(color: ColorPalette.cinza),
+                      prefixIcon: const Icon(Icons.search, color: ColorPalette.cinza),
                       filled: true,
-                      fillColor: Colors.white,
+                      fillColor: ColorPalette.branco,
                       contentPadding: const EdgeInsets.symmetric(horizontal: 16),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8),
