@@ -8,14 +8,14 @@ import 'package:vision_app/services/auth_token_service.dart';
 
 class FichaResultPage extends StatefulWidget {
   final Map<String, dynamic> ficha;
-  final Map<String, dynamic> perfil;
+  final Map<String, dynamic>? perfil;
   final String token;
   final bool fromAmbiguity;
 
   const FichaResultPage({
     super.key,
     required this.ficha,
-    required this.perfil,
+    this.perfil,
     required this.token,
     this.fromAmbiguity = false,
   });
@@ -25,19 +25,21 @@ class FichaResultPage extends StatefulWidget {
 }
 
 class _FichaResultPageState extends State<FichaResultPage> {
+  
+  
   @override
   void initState() {
     super.initState();
     // pega o token do widget e guarda no state
-    _verificarToken(); // atualiza se precisar
+    // _verificarToken(); // atualiza se precisar
   }
 
-  Future<void> _verificarToken() async {
-    final t = await AuthTokenService().getToken();
-    setState(() {
-      // atualiza o token com setState
-    });
-  }
+  // Future<void> _verificarToken() async {
+  //   final t = await AuthTokenService().getToken();
+  //   setState(() {
+      
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +69,7 @@ class _FichaResultPageState extends State<FichaResultPage> {
               ? const Center(
                 child: Text(
                   'Nenhuma informação encontrada.',
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(color: ColorPalette.branco),
                 ),
               )
               : ListView(
@@ -125,7 +127,7 @@ class _FichaResultPageState extends State<FichaResultPage> {
                                     style: const TextStyle(
                                       fontSize: 24,
                                       fontWeight: FontWeight.bold,
-                                      color: Colors.white,
+                                      color: ColorPalette.branco,
                                     ),
                                   ),
                                 ],
@@ -155,7 +157,7 @@ class _FichaResultPageState extends State<FichaResultPage> {
                                   style: const TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.w500,
-                                    color: Colors.white,
+                                    color: ColorPalette.branco,
                                   ),
                                 ),
                               ],
@@ -201,7 +203,7 @@ class _FichaResultPageState extends State<FichaResultPage> {
                       const Text(
                         'Resumo Criminal',
                         style: TextStyle(
-                          color: Colors.white,
+                          color: ColorPalette.branco,
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
                         ),
@@ -234,13 +236,13 @@ class _FichaResultPageState extends State<FichaResultPage> {
             text: '$label: ',
             style: const TextStyle(
               fontWeight: FontWeight.bold,
-              color: Colors.white,
+              color: ColorPalette.branco,
               fontSize: 19,
             ),
           ),
           TextSpan(
             text: value ?? 'Não informado',
-            style: const TextStyle(color: Colors.white, fontSize: 19),
+            style: const TextStyle(color: ColorPalette.branco, fontSize: 19),
           ),
         ],
       ),
@@ -256,7 +258,7 @@ class CrimeCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: const Color.fromRGBO(19, 39, 61, 1),
+      color: ColorPalette.azulMarinho,
       margin: const EdgeInsets.symmetric(vertical: 8),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Padding(
@@ -270,7 +272,7 @@ class CrimeCard extends StatelessWidget {
                 const Text(
                   'Mandato',
                   style: TextStyle(
-                    color: Colors.white,
+                    color: ColorPalette.branco,
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
                   ),
@@ -284,12 +286,12 @@ class CrimeCard extends StatelessWidget {
                     color:
                         crime['status'] == 'Em Aberto'
                             ? ColorPalette.vermelhoPaleta
-                            : Colors.grey,
+                            : ColorPalette.cinza,
                     borderRadius: BorderRadius.circular(6),
                   ),
                   child: Text(
                     crime['status'] ?? 'Desconhecido',
-                    style: const TextStyle(color: Colors.white, fontSize: 12),
+                    style: const TextStyle(color: ColorPalette.branco, fontSize: 12),
                   ),
                 ),
               ],
@@ -297,21 +299,21 @@ class CrimeCard extends StatelessWidget {
             const SizedBox(height: 8),
             Text(
               'Data: ${crime['data_ocorrencia'] ?? 'Não informada'}',
-              style: const TextStyle(color: Colors.white),
+              style: const TextStyle(color: ColorPalette.branco),
             ),
             const SizedBox(height: 4),
             Text(
               'Artigo: ${crime['artigo'] ?? 'Não informado'}',
-              style: const TextStyle(color: Colors.white),
+              style: const TextStyle(color: ColorPalette.branco),
             ),
             const SizedBox(height: 4),
             Row(
               children: [
-                const Icon(Icons.location_on, color: Colors.white70, size: 16),
+                const Icon(Icons.location_on, color: ColorPalette.cinzaMaisClaro, size: 16),
                 const SizedBox(width: 4),
                 Text(
                   '${crime['cidade'] ?? ''}, ${crime['estado'] ?? ''}',
-                  style: const TextStyle(color: Colors.white),
+                  style: const TextStyle(color: ColorPalette.branco),
                 ),
               ],
             ),

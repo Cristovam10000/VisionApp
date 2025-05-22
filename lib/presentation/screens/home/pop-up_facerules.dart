@@ -1,6 +1,7 @@
 // ignore_for_file: file_names
 
 import 'package:flutter/material.dart';
+import 'package:vision_app/core/constants/app_colors.dart';
 import 'package:vision_app/presentation/screens/camera/face_camera_page.dart';
 import 'package:vision_app/presentation/widgets/state/infotextline.dart';
 import 'package:vision_app/presentation/widgets/state/state.dart';
@@ -8,7 +9,7 @@ import 'package:vision_app/presentation/widgets/state/state.dart';
 
 void mostrarPopUpRegrasFace({
   required BuildContext context,
-  required Map<String, dynamic> perfil,
+  required Map<String, dynamic>? perfil,
 }) {
   showDialog(
     context: context,
@@ -22,7 +23,7 @@ void mostrarPopUpRegrasFace({
               child: Text(
                 "Certifique-se de tirar \n uma boa foto",
                 style: TextStyle(
-                  color: Colors.black,
+                  color: ColorPalette.preto,
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                 ),
@@ -33,14 +34,14 @@ void mostrarPopUpRegrasFace({
               top: -15,
               right: -15,
               child: IconButton(
-                icon: Icon(Icons.close, size: 28, color: Colors.black54),
+                icon: Icon(Icons.close, size: 28, color: ColorPalette.preto),
                 onPressed: () => Navigator.of(context).pop(),
                 splashRadius: 22,
               ),
             ),
           ],
         ),
-        backgroundColor: Colors.white,
+        backgroundColor: ColorPalette.branco,
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [

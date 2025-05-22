@@ -57,6 +57,23 @@ void _fazerLogin() async {
     }
 
 
+    else if (senha.isEmpty && cpf.length != 11) {
+      Navigator.pop(context); // Fecha o loading antes de sair
+      setState(() {
+        _mensagemErroCpf = 'CPF deve ter 11 dígitos';
+        _mensagemErroSenha = 'O Senha estar vazio.';
+      });
+      return;
+    }
+
+    if (cpf.length != 11) {
+      Navigator.pop(context); // Fecha o loading antes de sair
+      setState(() {
+        _mensagemErroCpf = 'CPF deve ter 11 dígitos';
+      });
+      return;
+    }
+
     else if (senha.isEmpty) {
       Navigator.pop(context); // Fecha o loading antes de sair
       setState(() {
@@ -72,7 +89,7 @@ void _fazerLogin() async {
       if (firebaseToken == null) {
         Navigator.pop(context);
         setState(() {
-          _mensagemErroCpf = 'CPF pode está icorreto';
+          _mensagemErroCpf = 'CPF pode está incorreto';
           _mensagemErroSenha = 'Senha pode está incorreta';
         });
         return;
@@ -98,11 +115,12 @@ void _fazerLogin() async {
 
       await AuthTokenService().saveToken(backendJwt);
 
-      await LocalStorageService().saveLoginData(backendJwt, cpf);
+      await LocalStorageService().saveLoginData(backendJwt);
 
 
       Navigator.pop(context); // Fecha o loading antes de navegar
 
+      FocusScope.of(context).unfocus();
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (context) => TelaHome(perfil: perfil)),
@@ -129,7 +147,7 @@ void _fazerLogin() async {
           topLeft: Radius.circular(30),
           topRight: Radius.circular(30),
         ),
-        border: Border.all(color: Colors.grey, width: 1),
+        border: Border.all(color: ColorPalette.cinza, width: 1),
       ),
       child: Padding(
         padding: const EdgeInsets.only(
@@ -143,7 +161,7 @@ void _fazerLogin() async {
           children: <Widget>[
             TextField(
               style: const TextStyle(
-                color: Colors.black,
+                color: ColorPalette.preto,
                 fontSize: 16,
                 fontWeight: FontWeight.w400,
               ),
@@ -160,7 +178,7 @@ void _fazerLogin() async {
             // CAMPO DE SENHA COM ÍCONE DE OLHO
             TextField(
               style: const TextStyle(
-                color: Colors.black,
+                color: ColorPalette.preto,
                 fontSize: 12,
                 fontWeight: FontWeight.w400,
               ),
@@ -225,11 +243,11 @@ void _fazerLogin() async {
                                   horizontal: 20,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: Colors.white,
+                                  color: ColorPalette.branco,
                                   borderRadius: BorderRadius.circular(16),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: Colors.black.withOpacity(0.2),
+                                      color: ColorPalette.preto,
                                       blurRadius: 10,
                                       offset: const Offset(0, 4),
                                     ),
@@ -249,7 +267,7 @@ void _fazerLogin() async {
                                       style: TextStyle(
                                         fontSize: 20,
                                         fontWeight: FontWeight.bold,
-                                        color: Colors.black,
+                                        color: ColorPalette.preto,
                                       ),
                                       textAlign: TextAlign.center,
                                     ),
@@ -260,7 +278,7 @@ void _fazerLogin() async {
                                       style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.w400,
-                                        color: Colors.black54,
+                                        color: ColorPalette.preto,
                                       ),
                                       textAlign: TextAlign.center,
                                     ),
@@ -289,7 +307,7 @@ void _fazerLogin() async {
                                         style: TextStyle(
                                           fontSize: 16,
                                           fontWeight: FontWeight.bold,
-                                          color: Colors.white,
+                                          color: ColorPalette.branco,
                                         ),
                                       ),
                                     ),

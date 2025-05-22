@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vision_app/core/constants/app_colors.dart';
 import 'package:vision_app/core/constants/app_texts.dart';
 import 'package:vision_app/presentation/screens/home/pop-up_logout.dart';
 import 'package:vision_app/presentation/widgets/state/infotextline.dart';
@@ -20,7 +21,7 @@ class CustomDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      backgroundColor: const Color.fromRGBO(21, 27, 34, 1),
+      backgroundColor: ColorPalette.dark,
       child: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -48,7 +49,7 @@ class CustomDrawer extends StatelessWidget {
               style: const TextStyle(
                 fontWeight: FontWeight.w700,
                 fontSize: 16,
-                color: Colors.white,
+                color: ColorPalette.branco,
               ),
             ),
             const SizedBox(height: 32),
@@ -74,11 +75,11 @@ class CustomDrawer extends StatelessWidget {
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: TextButton.icon(
-                  icon: const Icon(Icons.logout, color: Color(0xFF0B5ED7), size: 32),
+                  icon: const Icon(Icons.logout, color: ColorPalette.lightbutton, size: 32),
                   label: const Text(
                     'Sair',
                     style: TextStyle(
-                      color: Color(0xFF0B5ED7),
+                      color: ColorPalette.lightbutton,
                       fontSize: 20,
                       fontWeight: FontWeight.w900,
                     ),
@@ -87,7 +88,7 @@ class CustomDrawer extends StatelessWidget {
                     mostrarDialogoLogout(context);
                   },
                   style: TextButton.styleFrom(
-                    foregroundColor: const Color(0xFF0B5ED7),
+                    foregroundColor: ColorPalette.lightbutton,
                     padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
                   ),
                 ),

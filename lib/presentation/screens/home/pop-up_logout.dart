@@ -1,6 +1,7 @@
 // ignore_for_file: file_names
 
 import 'package:flutter/material.dart';
+import 'package:vision_app/core/constants/app_colors.dart';
 import 'package:vision_app/presentation/screens/login/tela_login.dart';
 import '../../widgets/state/state.dart';
 
@@ -14,7 +15,7 @@ void mostrarDialogoLogout(BuildContext context) {
     barrierDismissible: false,
     builder: (context) => Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      backgroundColor: Colors.white,
+      backgroundColor: ColorPalette.branco,
       child: Padding(
         padding: const EdgeInsets.all(28.0),
         child: Column(
@@ -30,7 +31,7 @@ void mostrarDialogoLogout(BuildContext context) {
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
-                      color: Colors.black,
+                      color: ColorPalette.preto,
                     ),
                   ),
                 ),
@@ -38,7 +39,7 @@ void mostrarDialogoLogout(BuildContext context) {
                   top: -15,
                   right: -15,
                   child: IconButton(
-                    icon: const Icon(Icons.close, size: 28, color: Colors.black54),
+                    icon: const Icon(Icons.close, size: 28, color: ColorPalette.preto),
                     onPressed: () => Navigator.of(context).pop(),
                     splashRadius: 22,
                   ),
@@ -53,16 +54,17 @@ void mostrarDialogoLogout(BuildContext context) {
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 16,
-                color: Color.fromARGB(223, 0, 0, 0),
+                color: ColorPalette.preto,
               ),
             ),
             const SizedBox(height: 28),
             SizedBox(
               width: double.infinity,
-              child: Button(text: "Sair do Aplicativo", backgroundColor: Colors.red, textStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 18,
-                  color: Colors.white,) , 
+              child: Button(text: "Sair da sua Conta", backgroundColor: ColorPalette.vermelhoPaleta, textStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 18,
+                  color: ColorPalette.branco,) , 
                   onPressed: () {
                   Navigator.of(context).pop();
+                  FocusScope.of(context).unfocus();
                   Navigator.push(
                     context,
                     MaterialPageRoute(

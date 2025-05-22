@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:vision_app/core/constants/app_colors.dart';
 import 'package:vision_app/presentation/screens/camera/popup_dialog_ambiguidade.dart';
 import 'package:vision_app/presentation/screens/home/tela_home.dart';
 import 'package:vision_app/presentation/screens/resultados/ficha_result_tela.dart';
 import 'package:vision_app/presentation/widgets/state/navbar.dart'; // Certifique-se de importar isso
 
 class AmbiguityPage extends StatefulWidget {
-  final Map<String, dynamic> perfil;
+  final Map<String, dynamic>? perfil;
   final List<dynamic> opcoes;
   final String token;
 
   const AmbiguityPage({
     super.key,
     required this.opcoes,
-    required this.perfil,
+    this.perfil,
     required this.token,
   });
 
@@ -25,19 +26,19 @@ class _AmbiguityPageState extends State<AmbiguityPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      showAmbiguousFaceDialog(context);
+      showAmbiguousFaceDialog(context, token: widget.token,);
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 11, 16, 24),
+      backgroundColor: ColorPalette.dark,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          icon: const Icon(Icons.arrow_back, color: ColorPalette.branco),
           onPressed: () {
             Navigator.pushAndRemoveUntil(
               context,
@@ -62,7 +63,7 @@ class _AmbiguityPageState extends State<AmbiguityPage> {
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  color: Colors.white,
+                  color: ColorPalette.branco,
                   fontSize: 28,
                   height: 1.2,
                 ),
@@ -80,7 +81,7 @@ class _AmbiguityPageState extends State<AmbiguityPage> {
 
                   return Container(
                     decoration: BoxDecoration(
-                      color: const Color(0xFF13273D),
+                      color: ColorPalette.azulMarinho,
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: ListTile(
@@ -98,7 +99,7 @@ class _AmbiguityPageState extends State<AmbiguityPage> {
                       title: Text(
                         identidade['nome'] ?? 'Sem nome',
                         style: const TextStyle(
-                          color: Colors.white,
+                          color: ColorPalette.branco,
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
                         ),
@@ -107,21 +108,24 @@ class _AmbiguityPageState extends State<AmbiguityPage> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => FichaResultPage(
-                              ficha: {
-                                'cpf': identidade['cpf'],
-                                'nome': identidade['nome'],
-                                'nome_mae': identidade['nome_mae'],
-                                'nome_pai': identidade['nome_pai'],
-                                'data_nascimento': identidade['data_nascimento'],
-                                'foto_url': identidade['url_face'],
-                                'vulgo': opcao['ficha_criminal']['ficha_criminal']['vulgo'],
-                                'crimes': opcao['crimes'],
-                              },
-                              perfil: widget.perfil,
-                              fromAmbiguity: true,
-                              token: widget.token,
-                            ),
+                            builder:
+                                (context) => FichaResultPage(
+                                  ficha: {
+                                    'cpf': identidade['cpf'],
+                                    'nome': identidade['nome'],
+                                    'nome_mae': identidade['nome_mae'],
+                                    'nome_pai': identidade['nome_pai'],
+                                    'data_nascimento':
+                                        identidade['data_nascimento'],
+                                    'foto_url': identidade['url_face'],
+                                    'vulgo':
+                                        opcao['ficha_criminal']['ficha_criminal']['vulgo'],
+                                    'crimes': opcao['crimes'],
+                                  },
+                                  perfil: widget.perfil,
+                                  fromAmbiguity: true,
+                                  token: widget.token,
+                                ),
                           ),
                         );
                       },

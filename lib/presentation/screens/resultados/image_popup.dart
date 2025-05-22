@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vision_app/core/constants/app_colors.dart';
 
 class ImagePopup extends StatelessWidget {
   final String imageUrl;
@@ -18,7 +19,7 @@ Widget build(BuildContext context) {
             Container(
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: const Color.fromARGB(0, 0, 0, 0),
+                color: Colors.transparent,
                 borderRadius: BorderRadius.circular(1),
               ),
               child: ClipRRect(
@@ -36,11 +37,11 @@ Widget build(BuildContext context) {
                 onTap: () => Navigator.pop(context),
                 child: Container(
                   decoration: BoxDecoration(
-                    color: const Color.fromARGB(255, 255, 255, 255),
+                    color: ColorPalette.branco,
                     shape: BoxShape.circle,
                   ),
                   padding: const EdgeInsets.all(6),
-                  child: const Icon(Icons.close, color: Color.fromARGB(255, 0, 0, 0)),
+                  child: const Icon(Icons.close, color: ColorPalette.dark),
                 ),
               ),
             ),

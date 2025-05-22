@@ -3,36 +3,36 @@ import 'package:vision_app/core/constants/app_colors.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AppTheme {
-  static ThemeData lightTheme = ThemeData(
-    brightness: Brightness.light,
-    primaryColor: ColorPalette.branco,
-    textTheme: GoogleFonts.montserratTextTheme().apply(
-      // Define a fonte global
-      bodyColor: ColorPalette.preto, // Cor padrão do texto
-      displayColor: ColorPalette.preto, // Cor padrão para textos maiores
-    ),
-    elevatedButtonTheme: ElevatedButtonThemeData(
-      style: ElevatedButton.styleFrom(
-        textStyle: GoogleFonts.montserrat(
-          // Aplica a fonte nos botões
-          fontSize: 16,
-          fontWeight: FontWeight.w700,
-        ),
-        backgroundColor: ColorPalette.lightbutton,
-        foregroundColor: ColorPalette.branco,
-      ),
-    ),
-    inputDecorationTheme: const InputDecorationTheme(
-      labelStyle: TextStyle(color: ColorPalette.preto),
-      hintStyle: TextStyle(color: ColorPalette.cinzaMedio),
-      enabledBorder: OutlineInputBorder(
-        borderSide: BorderSide(color: ColorPalette.cinzaMaisClaro),
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderSide: BorderSide(color: ColorPalette.lightbutton),
-      ),
-    ),
-  );
+  // static ThemeData lightTheme = ThemeData(
+  //   brightness: Brightness.light,
+  //   primaryColor: ColorPalette.branco,
+  //   textTheme: GoogleFonts.montserratTextTheme().apply(
+  //     // Define a fonte global
+  //     bodyColor: ColorPalette.preto, // Cor padrão do texto
+  //     displayColor: ColorPalette.preto, // Cor padrão para textos maiores
+  //   ),
+  //   elevatedButtonTheme: ElevatedButtonThemeData(
+  //     style: ElevatedButton.styleFrom(
+  //       textStyle: GoogleFonts.montserrat(
+  //         // Aplica a fonte nos botões
+  //         fontSize: 16,
+  //         fontWeight: FontWeight.w700,
+  //       ),
+  //       backgroundColor: ColorPalette.lightbutton,
+  //       foregroundColor: ColorPalette.branco,
+  //     ),
+  //   ),
+  //   inputDecorationTheme: const InputDecorationTheme(
+  //     labelStyle: TextStyle(color: ColorPalette.preto),
+  //     hintStyle: TextStyle(color: ColorPalette.cinzaMedio),
+  //     enabledBorder: OutlineInputBorder(
+  //       borderSide: BorderSide(color: ColorPalette.cinzaMaisClaro),
+  //     ),
+  //     focusedBorder: OutlineInputBorder(
+  //       borderSide: BorderSide(color: ColorPalette.lightbutton),
+  //     ),
+  //   ),
+  // );
 
   static ThemeData darkTheme = ThemeData(
     brightness: Brightness.dark,

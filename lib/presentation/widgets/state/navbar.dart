@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:vision_app/core/constants/app_colors.dart';
 import 'package:vision_app/presentation/screens/buscacpf/tela_busca_cpf.dart';
-import 'package:vision_app/presentation/screens/camera/face_camera_page.dart';
 import 'package:vision_app/presentation/screens/home/pop-up_facerules.dart';
 import 'package:vision_app/presentation/screens/home/tela_home.dart';
 
 class CustomNavbar extends StatelessWidget {
   final int currentIndex;
-  final Map<String, dynamic> perfil;
+  final Map<String, dynamic>? perfil;
   final String token;
 
   const CustomNavbar({
     super.key,
     required this.currentIndex,
-    required this.perfil,
+    this.perfil,
     required this.token,
   });
 
@@ -22,6 +21,7 @@ class CustomNavbar extends StatelessWidget {
 
     switch (index) {
       case 0:
+        FocusScope.of(context).unfocus();
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => TelaHome(perfil: perfil)),
@@ -31,6 +31,7 @@ class CustomNavbar extends StatelessWidget {
         mostrarPopUpRegrasFace(context: context, perfil: perfil);
         break;
       case 2:
+        FocusScope.of(context).unfocus();
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -55,8 +56,10 @@ class CustomNavbar extends StatelessWidget {
         child: BottomNavigationBar(
           backgroundColor: ColorPalette.navbar,
           selectedItemColor:
-              nenhumSelecionado ? Colors.white : ColorPalette.lightbutton,
-          unselectedItemColor: Colors.white,
+              nenhumSelecionado
+                  ? ColorPalette.branco
+                  : ColorPalette.lightbutton,
+          unselectedItemColor: ColorPalette.branco,
           currentIndex: nenhumSelecionado ? 0 : currentIndex,
           onTap: (index) => _navigate(context, index),
           iconSize: 30,
