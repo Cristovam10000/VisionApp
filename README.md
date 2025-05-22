@@ -15,6 +15,7 @@
 * [Requisitos](#requisitos)
 * [Tecnologias](#tecnologias)
 * [Fluxo do Software](#fluxo-do-software)
+* [Funcionalidades](#funcionalidades)
 * [Dificuldades](#dificuldades)
 * [Resultados](#resultados)
 * [Conclusao](#conclusao)
@@ -26,6 +27,7 @@
 - Cristovam Paulo - [cristovam10000](https://github.com/cristovam10000)
 - Gustavo do Vale - [gustavodovale](https://github.com/gustavodovale)
 - Lucas Cesar
+- Agenor Neto
 
 ## Descrição
 
@@ -98,6 +100,7 @@ Desenvolvimento de um aplicativo de segurança pública que utiliza reconhecimen
 - Integração com API
 - Configuração da Camera no Aplicativo
 - Configuração da Detecção do Rosto pela Camera
+- Organização da arquitetura do aplicativo
 
 
 ## Resultados
@@ -123,3 +126,8 @@ Desenvolvimento de um aplicativo de segurança pública que utiliza reconhecimen
 ## Conclusao
 
 
+O VisionApp - Mobile foi desenvolvido com o objetivo específico de auxiliar agentes de segurança na identificação de indivíduos com pendências judiciais. Diferente de sistemas de vigilância em massa, o aplicativo é voltado exclusivamente para uso em abordagens policiais, onde há a necessidade de verificação rápida e precisa da identidade de pessoas em conflito com a lei.
+
+Com a integração de reconhecimento facial baseado em IA e um banco de dados oficial, o aplicativo permite capturar a imagem de um suspeito, compará-la com registros existentes e, em caso de correspondência, exibir informações como nome, CPF e eventuais mandados de prisão ativos. Essa resposta em tempo real aumenta a agilidade das ações policiais e reduz os riscos envolvidos nas abordagens.
+
+Além disso, o VisionApp reforça o compromisso com a privacidade e a legalidade, ao restringir o uso do sistema apenas a profissionais autorizados e registrar todas as consultas para fins de auditoria. O projeto ainda está em desenvolvimento, mas já apresenta resultados promissores e tem potencial para evoluir como uma ferramenta estratégica no combate à criminalidade.
