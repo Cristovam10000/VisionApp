@@ -120,6 +120,7 @@ void _fazerLogin() async {
 
       Navigator.pop(context); // Fecha o loading antes de navegar
 
+      FocusScope.of(context).unfocus();
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (context) => TelaHome(perfil: perfil)),

@@ -21,6 +21,7 @@ class CustomNavbar extends StatelessWidget {
 
     switch (index) {
       case 0:
+        FocusScope.of(context).unfocus();
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => TelaHome(perfil: perfil)),
@@ -30,6 +31,7 @@ class CustomNavbar extends StatelessWidget {
         mostrarPopUpRegrasFace(context: context, perfil: perfil);
         break;
       case 2:
+        FocusScope.of(context).unfocus();
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -54,7 +56,9 @@ class CustomNavbar extends StatelessWidget {
         child: BottomNavigationBar(
           backgroundColor: ColorPalette.navbar,
           selectedItemColor:
-              nenhumSelecionado ? ColorPalette.branco : ColorPalette.lightbutton,
+              nenhumSelecionado
+                  ? ColorPalette.branco
+                  : ColorPalette.lightbutton,
           unselectedItemColor: ColorPalette.branco,
           currentIndex: nenhumSelecionado ? 0 : currentIndex,
           onTap: (index) => _navigate(context, index),

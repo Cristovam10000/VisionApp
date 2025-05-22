@@ -20,7 +20,7 @@ class FaceOverlayPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final paint =
         Paint()
-          ..color = const Color.fromARGB(255, 51, 51, 51)
+          ..color = const Color.fromARGB(185, 51, 51, 51)
           ..style = PaintingStyle.fill;
 
     // Dimensões e posição do retângulo central
