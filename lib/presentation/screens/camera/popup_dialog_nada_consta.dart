@@ -17,13 +17,9 @@ Future<void> showNadaConstaDialog(BuildContext context) async {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text(
+              Text(
                 "Nada consta!",
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: ColorPalette.preto,
-                ),
+                style:  Theme.of(context).textTheme.titleMedium,
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 12),
@@ -37,7 +33,6 @@ Future<void> showNadaConstaDialog(BuildContext context) async {
               ),
               const SizedBox(height: 24),
               SizedBox(
-                width: double.infinity,
                 child: Button(text: "Ok", onPressed: () => Navigator.of(context).pop())
               )
             ],

@@ -23,13 +23,14 @@ Widget infoText(String text) {
       Text(
         "• ",
         style: TextStyle(
-          fontSize: 16,
+          height: 0.35,
+          fontSize: 50,
           color: ColorPalette.lightbutton,
           fontWeight: FontWeight.bold,
         ),
       ),
       Expanded(
-        child: Text(text, style: TextStyle(fontSize: 16, color: ColorPalette.preto)),
+        child: Text(text, style: TextStyle(fontSize: 16, color: ColorPalette.preto, fontWeight: FontWeight.w400)),
       ),
     ],
   );

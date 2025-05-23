@@ -1,11 +1,11 @@
 // ignore_for_file: file_names
 
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:vision_app/core/constants/app_colors.dart';
 import 'package:vision_app/presentation/screens/camera/face_camera_page.dart';
 import 'package:vision_app/presentation/widgets/state/infotextline.dart';
 import 'package:vision_app/presentation/widgets/state/state.dart';
-
 
 void mostrarPopUpRegrasFace({
   required BuildContext context,
@@ -22,19 +22,19 @@ void mostrarPopUpRegrasFace({
             Center(
               child: Text(
                 "Certifique-se de tirar \n uma boa foto",
-                style: TextStyle(
-                  color: ColorPalette.preto,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: Theme.of(context).textTheme.titleMedium,
                 textAlign: TextAlign.center,
               ),
             ),
             Positioned(
-              top: -15,
-              right: -15,
+              top: -16,
+              right: -16,
               child: IconButton(
-                icon: Icon(Icons.close, size: 28, color: ColorPalette.preto),
+                icon: Icon(
+                  Icons.close,
+                  size: 28,
+                  color: ColorPalette.cinzaMedio,
+                ),
                 onPressed: () => Navigator.of(context).pop(),
                 splashRadius: 22,
               ),

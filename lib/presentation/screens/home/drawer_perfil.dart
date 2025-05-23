@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:vision_app/core/constants/app_colors.dart';
 import 'package:vision_app/core/constants/app_texts.dart';
+import 'package:vision_app/presentation/widgets/state/formatacao.dart';
 import 'package:vision_app/presentation/screens/home/pop-up_logout.dart';
 import 'package:vision_app/presentation/widgets/state/infotextline.dart';
 
@@ -26,33 +27,54 @@ class CustomDrawer extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const SizedBox(height: 32),
+            // Botão X para fechar
+            Padding(
+              padding: const EdgeInsets.only(top: 16.0, right: 8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.close, color: Colors.white, size: 28),
+                    onPressed: () {
+                      Navigator.of(context).pop(); // Fecha o Drawer
+                    },
+                  ),
+                ],
+              ),
+            ),
+
             Text(
               StandardTexts.appTitle,
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                 fontSize: 32,
-                fontWeight:
-                    FontWeight.w700 // Define o texto como negrito
+                fontWeight: FontWeight.w700,
               ),
             ),
+
             const SizedBox(height: 24),
             Image.asset(
-                'assets/star_logo.png',
-                height: 55,
-                width: 55,
-              ),
+              'assets/star_logo.png',
+              height: 55,
+              width: 55,
+            ),
             const SizedBox(height: 24),
-            Text(
-              nomeCompleto,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                fontWeight: FontWeight.w700,
-                fontSize: 16,
-                color: ColorPalette.branco,
+
+            SizedBox(
+              width: 200,
+              child: Text(
+                nomeCompleto,
+                softWrap: true,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontWeight: FontWeight.w700,
+                  fontSize: 16,
+                  color: ColorPalette.branco,
+                ),
               ),
             ),
             const SizedBox(height: 32),
+
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24.0),
               child: Align(
@@ -64,11 +86,12 @@ class CustomDrawer extends StatelessWidget {
                     const SizedBox(height: 12),
                     infoTextLine('Classe: ', classe),
                     const SizedBox(height: 12),
-                    infoTextLine('Matrícula: ', matricula),
+                    infoTextLine('Matrícula: ', formatMatricula(matricula)),
                   ],
                 ),
               ),
             ),
+
             const SizedBox(height: 35),
             Padding(
               padding: const EdgeInsets.only(left: 20, bottom: 32),
@@ -99,5 +122,4 @@ class CustomDrawer extends StatelessWidget {
       ),
     );
   }
-
 }

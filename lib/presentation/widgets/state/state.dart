@@ -65,16 +65,15 @@ class HomeButton extends StatelessWidget {
     Widget build(BuildContext context) {
       Widget? visual;
       if (assetImagePath != null) {
-        visual = Image.asset(assetImagePath!, width: 70, height: 70);
+        visual = Image.asset(assetImagePath!, width: 90, height: 90);
       } else if (icone != null) {
         visual = Icon(icone, size: 50);
       }
 
       return ElevatedButton(
         style: ElevatedButton.styleFrom(
-          fixedSize: const Size(273, 150),
+          fixedSize: const Size(273, 165),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-          padding: const EdgeInsets.all(16),
         ),
         onPressed: onPressed,
         child: Column(
@@ -82,7 +81,7 @@ class HomeButton extends StatelessWidget {
           children: [
             if (visual != null) visual,
             if (visual != null) const SizedBox(height: 20),
-            Text(texto, style: const TextStyle(fontSize: 14)),
+            Text(texto, style: Theme.of(context).textTheme.displaySmall),
           ],
         ),
       );

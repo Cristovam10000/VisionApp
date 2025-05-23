@@ -25,20 +25,16 @@ Future<void> showAmbiguousFaceDialog(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   const SizedBox(height: 12),
-                  const Text(
+                  Text(
                     "Ambiguidade detectada",
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: ColorPalette.preto,
-                    ),
+                    style:  Theme.of(context).textTheme.titleMedium,
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 12),
                   const Text(
                     "Não foi possível identificar com precisão o rosto. Por favor, use a função 'Buscar por CPF' para garantir uma verificação precisa.",
-                    style: TextStyle(fontSize: 16, color: ColorPalette.preto),
-                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 16, color: ColorPalette.preto, letterSpacing: 0),
+                    textAlign: TextAlign.justify,
                   ),
                   const SizedBox(height: 24),
                   Center(
@@ -69,7 +65,7 @@ Future<void> showAmbiguousFaceDialog(
                 child: const Icon(
                   Icons.close,
                   size: 24,
-                  color: Colors.black54,
+                  color: ColorPalette.cinzaMedio,
                 ),
               ),
             ),

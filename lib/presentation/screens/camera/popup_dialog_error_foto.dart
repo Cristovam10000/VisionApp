@@ -19,13 +19,9 @@ Future<void> showErrorFotoDialog(BuildContext context, Map<String, dynamic>? per
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text(
+              Text(
                 "Algo deu errado com a sua foto!",
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: ColorPalette.preto,
-                ),
+                style:  Theme.of(context).textTheme.titleMedium,
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 12),
@@ -39,7 +35,6 @@ Future<void> showErrorFotoDialog(BuildContext context, Map<String, dynamic>? per
               ),
               const SizedBox(height: 24),
               SizedBox(
-                width: double.infinity,
                 child: Button(text: "Ok", 
                 onPressed: () {
                 

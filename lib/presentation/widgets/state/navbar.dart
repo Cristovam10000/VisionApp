@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:vision_app/core/constants/app_colors.dart';
 import 'package:vision_app/presentation/screens/buscacpf/tela_busca_cpf.dart';
 import 'package:vision_app/presentation/screens/home/pop-up_facerules.dart';
@@ -63,15 +64,18 @@ class CustomNavbar extends StatelessWidget {
           currentIndex: nenhumSelecionado ? 0 : currentIndex,
           onTap: (index) => _navigate(context, index),
           iconSize: 30,
-          selectedFontSize: 16,
-          unselectedFontSize: 14,
+          selectedLabelStyle: GoogleFonts.montserrat(
+            fontWeight: FontWeight.w700,
+            fontSize: 12,
+          ),
+          unselectedLabelStyle: GoogleFonts.montserrat(
+            fontWeight: FontWeight.w700,
+            fontSize: 12,
+          ),
           items: const [
+            BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
             BottomNavigationBarItem(
-              icon: Icon(Icons.home_outlined),
-              label: 'Home',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.camera_alt_outlined),
+              icon: Icon(Icons.camera_alt),
               label: 'Câmera',
             ),
             BottomNavigationBarItem(icon: Icon(Icons.search), label: 'CPF'),
