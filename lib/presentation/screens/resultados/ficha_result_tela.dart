@@ -4,7 +4,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:vision_app/presentation/screens/resultados/image_popup.dart';
 import 'package:vision_app/presentation/screens/home/tela_home.dart';
 import 'package:vision_app/presentation/widgets/state/navbar.dart';
-import 'package:vision_app/services/auth_token_service.dart';
 
 class FichaResultPage extends StatefulWidget {
   final Map<String, dynamic> ficha;

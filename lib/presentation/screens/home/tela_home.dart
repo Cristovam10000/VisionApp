@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:vision_app/core/constants/app_colors.dart';
 import 'package:vision_app/presentation/screens/buscacpf/tela_busca_cpf.dart';
 import 'package:vision_app/presentation/screens/home/drawer_perfil.dart';
 import 'package:vision_app/presentation/screens/home/pop-up_facerules.dart';
