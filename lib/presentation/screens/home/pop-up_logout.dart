@@ -25,21 +25,17 @@ void mostrarDialogoLogout(BuildContext context) {
             Stack(
               children: [
                 Center(
-                  child: const Text(
+                  child: Text(
                     'Tem certeza que deseja\nsair do aplicativo ?',
                     textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                      color: ColorPalette.preto,
-                    ),
+                    style: Theme.of(context).textTheme.titleMedium,
                   ),
                 ),
                 Positioned(
                   top: -15,
-                  right: -15,
+                  right: -17,
                   child: IconButton(
-                    icon: const Icon(Icons.close, size: 28, color: ColorPalette.preto),
+                    icon: const Icon(Icons.close, size: 28, color: ColorPalette.cinzaMedio),
                     onPressed: () => Navigator.of(context).pop(),
                     splashRadius: 22,
                   ),
@@ -50,7 +46,7 @@ void mostrarDialogoLogout(BuildContext context) {
             
             const SizedBox(height: 18),
             const Text(
-              'Você precisará fazer login\nnovamente no próximo acesso.',
+              'Você precisará fazer login novamente no próximo acesso.',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 16,
@@ -59,7 +55,6 @@ void mostrarDialogoLogout(BuildContext context) {
             ),
             const SizedBox(height: 28),
             SizedBox(
-              width: double.infinity,
               child: Button(text: "Sair da sua Conta", backgroundColor: ColorPalette.vermelhoPaleta, textStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 18,
                   color: ColorPalette.branco,) , 
                   onPressed: () {

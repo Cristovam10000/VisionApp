@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:vision_app/core/constants/app_colors.dart';
 import 'package:vision_app/presentation/screens/buscacpf/tela_busca_cpf.dart';
 import 'package:vision_app/presentation/screens/home/drawer_perfil.dart';
 import 'package:vision_app/presentation/screens/home/pop-up_facerules.dart';
@@ -10,11 +9,7 @@ class TelaHome extends StatefulWidget {
   final String? nomeUsuario;
   final Map<String, dynamic>? perfil;
 
-  const TelaHome({
-    super.key,
-    this.nomeUsuario,
-    this.perfil,
-  });
+  const TelaHome({super.key, this.nomeUsuario, this.perfil});
 
   @override
   State<TelaHome> createState() => _TelaHomeState();
@@ -49,11 +44,12 @@ class _TelaHomeState extends State<TelaHome> {
     super.didChangeDependencies();
     final args = ModalRoute.of(context)?.settings.arguments;
 
-    nome = (widget.nomeUsuario ??
-            (args is String ? args : (widget.perfil?['nome'] ?? 'Usuário')))
-        .toString()
-        .split(' ')
-        .first;
+    nome =
+        (widget.nomeUsuario ??
+                (args is String ? args : (widget.perfil?['nome'] ?? 'Usuário')))
+            .toString()
+            .split(' ')
+            .first;
 
     nomeCompleto = widget.perfil?['nome'] ?? 'Nome não informado';
     cargo = widget.perfil?['cargo'] ?? 'Cargo não informado';
@@ -69,10 +65,15 @@ class _TelaHomeState extends State<TelaHome> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: Builder(
-          builder: (context) => IconButton(
-            icon: const Icon(Icons.menu),
-            onPressed: () => Scaffold.of(context).openDrawer(),
-          ),
+          builder:
+              (context) => IconButton(
+                icon: Image.asset(
+                  'assets/icon_drawer.png',
+                  width: 16,
+                  height: 12,
+                ),
+                onPressed: () => Scaffold.of(context).openDrawer(),
+              ),
         ),
       ),
       drawer: CustomDrawer(
@@ -89,11 +90,7 @@ class _TelaHomeState extends State<TelaHome> {
               Text(
                 'Bem Vindo,\n$nome!',
                 textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontSize: 38,
-                  fontWeight: FontWeight.w900,
-                  color: ColorPalette.branco,
-                ),
+                style: Theme.of(context).textTheme.displayLarge,
               ),
               const SizedBox(height: 120),
               HomeButton(
@@ -104,9 +101,11 @@ class _TelaHomeState extends State<TelaHome> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => TelaBuscaCpf(token: _token ?? '',
-                        perfil: widget.perfil,
-                      ),
+                      builder:
+                          (context) => TelaBuscaCpf(
+                            token: _token ?? '',
+                            perfil: widget.perfil,
+                          ),
                     ),
                   );
                 },
@@ -116,7 +115,10 @@ class _TelaHomeState extends State<TelaHome> {
                 assetImagePath: 'assets/face_recognition.png',
                 texto: 'Pesquisa Criminal',
                 onPressed: () {
-                  mostrarPopUpRegrasFace(context: context, perfil: widget.perfil);
+                  mostrarPopUpRegrasFace(
+                    context: context,
+                    perfil: widget.perfil,
+                  );
                 },
               ),
             ],
@@ -126,4 +128,3 @@ class _TelaHomeState extends State<TelaHome> {
     );
   }
 }
-

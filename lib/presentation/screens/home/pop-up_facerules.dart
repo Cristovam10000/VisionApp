@@ -6,7 +6,6 @@ import 'package:vision_app/presentation/screens/camera/face_camera_page.dart';
 import 'package:vision_app/presentation/widgets/state/infotextline.dart';
 import 'package:vision_app/presentation/widgets/state/state.dart';
 
-
 void mostrarPopUpRegrasFace({
   required BuildContext context,
   required Map<String, dynamic>? perfil,
@@ -22,19 +21,19 @@ void mostrarPopUpRegrasFace({
             Center(
               child: Text(
                 "Certifique-se de tirar \n uma boa foto",
-                style: TextStyle(
-                  color: ColorPalette.preto,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: Theme.of(context).textTheme.titleMedium,
                 textAlign: TextAlign.center,
               ),
             ),
             Positioned(
-              top: -15,
-              right: -15,
+              top: -16,
+              right: -16,
               child: IconButton(
-                icon: Icon(Icons.close, size: 28, color: ColorPalette.preto),
+                icon: Icon(
+                  Icons.close,
+                  size: 28,
+                  color: ColorPalette.cinzaMedio,
+                ),
                 onPressed: () => Navigator.of(context).pop(),
                 splashRadius: 22,
               ),
@@ -46,12 +45,17 @@ void mostrarPopUpRegrasFace({
           mainAxisSize: MainAxisSize.min,
           children: [
             Image.asset('assets/teste_face.png', width: 70, height: 70),
-            SizedBox(height: 20),
+            SizedBox(height: 16),
             infoText("Local bem iluminado"),
+            SizedBox(height: 5),
             infoText("Sem acessórios (boné, óculos, etc)"),
+            SizedBox(height: 5),
             infoText("Enquadramento na altura dos olhos (estilo 3x4)"),
+            SizedBox(height: 5),
             infoText("Olhe para a câmera"),
+            SizedBox(height: 5),
             infoText("Não envie foto tremida, embaçada ou escura"),
+            SizedBox(height: 5),
           ],
         ),
         actions: [

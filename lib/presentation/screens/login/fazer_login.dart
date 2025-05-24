@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously, deprecated_member_use
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:vision_app/presentation/screens/home/tela_home.dart';
 import 'package:vision_app/presentation/widgets/state/loading_dialog.dart';
 import 'package:vision_app/presentation/widgets/state/state.dart';
@@ -27,7 +28,7 @@ class _LogincontainerState extends State<Logincontainer> {
   String? _mensagemErroCpf; // Mensagem de erro para CPF
   String? _mensagemErroSenha; // Mensagem de erro para senha
 
-void _fazerLogin() async {
+  void _fazerLogin() async {
     showLoadingDialog(context, mensagem: 'Entrando...');
 
     final cpf = emailController.text.trim();
@@ -46,18 +47,13 @@ void _fazerLogin() async {
         _mensagemErroSenha = 'O Senha estar vazio.';
       });
       return;
-    }
-
-    else if (cpf.isEmpty) {
+    } else if (cpf.isEmpty) {
       Navigator.pop(context); // Fecha o loading antes de sair
       setState(() {
         _mensagemErroCpf = 'O CPF estar vazio.';
       });
       return;
-    }
-
-
-    else if (senha.isEmpty && cpf.length != 11) {
+    } else if (senha.isEmpty && cpf.length != 11) {
       Navigator.pop(context); // Fecha o loading antes de sair
       setState(() {
         _mensagemErroCpf = 'CPF deve ter 11 dígitos';
@@ -72,9 +68,7 @@ void _fazerLogin() async {
         _mensagemErroCpf = 'CPF deve ter 11 dígitos';
       });
       return;
-    }
-
-    else if (senha.isEmpty) {
+    } else if (senha.isEmpty) {
       Navigator.pop(context); // Fecha o loading antes de sair
       setState(() {
         _mensagemErroSenha = 'O Senha estar vazio.';
@@ -82,10 +76,11 @@ void _fazerLogin() async {
       return;
     }
 
-
-
     try {
-      final firebaseToken = await AuthService().loginComFirebase(emailFake, senha);
+      final firebaseToken = await AuthService().loginComFirebase(
+        emailFake,
+        senha,
+      );
       if (firebaseToken == null) {
         Navigator.pop(context);
         setState(() {
@@ -117,7 +112,6 @@ void _fazerLogin() async {
 
       await LocalStorageService().saveLoginData(backendJwt);
 
-
       Navigator.pop(context); // Fecha o loading antes de navegar
 
       FocusScope.of(context).unfocus();
@@ -129,13 +123,11 @@ void _fazerLogin() async {
     } catch (e) {
       Navigator.pop(context); // Fecha o loading em caso de erro inesperado
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Erro ao fazer login: $e')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Erro ao fazer login: $e')));
     }
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -159,45 +151,55 @@ void _fazerLogin() async {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            TextField(
-              style: const TextStyle(
-                color: ColorPalette.preto,
-                fontSize: 16,
-                fontWeight: FontWeight.w400,
-              ),
-              controller: emailController, // Isso causa o problema
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                labelText: 'Digite seu CPF',
-                border: const OutlineInputBorder(),
-                errorText: _mensagemErroCpf
+            SizedBox(
+              width: 326,
+              child: TextField(
+                style: Theme.of(context).textTheme.bodyMedium,
+                controller: emailController, // Isso causa o problema
+                keyboardType: TextInputType.number,
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                  LengthLimitingTextInputFormatter(
+                    11,
+                  ), // por exemplo, limite 11 caracteres
+                ],
+                decoration: InputDecoration(
+                  labelText: 'Digite seu CPF',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  errorText: _mensagemErroCpf,
+                ),
               ),
             ),
             const SizedBox(height: 20),
 
             // CAMPO DE SENHA COM ÍCONE DE OLHO
-            TextField(
-              style: const TextStyle(
-                color: ColorPalette.preto,
-                fontSize: 12,
-                fontWeight: FontWeight.w400,
-              ),
-              obscureText: _obscurePassword,
-              controller: senhaController,
-              decoration: InputDecoration(
-                labelText: 'Digite sua senha',
-                border: const OutlineInputBorder(),
-                errorText: _mensagemErroSenha,
-                suffixIcon: IconButton(
-                  icon: Icon(
-                    _obscurePassword ? Icons.visibility_off : Icons.visibility,
-                    color: ColorPalette.preto,
+            SizedBox(
+              width: 326,
+              child: TextField(
+                style: Theme.of(context).textTheme.bodyMedium,
+                obscureText: _obscurePassword,
+                controller: senhaController,
+                decoration: InputDecoration(
+                  labelText: 'Digite sua senha',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
                   ),
-                  onPressed: () {
-                    setState(() {
-                      _obscurePassword = !_obscurePassword;
-                    });
-                  },
+                  errorText: _mensagemErroSenha,
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _obscurePassword
+                          ? Icons.visibility_off
+                          : Icons.visibility,
+                      color: ColorPalette.preto,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _obscurePassword = !_obscurePassword;
+                      });
+                    },
+                  ),
                 ),
               ),
             ),
@@ -207,6 +209,7 @@ void _fazerLogin() async {
             const SizedBox(height: 8),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
+              spacing: 0,
               children: [
                 const Text(
                   'Não possui uma conta?',
@@ -260,57 +263,46 @@ void _fazerLogin() async {
                                     const Image(
                                       image: AssetImage('assets/IconApp.png'),
                                     ),
-                                    const SizedBox(height: 16),
+                                    const SizedBox(height: 12),
                                     // Título
-                                    const Text(
+                                    Text(
                                       'Não tem cadastro?',
-                                      style: TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold,
-                                        color: ColorPalette.preto,
-                                      ),
+                                      style:
+                                          Theme.of(
+                                            context,
+                                          ).textTheme.titleMedium,
                                       textAlign: TextAlign.center,
                                     ),
-                                    const SizedBox(height: 8),
+                                    const SizedBox(height: 25),
                                     // Mensagem
-                                    const Text(
-                                      'Entre em contato com um superior para liberar seu acesso ao VisionApp.',
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w400,
-                                        color: ColorPalette.preto,
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 30.0,
                                       ),
-                                      textAlign: TextAlign.center,
+                                      child: const Text(
+                                        'Entre em contato com um superior para liberar seu acesso ao VisionApp.',
+                                        style: TextStyle(
+                                          wordSpacing: 0,
+                                          letterSpacing: 0,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w400,
+                                          color: ColorPalette.preto,
+                                        ),
+                                        textAlign: TextAlign.justify,
+                                      ),
                                     ),
                                     const SizedBox(height: 24),
                                     // Botão
-                                    ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: ColorPalette.button,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            8,
-                                          ),
-                                        ),
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 32,
-                                          vertical: 12,
-                                        ),
-                                      ),
+                                    Button(
+                                      text: 'Entendido',
                                       onPressed: () {
                                         Navigator.of(
                                           context,
                                         ).pop(); // Fecha o popup
                                       },
-                                      child: const Text(
-                                        'Entendido',
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                          color: ColorPalette.branco,
-                                        ),
-                                      ),
                                     ),
+                                    
+                                    const SizedBox(height: 60),
                                   ],
                                 ),
                               ),

@@ -52,7 +52,6 @@ class _FaceCameraPageState extends State<FaceCameraPage> {
     );
   }
 
-
   Future<void> _handleConfirmUpload() async {
     if (_capturedImage == null || _isProcessing || !_isFaceWellPositioned) {
       if (!mounted) return;
@@ -137,7 +136,19 @@ class _FaceCameraPageState extends State<FaceCameraPage> {
     return Scaffold(
       appBar:
           _capturedImage == null
-              ? AppBar(backgroundColor: Colors.transparent)
+              ? AppBar(
+                backgroundColor: Colors.transparent,
+                leading: IconButton(
+                  icon: const Icon(
+                    Icons.arrow_back_ios,
+                  ), // Troque para o ícone que quiser
+                  onPressed: () {
+                    Navigator.pop(
+                      context,
+                    ); // Mantém o comportamento padrão de voltar
+                  },
+                ),
+              )
               : null,
       body: Stack(
         fit: StackFit.expand,

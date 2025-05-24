@@ -33,7 +33,6 @@ class _TelaBuscaCpfState extends State<TelaBuscaCpf> {
     _cpfCtrl.clear(); // Limpa o campo CPF ao entrar na tela
   }
 
-
   Future<void> buscarFicha() async {
     final cpf = _cpfCtrl.text.trim();
 
@@ -71,7 +70,12 @@ class _TelaBuscaCpfState extends State<TelaBuscaCpf> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (_) => FichaResultPage(ficha: ficha, perfil: widget.perfil, token: widget.token),
+          builder:
+              (_) => FichaResultPage(
+                ficha: ficha,
+                perfil: widget.perfil,
+                token: widget.token,
+              ),
         ),
       );
     } catch (e) {
@@ -88,7 +92,6 @@ class _TelaBuscaCpfState extends State<TelaBuscaCpf> {
               builder: (context) => TelaHome(perfil: widget.perfil),
             ),
             (Route<dynamic> route) => false, // Remove todas
-
           );
         }
       }
@@ -102,86 +105,96 @@ class _TelaBuscaCpfState extends State<TelaBuscaCpf> {
       backgroundColor: ColorPalette.dark,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-        // leading: IconButton(
-        //   icon: const Icon(Icons.arrow_back),
-        //   onPressed: () {
-        //       Navigator.push(
-        //         context,
-        //         MaterialPageRoute(
-        //           builder: (context) => TelaHome(perfil: widget.perfil),
-        //         ),
-        //       );
-    
-        //   },
-        // ),
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back_ios,
+          ), // Troque para o ícone que quiser
+          onPressed: () {
+            Navigator.pop(context); // Mantém o comportamento padrão de voltar
+          },
+        ),
       ),
       body: Column(
         children: [
           const SizedBox(height: 16),
-          const Center(
+          Center(
             child: Text(
               'Buscar por\nCPF',
               textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
-                color: ColorPalette.branco,
-              ),
+              style: Theme.of(context).textTheme.displayLarge
             ),
           ),
           const SizedBox(height: 32),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24.0),
             child: Container(
-              padding: const EdgeInsets.all(45),
+              padding: const EdgeInsets.all(25),
               decoration: BoxDecoration(
                 color: ColorPalette.azulMarinho,
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Column(
                 children: [
-                  const Text(
+                  Text(
                     'Digite o CPF',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: ColorPalette.branco,
-                    ),
+                    style: Theme.of(context).textTheme.displayMedium
                   ),
                   const SizedBox(height: 25),
-                  TextField(
-                    controller: _cpfCtrl,
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                    style: const TextStyle(color: ColorPalette.preto),
-                    decoration: InputDecoration(
-                      hintText: 'Pesquisar',
-                      hintStyle: const TextStyle(color: ColorPalette.cinza),
-                      prefixIcon: const Icon(Icons.search, color: ColorPalette.cinza),
-                      filled: true,
-                      fillColor: ColorPalette.branco,
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide.none,
+                  SizedBox(
+                    width: 256,
+                    child: TextField(
+                      controller: _cpfCtrl,
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly,
+                        LengthLimitingTextInputFormatter(
+                          11,
+                        ), // por exemplo, limite 11 caracteres
+                      ],
+                      style: const TextStyle(color: ColorPalette.preto),
+                      decoration: InputDecoration(
+                        hintText: 'Pesquisar',
+                        hintStyle: const TextStyle(color: ColorPalette.cinza),
+                        prefixIcon: const Icon(
+                          Icons.search,
+                          color: ColorPalette.cinza,
+                        ),
+                        filled: true,
+                        fillColor: ColorPalette.branco,
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide.none,
+                        ),
+                        errorText: _cpfError,
                       ),
-                      errorText: _cpfError, // <- Aqui mostra o erro em vermelho
                     ),
                   ),
-                  const SizedBox(height: 24),
+
+                  const SizedBox(height: 34),
                   _isLoading
                       ? const CircularProgressIndicator()
                       : SizedBox(
-                          height: 48,
-                          child: Button(text: "Pesquisar", onPressed: buscarFicha),
+                        height: 48,
+                        child: Button(
+                          text: "Pesquisar",
+                          onPressed: buscarFicha,
                         ),
+                      ),
+                  const SizedBox(height: 14),
                 ],
               ),
             ),
           ),
         ],
       ),
-      bottomNavigationBar: CustomNavbar(currentIndex: 2, perfil: widget.perfil, token: widget.token),
+      bottomNavigationBar: CustomNavbar(
+        currentIndex: 2,
+        perfil: widget.perfil,
+        token: widget.token,
+      ),
     );
   }
 
