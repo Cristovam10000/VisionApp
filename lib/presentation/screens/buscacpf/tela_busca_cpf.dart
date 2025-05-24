@@ -107,7 +107,9 @@ class _TelaBuscaCpfState extends State<TelaBuscaCpf> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios), // Troque para o ícone que quiser
+          icon: const Icon(
+            Icons.arrow_back_ios,
+          ), // Troque para o ícone que quiser
           onPressed: () {
             Navigator.pop(context); // Mantém o comportamento padrão de voltar
           },
@@ -117,23 +119,29 @@ class _TelaBuscaCpfState extends State<TelaBuscaCpf> {
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.only(top: 30, left: 87, right: 87),
+            padding: const EdgeInsets.only(top: 1, left: 87, right: 87),
             child: Center(
-              child: Text(
-                'Buscar por\nCPF',
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.displayLarge,
+              child: SizedBox(
+                width: 201,
+                height: 76,
+                child: Text(
+                  'Buscar por\nCPF',
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.displayLarge,
+                ),
               ),
             ),
           ),
           Padding(
             padding: const EdgeInsets.only(
               top: 64,
-              left: 36,
+              left: 35,
               right: 35,
-              bottom: 254,
+              bottom: 1,
             ),
             child: Container(
+              width: 450, // Defina o valor desejado
+              height: 250,
               padding: const EdgeInsets.only(top: 24, bottom: 40),
               decoration: BoxDecoration(
                 color: ColorPalette.azulMarinho,
@@ -143,16 +151,21 @@ class _TelaBuscaCpfState extends State<TelaBuscaCpf> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.only(left: 100, right: 100),
-                    child: Text(
-                      'Digite o CPF',
-                      style: Theme.of(context).textTheme.displayMedium,
+                    child: SizedBox(
+                      width: 104,
+                      height: 20,
+                      child: Text(
+                        'Digite o CPF',
+                        style: Theme.of(context).textTheme.displayMedium,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 24),
                   Padding(
-                    padding: const EdgeInsets.only(left: 24, right: 24),
+                    padding: const EdgeInsets.only(left: 25, right: 25),
                     child: SizedBox(
-                      width: 256,
+                      width: 321,
+                      height: 55,
                       child: TextField(
                         controller: _cpfCtrl,
                         keyboardType: TextInputType.number,
@@ -179,6 +192,18 @@ class _TelaBuscaCpfState extends State<TelaBuscaCpf> {
                             borderRadius: BorderRadius.circular(8),
                             borderSide: BorderSide.none,
                           ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: BorderSide.none,
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: BorderSide.none,
+                          ),
+                          errorBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: BorderSide.none,
+                          ),
                           errorText: _cpfError,
                         ),
                       ),
@@ -191,7 +216,6 @@ class _TelaBuscaCpfState extends State<TelaBuscaCpf> {
                       : Padding(
                         padding: const EdgeInsets.only(left: 78, right: 78),
                         child: SizedBox(
-                          height: 48,
                           child: Button(
                             text: "Pesquisar",
                             onPressed: buscarFicha,
