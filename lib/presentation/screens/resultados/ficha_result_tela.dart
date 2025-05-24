@@ -24,8 +24,6 @@ class FichaResultPage extends StatefulWidget {
 }
 
 class _FichaResultPageState extends State<FichaResultPage> {
-  
-  
   @override
   void initState() {
     super.initState();
@@ -36,7 +34,7 @@ class _FichaResultPageState extends State<FichaResultPage> {
   // Future<void> _verificarToken() async {
   //   final t = await AuthTokenService().getToken();
   //   setState(() {
-      
+
   //   });
   // }
 
@@ -45,9 +43,11 @@ class _FichaResultPageState extends State<FichaResultPage> {
     return Scaffold(
       backgroundColor: ColorPalette.dark,
       appBar: AppBar(
-        backgroundColor: ColorPalette.dark,
+        backgroundColor: Colors.transparent,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
+          icon: const Icon(
+            Icons.arrow_back_ios,
+          ), // Troque para o ícone que quiser
           onPressed: () {
             if (widget.fromAmbiguity) {
               Navigator.pop(context);
@@ -63,6 +63,7 @@ class _FichaResultPageState extends State<FichaResultPage> {
           },
         ),
       ),
+
       body:
           widget.ficha.isEmpty
               ? const Center(
@@ -164,9 +165,9 @@ class _FichaResultPageState extends State<FichaResultPage> {
                           ],
                         ),
                       ),
-    
+
                       const SizedBox(height: 1),
-    
+
                       // Dados pessoais
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 3),
@@ -196,9 +197,9 @@ class _FichaResultPageState extends State<FichaResultPage> {
                           ],
                         ),
                       ),
-    
+
                       const SizedBox(height: 30),
-    
+
                       const Text(
                         'Resumo Criminal',
                         style: TextStyle(
@@ -208,7 +209,7 @@ class _FichaResultPageState extends State<FichaResultPage> {
                         ),
                       ),
                       const SizedBox(height: 18),
-    
+
                       if (widget.ficha['crimes'] != null)
                         ...List.generate(
                           widget.ficha['crimes'].length,
@@ -290,7 +291,10 @@ class CrimeCard extends StatelessWidget {
                   ),
                   child: Text(
                     crime['status'] ?? 'Desconhecido',
-                    style: const TextStyle(color: ColorPalette.branco, fontSize: 12),
+                    style: const TextStyle(
+                      color: ColorPalette.branco,
+                      fontSize: 12,
+                    ),
                   ),
                 ),
               ],
@@ -308,7 +312,11 @@ class CrimeCard extends StatelessWidget {
             const SizedBox(height: 4),
             Row(
               children: [
-                const Icon(Icons.location_on, color: ColorPalette.cinzaMaisClaro, size: 16),
+                const Icon(
+                  Icons.location_on,
+                  color: ColorPalette.cinzaMaisClaro,
+                  size: 16,
+                ),
                 const SizedBox(width: 4),
                 Text(
                   '${crime['cidade'] ?? ''}, ${crime['estado'] ?? ''}',

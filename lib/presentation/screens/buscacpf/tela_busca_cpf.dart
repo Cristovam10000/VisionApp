@@ -105,18 +105,14 @@ class _TelaBuscaCpfState extends State<TelaBuscaCpf> {
       backgroundColor: ColorPalette.dark,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-        // leading: IconButton(
-        //   icon: const Icon(Icons.arrow_back),
-        //   onPressed: () {
-        //       Navigator.push(
-        //         context,
-        //         MaterialPageRoute(
-        //           builder: (context) => TelaHome(perfil: widget.perfil),
-        //         ),
-        //       );
-
-        //   },
-        // ),
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back_ios,
+          ), // Troque para o ícone que quiser
+          onPressed: () {
+            Navigator.pop(context); // Mantém o comportamento padrão de voltar
+          },
+        ),
       ),
       body: Column(
         children: [

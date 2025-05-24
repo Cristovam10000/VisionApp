@@ -26,7 +26,7 @@ class _AmbiguityPageState extends State<AmbiguityPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      showAmbiguousFaceDialog(context, token: widget.token,);
+      showAmbiguousFaceDialog(context, token: widget.token);
     });
   }
 
@@ -36,9 +36,10 @@ class _AmbiguityPageState extends State<AmbiguityPage> {
       backgroundColor: ColorPalette.dark,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-        elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: ColorPalette.branco),
+          icon: const Icon(
+            Icons.arrow_back_ios,
+          ), // Troque para o ícone que quiser
           onPressed: () {
             Navigator.pushAndRemoveUntil(
               context,
@@ -49,8 +50,8 @@ class _AmbiguityPageState extends State<AmbiguityPage> {
             );
           },
         ),
-        automaticallyImplyLeading: false,
       ),
+
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,

@@ -48,7 +48,7 @@ class CustomNavbar extends StatelessWidget {
     final bool nenhumSelecionado = currentIndex == -1;
 
     return SizedBox(
-      height: 80,
+      height: 100,
       child: Theme(
         data: Theme.of(context).copyWith(
           splashColor: Colors.transparent,

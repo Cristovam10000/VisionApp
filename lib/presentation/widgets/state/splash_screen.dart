@@ -59,7 +59,7 @@ class _SplashScreenState extends State<SplashScreen> {
             SizedBox(height: 20), // Espaço entre o ícone e o loading
             CircularProgressIndicator(
               valueColor: AlwaysStoppedAnimation<Color>(ColorPalette.lightbutton),
-              strokeWidth: 6.0,
+              strokeWidth: 3.0,
             ),
           ],
         ),
