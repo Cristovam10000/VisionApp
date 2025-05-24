@@ -17,19 +17,19 @@ String formatMatricula(String matricula) {
 }
 
 
-String formatCpf(String cpf) {
+String? formatCpf(String? cpf) {
   // Remove tudo que não for número
-  final digitsOnly = cpf.replaceAll(RegExp(r'\D'), '');
+  final digitsOnly = cpf?.replaceAll(RegExp(r'\D'), '');
 
-  if (digitsOnly.length != 11) {
+  if (digitsOnly?.length != 11) {
     // Se não tiver 11 dígitos, retorna original
     return cpf;
   }
 
-  final part1 = digitsOnly.substring(0, 3);
-  final part2 = digitsOnly.substring(3, 6);
-  final part3 = digitsOnly.substring(6, 9);
-  final part4 = digitsOnly.substring(9);
+  final part1 = digitsOnly?.substring(0, 3);
+  final part2 = digitsOnly?.substring(3, 6);
+  final part3 = digitsOnly?.substring(6, 9);
+  final part4 = digitsOnly?.substring(9);
 
   return '$part1.$part2.$part3-$part4';
 }

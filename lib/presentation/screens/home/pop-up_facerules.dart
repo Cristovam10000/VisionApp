@@ -45,12 +45,17 @@ void mostrarPopUpRegrasFace({
           mainAxisSize: MainAxisSize.min,
           children: [
             Image.asset('assets/teste_face.png', width: 70, height: 70),
-            SizedBox(height: 20),
+            SizedBox(height: 16),
             infoText("Local bem iluminado"),
+            SizedBox(height: 5),
             infoText("Sem acessórios (boné, óculos, etc)"),
+            SizedBox(height: 5),
             infoText("Enquadramento na altura dos olhos (estilo 3x4)"),
+            SizedBox(height: 5),
             infoText("Olhe para a câmera"),
+            SizedBox(height: 5),
             infoText("Não envie foto tremida, embaçada ou escura"),
+            SizedBox(height: 5),
           ],
         ),
         actions: [

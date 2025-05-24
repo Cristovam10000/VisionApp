@@ -9,7 +9,7 @@ import 'package:vision_app/presentation/screens/camera/tela_ambiguidade.dart';
 import 'package:vision_app/presentation/screens/home/tela_home.dart';
 
 class ResultadoPage extends StatefulWidget {
-  final Map<String, dynamic> resultado;
+  final Map<String, dynamic>? resultado;
   final Map<String, dynamic>? perfil;
   final String token;
 
@@ -35,10 +35,10 @@ class _ResultadoPageState extends State<ResultadoPage> {
 
   void _verificarResultado() async {
     final statusAmbiguidade =
-        widget.resultado['status']?.toString().toLowerCase();
-    final statusFace = widget.resultado['status']?.toString().toLowerCase();
-    final statusCpf = widget.resultado['detail']?.toString().toLowerCase();
-    final statusErro = widget.resultado['erro']?.toString();
+        widget.resultado?['status']?.toString().toLowerCase();
+    final statusFace = widget.resultado?['status']?.toString().toLowerCase();
+    final statusCpf = widget.resultado?['detail']?.toString().toLowerCase();
+    final statusErro = widget.resultado?['erro']?.toString();
 
     if (statusFace == 'nenhuma similaridade forte' ||
         statusCpf == 'cpf não encontrado na tabela identidade.') {
@@ -69,7 +69,7 @@ class _ResultadoPageState extends State<ResultadoPage> {
       final opcoes = <Map<String, dynamic>>[];
 
       final List<dynamic> pessoas =
-          widget.resultado['possiveis_identidades'] ?? [];
+          widget.resultado?['possiveis_identidades'] ?? [];
 
       for (final pessoa in pessoas) {
         opcoes.add({
@@ -110,8 +110,8 @@ class _ResultadoPageState extends State<ResultadoPage> {
 
   @override
   Widget build(BuildContext context) {
-    final identidade = widget.resultado['identidade'] ?? {};
-    final fichaCriminal = widget.resultado['ficha_criminal'] ?? {};
+    final identidade = widget.resultado?['identidade'] ?? {};
+    final fichaCriminal = widget.resultado?['ficha_criminal'] ?? {};
     final fichaInfo = fichaCriminal['ficha_criminal'] ?? {};
     final crimes = fichaCriminal['crimes'] ?? [];
 
