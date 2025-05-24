@@ -4,6 +4,8 @@ import 'package:vision_app/presentation/screens/camera/popup_dialog_ambiguidade.
 import 'package:vision_app/presentation/screens/home/tela_home.dart';
 import 'package:vision_app/presentation/screens/resultados/ficha_result_tela.dart';
 import 'package:vision_app/presentation/widgets/state/navbar.dart'; // Certifique-se de importar isso
+import 'package:google_fonts/google_fonts.dart';
+import 'package:vision_app/presentation/widgets/state/formatacao.dart';
 
 class AmbiguityPage extends StatefulWidget {
   final Map<String, dynamic>? perfil;
@@ -26,7 +28,7 @@ class _AmbiguityPageState extends State<AmbiguityPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      showAmbiguousFaceDialog(context, token: widget.token,);
+      showAmbiguousFaceDialog(context, token: widget.token);
     });
   }
 
@@ -55,24 +57,22 @@ class _AmbiguityPageState extends State<AmbiguityPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const SizedBox(height: 10),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.0),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 58.0, vertical: 0),
               child: Text(
                 'Pessoas\nEncontradas',
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
+                style: GoogleFonts.montserrat(
+                  fontSize: 32,
+                  fontWeight: FontWeight.w600,
                   color: ColorPalette.branco,
-                  fontSize: 28,
-                  height: 1.2,
                 ),
               ),
             ),
-            const SizedBox(height: 30),
+            const SizedBox(height: 32),
             Expanded(
               child: ListView.separated(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
+                padding: const EdgeInsets.symmetric(horizontal: 32),
                 itemCount: widget.opcoes.length,
                 separatorBuilder: (_, __) => const SizedBox(height: 16),
                 itemBuilder: (context, index) {
@@ -82,7 +82,7 @@ class _AmbiguityPageState extends State<AmbiguityPage> {
                   return Container(
                     decoration: BoxDecoration(
                       color: ColorPalette.azulMarinho,
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.circular(16),
                     ),
                     child: ListTile(
                       contentPadding: const EdgeInsets.symmetric(
@@ -94,10 +94,10 @@ class _AmbiguityPageState extends State<AmbiguityPage> {
                           identidade['url_face'] ??
                               'https://via.placeholder.com/150',
                         ),
-                        radius: 25,
+                        radius: 20,
                       ),
                       title: Text(
-                        identidade['nome'] ?? 'Sem nome',
+                        formatCpf(identidade['cpf'] ?? 'Sem cpf'),
                         style: const TextStyle(
                           color: ColorPalette.branco,
                           fontWeight: FontWeight.bold,
