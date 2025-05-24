@@ -47,7 +47,7 @@ class _FichaResultPageState extends State<FichaResultPage> {
       appBar: AppBar(
         backgroundColor: ColorPalette.dark,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back_ios),
           onPressed: () {
             if (widget.fromAmbiguity) {
               Navigator.pop(context);

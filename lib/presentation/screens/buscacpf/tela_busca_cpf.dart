@@ -103,91 +103,101 @@ class _TelaBuscaCpfState extends State<TelaBuscaCpf> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: ColorPalette.dark,
+      // ...existing code...
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-        // leading: IconButton(
-        //   icon: const Icon(Icons.arrow_back),
-        //   onPressed: () {
-        //       Navigator.push(
-        //         context,
-        //         MaterialPageRoute(
-        //           builder: (context) => TelaHome(perfil: widget.perfil),
-        //         ),
-        //       );
-
-        //   },
-        // ),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios), // Troque para o ícone que quiser
+          onPressed: () {
+            Navigator.pop(context); // Mantém o comportamento padrão de voltar
+          },
+        ),
       ),
+      // ...existing code...
       body: Column(
         children: [
-          const SizedBox(height: 16),
-          Center(
-            child: Text(
-              'Buscar por\nCPF',
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.displayLarge
+          Padding(
+            padding: const EdgeInsets.only(top: 30, left: 87, right: 87),
+            child: Center(
+              child: Text(
+                'Buscar por\nCPF',
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.displayLarge,
+              ),
             ),
           ),
-          const SizedBox(height: 32),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0),
+            padding: const EdgeInsets.only(
+              top: 64,
+              left: 36,
+              right: 35,
+              bottom: 254,
+            ),
             child: Container(
-              padding: const EdgeInsets.all(25),
+              padding: const EdgeInsets.only(top: 24, bottom: 40),
               decoration: BoxDecoration(
                 color: ColorPalette.azulMarinho,
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Column(
                 children: [
-                  Text(
-                    'Digite o CPF',
-                    style: Theme.of(context).textTheme.displayMedium
+                  Padding(
+                    padding: const EdgeInsets.only(left: 100, right: 100),
+                    child: Text(
+                      'Digite o CPF',
+                      style: Theme.of(context).textTheme.displayMedium,
+                    ),
                   ),
-                  const SizedBox(height: 25),
-                  SizedBox(
-                    width: 256,
-                    child: TextField(
-                      controller: _cpfCtrl,
-                      keyboardType: TextInputType.number,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.digitsOnly,
-                        LengthLimitingTextInputFormatter(
-                          11,
-                        ), // por exemplo, limite 11 caracteres
-                      ],
-                      style: const TextStyle(color: ColorPalette.preto),
-                      decoration: InputDecoration(
-                        hintText: 'Pesquisar',
-                        hintStyle: const TextStyle(color: ColorPalette.cinza),
-                        prefixIcon: const Icon(
-                          Icons.search,
-                          color: ColorPalette.cinza,
+                  const SizedBox(height: 24),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 24, right: 24),
+                    child: SizedBox(
+                      width: 256,
+                      child: TextField(
+                        controller: _cpfCtrl,
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly,
+                          LengthLimitingTextInputFormatter(
+                            11,
+                          ), // por exemplo, limite 11 caracteres
+                        ],
+                        style: const TextStyle(color: ColorPalette.preto),
+                        decoration: InputDecoration(
+                          hintText: 'Pesquisar',
+                          hintStyle: const TextStyle(color: ColorPalette.cinza),
+                          prefixIcon: const Icon(
+                            Icons.search,
+                            color: ColorPalette.cinza,
+                          ),
+                          filled: true,
+                          fillColor: ColorPalette.branco,
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: BorderSide.none,
+                          ),
+                          errorText: _cpfError,
                         ),
-                        filled: true,
-                        fillColor: ColorPalette.branco,
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide.none,
-                        ),
-                        errorText: _cpfError,
                       ),
                     ),
                   ),
+                  const SizedBox(height: 32),
 
-                  const SizedBox(height: 34),
                   _isLoading
                       ? const CircularProgressIndicator()
-                      : SizedBox(
-                        height: 48,
-                        child: Button(
-                          text: "Pesquisar",
-                          onPressed: buscarFicha,
+                      : Padding(
+                        padding: const EdgeInsets.only(left: 78, right: 78),
+                        child: SizedBox(
+                          height: 48,
+                          child: Button(
+                            text: "Pesquisar",
+                            onPressed: buscarFicha,
+                          ),
                         ),
                       ),
-                  const SizedBox(height: 14),
                 ],
               ),
             ),

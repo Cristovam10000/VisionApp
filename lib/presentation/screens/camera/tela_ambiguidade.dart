@@ -38,7 +38,7 @@ class _AmbiguityPageState extends State<AmbiguityPage> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: ColorPalette.branco),
+          icon: const Icon(Icons.arrow_back_ios, color: ColorPalette.branco),
           onPressed: () {
             Navigator.pushAndRemoveUntil(
               context,
