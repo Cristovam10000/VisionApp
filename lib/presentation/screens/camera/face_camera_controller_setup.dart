@@ -8,8 +8,8 @@ FaceCameraController setupFaceCameraController({
 }) {
   return FaceCameraController(
     autoCapture: false,
-    defaultFlashMode: CameraFlashMode.off,
     defaultCameraLens: CameraLens.back,
+    defaultFlashMode: CameraFlashMode.off,
     enableAudio: false,
     onCapture: onCapture,
     onFaceDetected: onFaceDetected,

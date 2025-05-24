@@ -13,8 +13,6 @@ class FaceOverlay extends StatelessWidget {
   }
 }
 
-
-
 class FaceOverlayPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
@@ -24,18 +22,22 @@ class FaceOverlayPainter extends CustomPainter {
           ..style = PaintingStyle.fill;
 
     // Dimensões e posição do retângulo central
-    final rectWidth = 282.0;
+    final rectWidth = 296.0;
     final rectHeight = 452.0;
     final rectLeft = 47.0;
     final rectTop = 121.0;
     final borderRadius = 280.0;
 
     // Círculos para os botões
-    final buttonRadius = 38.0;
+    // Círculos para os botões
+    final buttonRadiusCapture = 39.0;
+    final buttonRadiusFlash = 24.1;
     final ycapture = size.height - 62;
-    final yflash = size.height - 62;
-    final captureX = size.width / 1.715;
-    final flashX = size.width / 3;
+    final yflash = size.height - 63;
+
+    // TROCADOS
+    final flashX = size.width / 1.510;
+    final captureX = size.width / 2.4;
 
     // === CRIA O PATH COM FUROS ===
     final path =
@@ -50,10 +52,16 @@ class FaceOverlayPainter extends CustomPainter {
 
     // Furos circulares dos botões
     path.addOval(
-      Rect.fromCircle(center: Offset(captureX, ycapture), radius: buttonRadius),
+      Rect.fromCircle(
+        center: Offset(captureX, ycapture),
+        radius: buttonRadiusCapture,
+      ),
     );
     path.addOval(
-      Rect.fromCircle(center: Offset(flashX, yflash), radius: buttonRadius),
+      Rect.fromCircle(
+        center: Offset(flashX, yflash),
+        radius: buttonRadiusFlash,
+      ),
     );
 
     // Desenha o path com furos
@@ -75,10 +83,14 @@ class FaceOverlayPainter extends CustomPainter {
           ..strokeWidth = 2;
     canvas.drawCircle(
       Offset(captureX, ycapture),
-      buttonRadius,
+      buttonRadiusCapture,
       circleBorderPaint,
     );
-    canvas.drawCircle(Offset(flashX, yflash), buttonRadius, circleBorderPaint);
+    canvas.drawCircle(
+      Offset(flashX, yflash),
+      buttonRadiusFlash,
+      circleBorderPaint,
+    );
   }
 
   @override
