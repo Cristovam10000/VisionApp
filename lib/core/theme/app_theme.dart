@@ -7,6 +7,19 @@ class AppTheme {
     brightness: Brightness.dark,
     primaryColor: ColorPalette.branco,
 
+    iconButtonTheme: IconButtonThemeData(
+      style: ButtonStyle(
+        iconColor: WidgetStateProperty.resolveWith<Color>(
+          (Set<WidgetState> states) {
+            if (states.contains(WidgetState.pressed)) {
+              return ColorPalette.lightbutton; // cor ao pressionar
+            }
+            return ColorPalette.branco; // cor padrão
+          },
+        ),
+      ),
+    ),
+
     // Texto com fonte Montserrat e pesos personalizados
     textTheme: TextTheme(
       displayLarge: GoogleFonts.montserrat(
@@ -88,15 +101,22 @@ class AppTheme {
 
     // Botões elevados com fonte personalizada
     elevatedButtonTheme: ElevatedButtonThemeData(
-      style: ElevatedButton.styleFrom(
-        textStyle: GoogleFonts.montserrat(
-          fontSize: 16,
-          fontWeight: FontWeight.w700,
-        ),
-        backgroundColor: ColorPalette.button,
-        foregroundColor: ColorPalette.branco,
+  style: ButtonStyle(
+    textStyle: WidgetStateProperty.all(
+      GoogleFonts.montserrat(
+        fontSize: 16,
+        fontWeight: FontWeight.w700,
       ),
     ),
+    backgroundColor: WidgetStateProperty.resolveWith<Color>((states) {
+      if (states.contains(WidgetState.pressed)) {
+        return ColorPalette.darkbutton; // cor quando pressionado
+      }
+      return ColorPalette.button; // cor normal
+    }),
+    foregroundColor: WidgetStateProperty.all(ColorPalette.branco),
+  ),
+),
 
     // Input fields com fonte personalizada
     inputDecorationTheme: InputDecorationTheme(
