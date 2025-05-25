@@ -27,26 +27,26 @@ class FichaResultPage extends StatefulWidget {
 }
 
 class _FichaResultPageState extends State<FichaResultPage> {
-  @override
-  void initState() {
-    super.initState();
-    // pega o token do widget e guarda no state
-    // _verificarToken(); // atualiza se precisar
+  bool _isScrolled = false;
+
+  void _onScroll(ScrollNotification notification) {
+    if (notification.metrics.pixels > 0 && !_isScrolled) {
+      setState(() {
+        _isScrolled = true;
+      });
+    } else if (notification.metrics.pixels <= 0 && _isScrolled) {
+      setState(() {
+        _isScrolled = false;
+      });
+    }
   }
-
-  // Future<void> _verificarToken() async {
-  //   final t = await AuthTokenService().getToken();
-  //   setState(() {
-
-  //   });
-  // }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ColorPalette.dark,
       appBar: AppBar(
-        backgroundColor: ColorPalette.dark,
+        backgroundColor: _isScrolled ? ColorPalette.navbar : ColorPalette.dark,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios),
           onPressed: () {
@@ -64,15 +64,19 @@ class _FichaResultPageState extends State<FichaResultPage> {
           },
         ),
       ),
-      body:
-          widget.ficha == null || widget.ficha!.isEmpty
-              ? const Center(
+      body: NotificationListener<ScrollNotification>(
+        onNotification: (notification) {
+          _onScroll(notification);
+          return true;
+        },
+        child: widget.ficha == null || widget.ficha!.isEmpty
+            ? const Center(
                 child: Text(
                   'Nenhuma informação encontrada.',
                   style: TextStyle(color: ColorPalette.branco),
                 ),
               )
-              : ListView(
+            : ListView(
                 padding: const EdgeInsets.only(
                   top: 0,
                   left: 40,
@@ -83,7 +87,6 @@ class _FichaResultPageState extends State<FichaResultPage> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      // Foto, Nome, Vulgo
                       Container(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 8,
@@ -99,12 +102,10 @@ class _FichaResultPageState extends State<FichaResultPage> {
                               onTap: () {
                                 showDialog(
                                   context: context,
-                                  builder:
-                                      (context) => ImagePopup(
-                                        imageUrl:
-                                            widget.ficha?['foto_url'] ??
-                                            'https://i.imgur.com/j6xgQ7D.png',
-                                      ),
+                                  builder: (context) => ImagePopup(
+                                    imageUrl: widget.ficha?['foto_url'] ??
+                                        'https://i.imgur.com/j6xgQ7D.png',
+                                  ),
                                 );
                               },
                               child: CircleAvatar(
@@ -121,8 +122,7 @@ class _FichaResultPageState extends State<FichaResultPage> {
                               text: TextSpan(
                                 children: [
                                   TextSpan(
-                                    text:
-                                        widget.ficha?['nome'] ??
+                                    text: widget.ficha?['nome'] ??
                                         'Nome não encontrado',
                                     style: const TextStyle(
                                       fontSize: 24,
@@ -159,10 +159,7 @@ class _FichaResultPageState extends State<FichaResultPage> {
                           ],
                         ),
                       ),
-
                       const SizedBox(height: 1),
-
-                      // Dados pessoais
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 3),
                         decoration: BoxDecoration(
@@ -194,9 +191,7 @@ class _FichaResultPageState extends State<FichaResultPage> {
                           ],
                         ),
                       ),
-
                       const SizedBox(height: 30),
-
                       const Text(
                         'Resumo Criminal',
                         style: TextStyle(
@@ -206,14 +201,11 @@ class _FichaResultPageState extends State<FichaResultPage> {
                         ),
                       ),
                       const SizedBox(height: 20),
-
                       if (widget.ficha?['crimes'] != null)
                         ...List.generate(
                           widget.ficha?['crimes'].length,
                           (index) => Padding(
-                            padding: const EdgeInsets.only(
-                              bottom: 12,
-                            ), // define o espaçamento entre os cards
+                            padding: const EdgeInsets.only(bottom: 12),
                             child: CrimeCard(
                               crime: widget.ficha?['crimes'][index],
                             ),
@@ -223,6 +215,7 @@ class _FichaResultPageState extends State<FichaResultPage> {
                   ),
                 ],
               ),
+      ),
       bottomNavigationBar: CustomNavbar(
         currentIndex: -1,
         perfil: widget.perfil,
@@ -262,7 +255,6 @@ class CrimeCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       color: ColorPalette.azulMarinho,
-      margin: const EdgeInsets.symmetric(),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Padding(
         padding: const EdgeInsets.only(
@@ -287,10 +279,9 @@ class CrimeCard extends StatelessWidget {
                     vertical: 4,
                   ),
                   decoration: BoxDecoration(
-                    color:
-                        crime['status'] == 'Em Aberto'
-                            ? ColorPalette.vermelhoPaleta
-                            : ColorPalette.cinza,
+                    color: crime['status'] == 'Em Aberto'
+                        ? ColorPalette.vermelhoPaleta
+                        : ColorPalette.cinza,
                     borderRadius: BorderRadius.circular(6),
                   ),
                   child: Text(
@@ -312,7 +303,7 @@ class CrimeCard extends StatelessWidget {
             Row(
               children: [
                 SvgPicture.asset(
-                  'assets/LocationMarkerOutline.svg', // substitua com o caminho do seu arquivo
+                  'assets/LocationMarkerOutline.svg',
                   width: 20,
                   height: 20,
                 ),
