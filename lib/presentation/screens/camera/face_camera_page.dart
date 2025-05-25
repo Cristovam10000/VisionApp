@@ -27,13 +27,15 @@ class _FaceCameraPageState extends State<FaceCameraPage> {
   bool _isProcessing = false;
   final UploadService _uploadService = UploadService();
 
-  // Flags de rosto detectado
-  // bool _isFaceVisible = false;
   bool _isFaceWellPositioned = false;
+
+  // Variável para controlar manualmente o modo do flash
+  CameraFlashMode _currentFlashMode = CameraFlashMode.off;
 
   @override
   void initState() {
     super.initState();
+
     _capturedImage = null;
     _controller = setupFaceCameraController(
       onCapture: (file) {
@@ -50,6 +52,21 @@ class _FaceCameraPageState extends State<FaceCameraPage> {
         });
       },
     );
+
+    // Sincroniza o flash com o controlador após o primeiro frame
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _syncFlashModeWithController();
+    });
+  }
+
+  // Sincroniza o estado do flash local com o estado interno do controlador
+  void _syncFlashModeWithController() {
+    // Considerando que o controlador inicia no modo auto,
+    // precisamos chamar changeFlashMode() duas vezes para chegar em off
+    if (_currentFlashMode == CameraFlashMode.off) {
+      _controller.changeFlashMode(); // auto -> always
+      _controller.changeFlashMode(); // always -> off
+    }
   }
 
   Future<void> _handleConfirmUpload() async {
@@ -82,12 +99,11 @@ class _FaceCameraPageState extends State<FaceCameraPage> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder:
-                  (context) => ResultadoPage(
-                    resultado: resultado['body'],
-                    perfil: widget.perfil,
-                    token: token,
-                  ),
+              builder: (context) => ResultadoPage(
+                resultado: resultado['body'],
+                perfil: widget.perfil,
+                token: token,
+              ),
             ),
           );
         } else {
@@ -97,16 +113,14 @@ class _FaceCameraPageState extends State<FaceCameraPage> {
           );
         }
 
-        // Se tudo certo, segue normalmente
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder:
-                (context) => ResultadoPage(
-                  resultado: resultado,
-                  perfil: widget.perfil,
-                  token: token,
-                ),
+            builder: (context) => ResultadoPage(
+              resultado: resultado,
+              perfil: widget.perfil,
+              token: token,
+            ),
           ),
         ).then((_) async {
           await _controller.startImageStream();
@@ -131,25 +145,41 @@ class _FaceCameraPageState extends State<FaceCameraPage> {
     showErrorFotoDialog(context, widget.perfil);
   }
 
+  // Alterna o modo do flash e sincroniza o estado local
+  void _toggleFlashMode() {
+    if (!_controller.enableControls) return;
+
+    setState(() {
+      switch (_currentFlashMode) {
+        case CameraFlashMode.auto:
+          _currentFlashMode = CameraFlashMode.always;
+          break;
+        case CameraFlashMode.always:
+          _currentFlashMode = CameraFlashMode.off;
+          break;
+        case CameraFlashMode.off:
+          _currentFlashMode = CameraFlashMode.auto;
+          break;
+      }
+    });
+
+    _controller.changeFlashMode();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar:
-          _capturedImage == null
-              ? AppBar(
-                backgroundColor: Colors.transparent,
-                leading: IconButton(
-                  icon: const Icon(
-                    Icons.arrow_back_ios,
-                  ), // Troque para o ícone que quiser
-                  onPressed: () {
-                    Navigator.pop(
-                      context,
-                    ); // Mantém o comportamento padrão de voltar
-                  },
-                ),
-              )
-              : null,
+      appBar: _capturedImage == null
+          ? AppBar(
+              backgroundColor: Colors.transparent,
+              leading: IconButton(
+                icon: const Icon(Icons.arrow_back_ios),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+            )
+          : null,
       body: Stack(
         fit: StackFit.expand,
         children: [
@@ -172,7 +202,6 @@ class _FaceCameraPageState extends State<FaceCameraPage> {
                           padding: const EdgeInsets.all(16),
                         ),
                         onPressed: _handleConfirmUpload,
-
                         child: const Icon(
                           Icons.check,
                           color: ColorPalette.branco,
@@ -187,11 +216,8 @@ class _FaceCameraPageState extends State<FaceCameraPage> {
                           padding: const EdgeInsets.all(16),
                         ),
                         onPressed: () async {
-                          await _controller
-                              .startImageStream(); // reinicia a câmera
-                          setState(
-                            () => _capturedImage = null,
-                          ); // remove a imagem
+                          await _controller.startImageStream();
+                          setState(() => _capturedImage = null);
                         },
                         child: const Icon(
                           Icons.close,
@@ -205,65 +231,67 @@ class _FaceCameraPageState extends State<FaceCameraPage> {
               ],
             )
           else
-            SmartFaceCamera(
-              controller: _controller,
-              indicatorShape: IndicatorShape.none,
-              showCameraLensControl: false,
-              captureControlBuilder: (context, detectedFace) {
-                return IconButton(
-                  icon: CircleAvatar(
-                    radius: 40,
-                    backgroundColor: const Color.fromRGBO(3, 77, 162, 1),
-                    foregroundColor: Colors.white,
-                    child: const Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Icon(
-                        Icons.camera_alt,
-                        size: 35,
-                        color: Colors.white,
+            Stack(
+              fit: StackFit.expand,
+              children: [
+                SmartFaceCamera(
+                  controller: _controller,
+                  indicatorShape: IndicatorShape.none,
+                  showControls: false,
+                  showCameraLensControl: false,
+                ),
+                Positioned(
+                  bottom: 32,
+                  left: 0,
+                  right: 0,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      IconButton(
+                        icon: CircleAvatar(
+                          radius: 40,
+                          backgroundColor: const Color.fromRGBO(3, 77, 162, 1),
+                          foregroundColor: Colors.white,
+                          child: const Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Icon(
+                              Icons.camera_alt,
+                              size: 35,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                        onPressed:
+                            _controller.enableControls ? _controller.captureImage : null,
                       ),
-                    ),
+                      const SizedBox(width: 16),
+                      IconButton(
+                        icon: CircleAvatar(
+                          radius: 25,
+                          backgroundColor: const Color.fromRGBO(3, 77, 162, 1),
+                          foregroundColor: Colors.white,
+                          child: Padding(
+                            padding: const EdgeInsets.all(2.0),
+                            child: Icon(
+                              _currentFlashMode == CameraFlashMode.always
+                                  ? Icons.flash_on
+                                  : _currentFlashMode == CameraFlashMode.off
+                                      ? Icons.flash_off
+                                      : Icons.flash_auto,
+                              size: 25,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                        onPressed:
+                            _controller.enableControls ? _toggleFlashMode : null,
+                      ),
+                    ],
                   ),
-                  onPressed:
-                      _controller.enableControls
-                          ? _controller.captureImage
-                          : null,
-                );
-              },
-              flashControlBuilder: (context, flashMode) {
-                IconData icon;
-                switch (flashMode) {
-                  case CameraFlashMode.always:
-                    icon = Icons.flash_on;
-                    break;
-                  case CameraFlashMode.off:
-                    icon = Icons.flash_off;
-                    break;
-                  case CameraFlashMode.auto:
-                  default:
-                    icon = Icons.flash_auto;
-                }
-
-                return IconButton(
-                  icon: CircleAvatar(
-                    radius: 25,
-                    backgroundColor: const Color.fromRGBO(3, 77, 162, 1),
-                    foregroundColor: Colors.white,
-                    child: Padding(
-                      padding: const EdgeInsets.all(2.0),
-                      child: Icon(icon, size: 25, color: Colors.white),
-                    ),
-                  ),
-                  onPressed:
-                      _controller.enableControls
-                          ? _controller.changeFlashMode
-                          : null,
-                );
-              },
+                ),
+              ],
             ),
-
           if (_capturedImage == null) const FaceOverlay(),
-
           if (_isProcessing) const Center(child: CircularProgressIndicator()),
         ],
       ),
