@@ -209,10 +209,57 @@ class _FaceCameraPageState extends State<FaceCameraPage> {
               controller: _controller,
               indicatorShape: IndicatorShape.none,
               showCameraLensControl: false,
-              messageStyle: const TextStyle(
-                fontSize: 40,
-                color: ColorPalette.branco,
-              ),
+              captureControlBuilder: (context, detectedFace) {
+                return IconButton(
+                  icon: CircleAvatar(
+                    radius: 40,
+                    backgroundColor: const Color.fromRGBO(3, 77, 162, 1),
+                    foregroundColor: Colors.white,
+                    child: const Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Icon(
+                        Icons.camera_alt,
+                        size: 35,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                  onPressed:
+                      _controller.enableControls
+                          ? _controller.captureImage
+                          : null,
+                );
+              },
+              flashControlBuilder: (context, flashMode) {
+                IconData icon;
+                switch (flashMode) {
+                  case CameraFlashMode.always:
+                    icon = Icons.flash_on;
+                    break;
+                  case CameraFlashMode.off:
+                    icon = Icons.flash_off;
+                    break;
+                  case CameraFlashMode.auto:
+                  default:
+                    icon = Icons.flash_auto;
+                }
+
+                return IconButton(
+                  icon: CircleAvatar(
+                    radius: 25,
+                    backgroundColor: const Color.fromRGBO(3, 77, 162, 1),
+                    foregroundColor: Colors.white,
+                    child: Padding(
+                      padding: const EdgeInsets.all(2.0),
+                      child: Icon(icon, size: 25, color: Colors.white),
+                    ),
+                  ),
+                  onPressed:
+                      _controller.enableControls
+                          ? _controller.changeFlashMode
+                          : null,
+                );
+              },
             ),
 
           if (_capturedImage == null) const FaceOverlay(),

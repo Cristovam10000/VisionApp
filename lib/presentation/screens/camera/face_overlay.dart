@@ -32,12 +32,12 @@ class FaceOverlayPainter extends CustomPainter {
     // Círculos para os botões
     final buttonRadiusCapture = 39.0;
     final buttonRadiusFlash = 24.1;
-    final ycapture = size.height - 62;
-    final yflash = size.height - 63;
+    final ycapture = size.height - 70;
+    final yflash = size.height - 70;
 
     // TROCADOS
-    final flashX = size.width / 1.510;
-    final captureX = size.width / 2.4;
+    final flashX = size.width / 1.475;
+    final captureX = size.width / 2.53;
 
     // === CRIA O PATH COM FUROS ===
     final path =
