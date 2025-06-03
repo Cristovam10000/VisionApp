@@ -64,7 +64,7 @@ class _TelaBuscaCpfState extends State<TelaBuscaCpf> {
     showLoadingDialog(context, mensagem: 'Buscando ficha...');
 
     try {
-      final ficha = await _uploadService.buscarFichaPorCpf(cpf, widget.token);
+      final ficha = await _uploadService.buscarFichaPorCpf(cpf, widget.perfil?['matricula'], widget.token);
       if (!mounted) return;
       FocusScope.of(context).unfocus();
       Navigator.pushReplacement(

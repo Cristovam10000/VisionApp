@@ -89,6 +89,7 @@ class _FaceCameraPageState extends State<FaceCameraPage> {
       final token = AuthTokenService().token;
       if (token != null) {
         final resultado = await _uploadService.enviarImagem(
+          widget.perfil?['matricula'],
           _capturedImage!,
           token,
         );

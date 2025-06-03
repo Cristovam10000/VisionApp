@@ -12,23 +12,27 @@ class UploadService {
   final String fichaEndpoint = '/buscar-ficha-criminal';
 
   Future<Map<String, dynamic>> enviarImagem(
-    File imageFile,
-    String token,
+  String matricula,
+  File imageFile,
+  String token,
   ) async {
     try {
-      final request = http.MultipartRequest('POST', Uri.parse('$baseUrl$uploadEndpoint'));
+      final uri = Uri.parse('$baseUrl$uploadEndpoint?matricula=$matricula');
+
+      final request = http.MultipartRequest('POST', uri);
+
+      // Cabeçalhos
       request.headers.addAll({
         'Authorization': 'Bearer $token',
-        'Content-Type': 'multipart/form-data',
       });
 
-      var stream = imageFile.openRead();
-      var length = await imageFile.length();
-      final mimeTypeStr =
-          mime.lookupMimeType(imageFile.path) ?? 'application/octet-stream';
-      var contentType = MediaType.parse(mimeTypeStr);
+      // Arquivo da imagem
+      final mimeTypeStr = mime.lookupMimeType(imageFile.path) ?? 'application/octet-stream';
+      final contentType = MediaType.parse(mimeTypeStr);
+      final stream = http.ByteStream(imageFile.openRead());
+      final length = await imageFile.length();
 
-      var multipartFile = http.MultipartFile(
+      final multipartFile = http.MultipartFile(
         'file',
         stream,
         length,
@@ -39,7 +43,7 @@ class UploadService {
       request.files.add(multipartFile);
 
       final response = await request.send();
-      var responseData = await response.stream.bytesToString();
+      final responseData = await response.stream.bytesToString();
 
       if (response.statusCode != 200) {
         throw Exception('Falha ao enviar imagem: ${response.statusCode}');
@@ -47,12 +51,8 @@ class UploadService {
 
       if (kDebugMode) {
         print('Imagem enviada com sucesso!');
+        print('Resposta: $responseData');
       }
-      if (kDebugMode) {
-        print('Body: $responseData');
-      }
-
-
 
       return json.decode(responseData);
     } catch (e) {
@@ -63,37 +63,40 @@ class UploadService {
     }
   }
 
-  Future<Map<String, dynamic>> buscarFichaPorCpf(String cpf, String token) async {
-    // Usando GET com o CPF na URL conforme indicado pelo backend
-    final Uri url = Uri.parse('https://fastapi.ajvale.com.br/buscar-ficha-criminal/$cpf');
 
-    try {
-      final response = await http.get(
-        url,
-        headers: {
-          'Authorization': 'Bearer $token',
-          'accept': 'application/json',
-        },
-      );
+  Future<Map<String, dynamic>> buscarFichaPorCpf(String cpf, String matricula, String token) async {
+  // Adiciona a matrícula como parâmetro de consulta (query parameter)
+  final Uri url = Uri.parse(
+    'https://fastapi.ajvale.com.br/buscar-ficha-criminal/$cpf?matricula=$matricula',
+  );
 
-      if (kDebugMode) {
-        print('🔐 Token: $token');
-        print('📞 URL: $url');
-        print('Status code: ${response.statusCode}');
-        print('Body: ${response.body}');
-      }
+  try {
+    final response = await http.get(
+      url,
+      headers: {
+        'Authorization': 'Bearer $token',
+        'accept': 'application/json',
+      },
+    );
 
-      
-      if (response.statusCode != 200) {
-        throw Exception('Erro ao buscar ficha: ${response.statusCode}');
-      }
-
-      return json.decode(response.body);
-    } catch (e) {
-      if (kDebugMode) {
-        print('Erro: $e');
-      }
-      rethrow;
+    if (kDebugMode) {
+      print('🔐 Token: $token');
+      print('📞 URL: $url');
+      print('Status code: ${response.statusCode}');
+      print('Body: ${response.body}');
     }
+
+    if (response.statusCode != 200) {
+      throw Exception('Erro ao buscar ficha: ${response.statusCode}');
+    }
+
+    return json.decode(response.body);
+  } catch (e) {
+    if (kDebugMode) {
+      print('Erro: $e');
+    }
+    rethrow;
   }
+}
+
 }
