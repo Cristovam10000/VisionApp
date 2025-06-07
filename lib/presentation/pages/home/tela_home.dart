@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:vision_app/presentation/screens/buscacpf/tela_busca_cpf.dart';
-import 'package:vision_app/presentation/screens/home/drawer_perfil.dart';
-import 'package:vision_app/presentation/screens/home/pop-up_facerules.dart';
-import 'package:vision_app/services/auth_token_service.dart';
+import 'package:vision_app/presentation/pages/buscacpf/tela_busca_cpf.dart';
+import 'package:vision_app/presentation/pages/home/drawer_perfil.dart';
+import 'package:vision_app/presentation/pages/home/pop-up_facerules.dart';
+import 'package:vision_app/core/services/auth_token_service.dart';
 import '../../widgets/state/state.dart';
 
 class TelaHome extends StatefulWidget {

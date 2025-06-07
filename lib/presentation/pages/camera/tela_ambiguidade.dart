@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:vision_app/core/constants/app_colors.dart';
-import 'package:vision_app/presentation/screens/camera/popup_dialog_ambiguidade.dart';
-import 'package:vision_app/presentation/screens/home/tela_home.dart';
-import 'package:vision_app/presentation/screens/resultados/ficha_result_tela.dart';
+import 'package:vision_app/presentation/pages/camera/popup_dialog_ambiguidade.dart';
+import 'package:vision_app/presentation/pages/home/tela_home.dart';
+import 'package:vision_app/presentation/pages/resultados/ficha_result_tela.dart';
 import 'package:vision_app/presentation/widgets/state/navbar.dart'; // Certifique-se de importar isso
 import 'package:google_fonts/google_fonts.dart';
 import 'package:vision_app/presentation/widgets/state/formatacao.dart';

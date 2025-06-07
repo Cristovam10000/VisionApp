@@ -2,14 +2,14 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:vision_app/presentation/screens/home/tela_home.dart';
+import 'package:vision_app/presentation/pages/home/tela_home.dart';
 import 'package:vision_app/presentation/widgets/state/loading_dialog.dart';
 import 'package:vision_app/presentation/widgets/state/state.dart';
 import 'package:vision_app/core/constants/app_colors.dart';
-import 'package:vision_app/services/local_storage_service.dart';
-import '../../../services/auth_firebase_service.dart';
-import '../../../services/auth_backend_service.dart';
-import '../../../services/auth_token_service.dart';
+import 'package:vision_app/core/services/local_storage_service.dart';
+import '../../../core/services/auth_firebase_service.dart';
+import '../../../core/services/auth_backend_service.dart';
+import '../../../core/services/auth_token_service.dart';
 
 class Logincontainer extends StatefulWidget {
   const Logincontainer({super.key});

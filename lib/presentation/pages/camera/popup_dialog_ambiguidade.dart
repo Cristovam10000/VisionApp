@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:vision_app/core/constants/app_colors.dart';
-import 'package:vision_app/presentation/screens/buscacpf/tela_busca_cpf.dart';
+import 'package:vision_app/presentation/pages/buscacpf/tela_busca_cpf.dart';
 import 'package:vision_app/presentation/widgets/state/state.dart';
 
 

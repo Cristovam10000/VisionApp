@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:vision_app/core/constants/app_colors.dart';
-import 'package:vision_app/presentation/screens/buscacpf/tela_busca_cpf.dart';
-import 'package:vision_app/presentation/screens/home/pop-up_facerules.dart';
-import 'package:vision_app/presentation/screens/home/tela_home.dart';
+import 'package:vision_app/presentation/pages/buscacpf/tela_busca_cpf.dart';
+import 'package:vision_app/presentation/pages/home/pop-up_facerules.dart';
+import 'package:vision_app/presentation/pages/home/tela_home.dart';
 
 class CustomNavbar extends StatelessWidget {
   final int currentIndex;

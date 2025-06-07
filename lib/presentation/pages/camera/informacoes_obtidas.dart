@@ -1,12 +1,12 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
-import 'package:vision_app/presentation/screens/resultados/ficha_result_tela.dart';
-import 'package:vision_app/presentation/screens/camera/face_camera_page.dart';
-import 'package:vision_app/presentation/screens/camera/popup_dialog_error_foto.dart';
-import 'package:vision_app/presentation/screens/camera/popup_dialog_nada_consta.dart';
-import 'package:vision_app/presentation/screens/camera/tela_ambiguidade.dart';
-import 'package:vision_app/presentation/screens/home/tela_home.dart';
+import 'package:vision_app/presentation/pages/resultados/ficha_result_tela.dart';
+import 'package:vision_app/presentation/pages/camera/face_camera_page.dart';
+import 'package:vision_app/presentation/pages/camera/popup_dialog_error_foto.dart';
+import 'package:vision_app/presentation/pages/camera/popup_dialog_nada_consta.dart';
+import 'package:vision_app/presentation/pages/camera/tela_ambiguidade.dart';
+import 'package:vision_app/presentation/pages/home/tela_home.dart';
 
 class ResultadoPage extends StatefulWidget {
   final Map<String, dynamic>? resultado;

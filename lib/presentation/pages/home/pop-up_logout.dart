@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:vision_app/core/constants/app_colors.dart';
-import 'package:vision_app/presentation/screens/login/tela_login.dart';
+import 'package:vision_app/presentation/pages/login/tela_login.dart';
 import '../../widgets/state/state.dart';
 
 

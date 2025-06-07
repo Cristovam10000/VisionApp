@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:vision_app/core/constants/app_colors.dart';
 import 'package:vision_app/core/constants/app_texts.dart';
 import 'package:vision_app/presentation/widgets/state/formatacao.dart';
-import 'package:vision_app/presentation/screens/home/pop-up_logout.dart';
+import 'package:vision_app/presentation/pages/home/pop-up_logout.dart';
 import 'package:vision_app/presentation/widgets/state/infotextline.dart';
 
 class CustomDrawer extends StatelessWidget {

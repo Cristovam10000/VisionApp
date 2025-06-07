@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:vision_app/core/constants/app_colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:vision_app/presentation/screens/resultados/image_popup.dart';
-import 'package:vision_app/presentation/screens/home/tela_home.dart';
-import 'package:vision_app/presentation/screens/resultados/vulgo.dart';
+import 'package:vision_app/presentation/pages/resultados/image_popup.dart';
+import 'package:vision_app/presentation/pages/home/tela_home.dart';
+import 'package:vision_app/presentation/pages/resultados/vulgo.dart';
 import 'package:vision_app/presentation/widgets/state/formatacao.dart';
 import 'package:vision_app/presentation/widgets/state/infotextline.dart';
 import 'package:vision_app/presentation/widgets/state/navbar.dart';

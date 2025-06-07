@@ -3,13 +3,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:vision_app/core/constants/app_colors.dart';
-import 'package:vision_app/presentation/screens/camera/popup_dialog_nada_consta.dart';
-import 'package:vision_app/presentation/screens/home/tela_home.dart';
+import 'package:vision_app/presentation/pages/camera/popup_dialog_nada_consta.dart';
+import 'package:vision_app/presentation/pages/home/tela_home.dart';
 import 'package:vision_app/presentation/widgets/state/loading_dialog.dart';
 import 'package:vision_app/presentation/widgets/state/navbar.dart';
 import 'package:vision_app/presentation/widgets/state/state.dart';
-import 'package:vision_app/services/upload_service.dart';
-import 'package:vision_app/presentation/screens/resultados/ficha_result_tela.dart';
+import 'package:vision_app/core/services/upload_service.dart';
+import 'package:vision_app/presentation/pages/resultados/ficha_result_tela.dart';
 
 class TelaBuscaCpf extends StatefulWidget {
   final String token;

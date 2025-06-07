@@ -3,14 +3,14 @@
 import 'package:flutter/material.dart';
 import 'package:face_camera/face_camera.dart';
 import 'package:vision_app/core/constants/app_colors.dart';
-import 'package:vision_app/presentation/screens/camera/face_camera_controller_setup.dart';
-import 'package:vision_app/presentation/screens/camera/face_overlay.dart';
-import 'package:vision_app/presentation/screens/camera/face_utils.dart';
-import 'package:vision_app/presentation/screens/camera/popup_dialog_error_foto.dart';
+import 'package:vision_app/presentation/pages/camera/face_camera_controller_setup.dart';
+import 'package:vision_app/presentation/pages/camera/face_overlay.dart';
+import 'package:vision_app/presentation/pages/camera/face_utils.dart';
+import 'package:vision_app/presentation/pages/camera/popup_dialog_error_foto.dart';
 import 'package:vision_app/presentation/widgets/state/loading_dialog.dart';
 import 'dart:io';
-import '../../../services/auth_token_service.dart';
-import '../../../services/upload_service.dart';
+import '../../../core/services/auth_token_service.dart';
+import '../../../core/services/upload_service.dart';
 import 'informacoes_obtidas.dart';
 
 class FaceCameraPage extends StatefulWidget {
