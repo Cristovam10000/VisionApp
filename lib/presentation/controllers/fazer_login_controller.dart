@@ -70,7 +70,6 @@ Future<void> fazerLogin({
       return;
     }
 
-    final userProfile = UserProfile.fromJson(perfilMap);
 
     await AuthTokenService().saveToken(backendJwt);
     await LocalStorageService().saveLoginData(backendJwt);
