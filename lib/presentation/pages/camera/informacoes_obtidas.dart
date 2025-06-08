@@ -2,11 +2,12 @@
 
 import 'package:flutter/material.dart';
 import 'package:vision_app/presentation/pages/resultados/ficha_result_tela.dart';
-import 'package:vision_app/presentation/pages/camera/face_camera_page.dart';
-import 'package:vision_app/presentation/pages/camera/popup_dialog_error_foto.dart';
-import 'package:vision_app/presentation/pages/camera/popup_dialog_nada_consta.dart';
-import 'package:vision_app/presentation/pages/camera/tela_ambiguidade.dart';
-import 'package:vision_app/presentation/pages/home/tela_home.dart';
+// import 'package:vision_app/presentation/pages/camera/face_camera_page.dart';
+// import 'package:vision_app/presentation/pages/camera/popup_dialog_error_foto.dart';
+// import 'package:vision_app/presentation/pages/camera/popup_dialog_nada_consta.dart';
+// import 'package:vision_app/presentation/pages/camera/tela_ambiguidade.dart';
+// import 'package:vision_app/presentation/pages/home/tela_home.dart';
+import '../../controllers/verificar_resultado_controller.dart';
 
 class ResultadoPage extends StatefulWidget {
   final Map<String, dynamic>? resultado;
@@ -33,79 +34,20 @@ class _ResultadoPageState extends State<ResultadoPage> {
     });
   }
 
-  void _verificarResultado() async {
-    final statusAmbiguidade =
-        widget.resultado?['status']?.toString().toLowerCase();
-    final statusFace = widget.resultado?['status']?.toString().toLowerCase();
-    final statusCpf = widget.resultado?['detail']?.toString().toLowerCase();
-    final statusErro = widget.resultado?['erro']?.toString();
-
-    if (statusFace == 'nenhuma similaridade forte' ||
-        statusCpf == 'cpf não encontrado na tabela identidade.') {
-      await showNadaConstaDialog(context);
-
-      if (mounted) {
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(
-            builder: (context) => TelaHome(perfil: widget.perfil),
-          ),
-          (Route<dynamic> route) => false, // Remove todas
-        );
-      }
-    } else if (statusErro != null &&
-        statusErro.contains("Exception: Falha ao enviar imagem: 400")) {
-      await showErrorFotoDialog(context, widget.perfil);
-
-      if (mounted) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => FaceCameraPage(perfil: widget.perfil),
-          ),
-        );
-      }
-    } else if (statusAmbiguidade == 'ambíguo') {
-      final opcoes = <Map<String, dynamic>>[];
-
-      final List<dynamic> pessoas =
-          widget.resultado?['possiveis_identidades'] ?? [];
-
-      for (final pessoa in pessoas) {
-        opcoes.add({
-          'identidade': pessoa['identidade'],
-          'ficha_criminal': pessoa['ficha_criminal'],
-          'crimes': pessoa['ficha_criminal']?['crimes'] ?? [],
-        });
-      }
-
-      if (opcoes.isNotEmpty) {
-
-        final opcaoSelecionada = await Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder:
-                (context) =>
-                    AmbiguityPage(opcoes: opcoes, perfil: widget.perfil, token: widget.token),
-          ),
-          
-        
-        );
-        if (opcaoSelecionada != null) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder:
-                  (context) => FichaResultPage(
-                    ficha: opcaoSelecionada,
-                    perfil: widget.perfil,
-                    token: widget.token
-                  ),
-            ),
-          );
-        }
-      }
-    }
+  void _verificarResultado() {
+    verificarResultado(
+      context: context,
+      resultado: widget.resultado,
+      perfil: widget.perfil,
+      token: widget.token,
+      pushPage: (page) => Navigator.push(context, MaterialPageRoute(builder: (_) => page)),
+      pushReplacement: (page) => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => page)),
+      pushAndRemoveUntil: (page) => Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (_) => page),
+        (Route<dynamic> route) => false,
+      ),
+    );
   }
 
   @override

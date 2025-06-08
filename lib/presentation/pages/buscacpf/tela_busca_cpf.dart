@@ -3,13 +3,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:vision_app/core/constants/app_colors.dart';
-import 'package:vision_app/presentation/pages/camera/popup_dialog_nada_consta.dart';
-import 'package:vision_app/presentation/pages/home/tela_home.dart';
-import 'package:vision_app/presentation/widgets/loading_dialog.dart';
+// import 'package:vision_app/presentation/pages/camera/popup_dialog_nada_consta.dart';
+// import 'package:vision_app/presentation/pages/home/tela_home.dart';
+// import 'package:vision_app/presentation/widgets/loading_dialog.dart';
 import 'package:vision_app/presentation/widgets/navbar.dart';
 import 'package:vision_app/presentation/widgets/button.dart';
-import 'package:vision_app/core/services/upload_service.dart';
-import 'package:vision_app/presentation/pages/resultados/ficha_result_tela.dart';
+// import 'package:vision_app/core/services/upload_service.dart';
+// import 'package:vision_app/presentation/pages/resultados/ficha_result_tela.dart';
+import '../../controllers/busca_cpf_controller.dart';
 
 class TelaBuscaCpf extends StatefulWidget {
   final String token;
@@ -21,11 +22,10 @@ class TelaBuscaCpf extends StatefulWidget {
   _TelaBuscaCpfState createState() => _TelaBuscaCpfState();
 }
 
-class _TelaBuscaCpfState extends State<TelaBuscaCpf> {
+class _TelaBuscaCpfState extends State<TelaBuscaCpf> with BuscaCpfController {
   final _cpfCtrl = TextEditingController();
-  final _uploadService = UploadService();
   final bool _isLoading = false;
-  String? _cpfError; // <- Mensagem de erro
+  String? _cpfError;
 
   @override
   void initState() {
@@ -33,70 +33,6 @@ class _TelaBuscaCpfState extends State<TelaBuscaCpf> {
     _cpfCtrl.clear(); // Limpa o campo CPF ao entrar na tela
   }
 
-  Future<void> buscarFicha() async {
-    final cpf = _cpfCtrl.text.trim();
-
-    setState(() {
-      _cpfError = null; // Limpa erro anterior
-    });
-
-    if (cpf.isEmpty) {
-      setState(() {
-        _cpfError = 'Por favor, digite um CPF';
-      });
-      return;
-    }
-
-    if (cpf.length != 11) {
-      setState(() {
-        _cpfError = 'CPF deve ter 11 dígitos';
-      });
-      return;
-    }
-
-    if (widget.token.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Token ausente. Faça login novamente.')),
-      );
-      return;
-    }
-
-    showLoadingDialog(context, mensagem: 'Buscando ficha...');
-
-    try {
-      final ficha = await _uploadService.buscarFichaPorCpf(cpf, widget.perfil?['matricula'], widget.token);
-      if (!mounted) return;
-      FocusScope.of(context).unfocus();
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder:
-              (_) => FichaResultPage(
-                ficha: ficha,
-                perfil: widget.perfil,
-                token: widget.token,
-              ),
-        ),
-      );
-    } catch (e) {
-      if (mounted) {
-        Navigator.pop(context);
-
-        await showNadaConstaDialog(context);
-
-        if (mounted) {
-          FocusScope.of(context).unfocus();
-          Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(
-              builder: (context) => TelaHome(perfil: widget.perfil),
-            ),
-            (Route<dynamic> route) => false, // Remove todas
-          );
-        }
-      }
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -180,7 +116,15 @@ class _TelaBuscaCpfState extends State<TelaBuscaCpf> {
                         height: 48,
                         child: Button(
                           text: "Pesquisar",
-                          onPressed: buscarFicha,
+                          onPressed: () {
+                            buscarFicha(
+                              context: context,
+                              cpfCtrl: _cpfCtrl,
+                              token: widget.token,
+                              perfil: widget.perfil,
+                              setCpfError: (err) => setState(() => _cpfError = err),
+                            );
+                          },
                         ),
                       ),
                   const SizedBox(height: 14),

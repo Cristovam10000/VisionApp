@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:vision_app/core/constants/app_colors.dart';
-import 'package:vision_app/presentation/pages/buscacpf/tela_busca_cpf.dart';
-import 'package:vision_app/presentation/pages/home/pop-up_facerules.dart';
-import 'package:vision_app/presentation/pages/home/tela_home.dart';
+import '../controllers/navbar_controller.dart';
 
-class CustomNavbar extends StatelessWidget {
+class CustomNavbar extends StatelessWidget with NavbarController {
   final int currentIndex;
   final Map<String, dynamic>? perfil;
   final String token;
@@ -16,32 +14,6 @@ class CustomNavbar extends StatelessWidget {
     this.perfil,
     required this.token,
   });
-
-  void _navigate(BuildContext context, int index) {
-    if (index == currentIndex) return;
-
-    switch (index) {
-      case 0:
-        FocusScope.of(context).unfocus();
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => TelaHome(perfil: perfil)),
-        );
-        break;
-      case 1:
-        mostrarPopUpRegrasFace(context: context, perfil: perfil);
-        break;
-      case 2:
-        FocusScope.of(context).unfocus();
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => TelaBuscaCpf(token: token, perfil: perfil),
-          ),
-        );
-        break;
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +34,13 @@ class CustomNavbar extends StatelessWidget {
                   : ColorPalette.lightbutton,
           unselectedItemColor: ColorPalette.branco,
           currentIndex: nenhumSelecionado ? 0 : currentIndex,
-          onTap: (index) => _navigate(context, index),
+          onTap: (index) => navigateNavbar(
+            context: context,
+            index: index,
+            currentIndex: currentIndex,
+            perfil: perfil,
+            token: token,
+          ),
           iconSize: 30,
           selectedLabelStyle: GoogleFonts.montserrat(
             fontWeight: FontWeight.w700,

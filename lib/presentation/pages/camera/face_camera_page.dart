@@ -6,12 +6,9 @@ import 'package:vision_app/core/constants/app_colors.dart';
 import 'package:vision_app/presentation/controllers/face_camera_controller_setup.dart';
 import 'package:vision_app/presentation/pages/camera/face_overlay.dart';
 import 'package:vision_app/presentation/controllers/face_utils.dart';
-import 'package:vision_app/presentation/pages/camera/popup_dialog_error_foto.dart';
-import 'package:vision_app/presentation/widgets/loading_dialog.dart';
 import 'dart:io';
-import '../../../core/services/auth_token_service.dart';
 import '../../../core/services/upload_service.dart';
-import 'informacoes_obtidas.dart';
+import '../../controllers/face_camera_utils.dart';
 
 class FaceCameraPage extends StatefulWidget {
   final Map<String, dynamic>? perfil;
@@ -35,7 +32,6 @@ class _FaceCameraPageState extends State<FaceCameraPage> {
   @override
   void initState() {
     super.initState();
-
     _capturedImage = null;
     _controller = setupFaceCameraController(
       onCapture: (file) {
@@ -52,135 +48,49 @@ class _FaceCameraPageState extends State<FaceCameraPage> {
         });
       },
     );
+  }
 
-    // Sincroniza o flash com o controlador após o primeiro frame
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _syncFlashModeWithController();
+
+  void _toggleFlashMode() {
+    setState(() {
+      _currentFlashMode = toggleFlashMode(
+        currentFlashMode: _currentFlashMode,
+        controller: _controller,
+      );
     });
   }
 
-  // Sincroniza o estado do flash local com o estado interno do controlador
-  void _syncFlashModeWithController() {
-    // Considerando que o controlador inicia no modo auto,
-    // precisamos chamar changeFlashMode() duas vezes para chegar em off
-    if (_currentFlashMode == CameraFlashMode.off) {
-      _controller.changeFlashMode(); // auto -> always
-      _controller.changeFlashMode(); // always -> off
-    }
-  }
+
 
   Future<void> _handleConfirmUpload() async {
-    if (_capturedImage == null || _isProcessing || !_isFaceWellPositioned) {
-      if (!mounted) return;
-      _showMessage(
-        '❌ Rosto não encontrado ou centralizado. Tente novamente.',
-        const Color.fromARGB(255, 185, 134, 130),
-      );
-      return;
-    }
-
-    setState(() => _isProcessing = true);
-    showLoadingDialog(
-      context,
-      mensagem: 'Enviando imagem e aguardando resultado...',
+    await handleConfirmUpload(
+      context: context,
+      capturedImage: _capturedImage,
+      isProcessing: _isProcessing,
+      isFaceWellPositioned: _isFaceWellPositioned,
+      setProcessing: (processing) => setState(() => _isProcessing = processing),
+      controller: _controller,
+      perfil: widget.perfil,
+      uploadService: _uploadService,
     );
-
-    try {
-      final token = AuthTokenService().token;
-      if (token != null) {
-        final resultado = await _uploadService.enviarImagem(
-          widget.perfil?['matricula'],
-          _capturedImage!,
-          token,
-        );
-
-        Navigator.pop(context);
-
-        if (resultado['statusCode'] == 200) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => ResultadoPage(
-                resultado: resultado['body'],
-                perfil: widget.perfil,
-                token: token,
-              ),
-            ),
-          );
-        } else {
-          _showMessage(
-            '❌ Erro ao enviar imagem. Código: ${resultado['statusCode']}',
-            Colors.red,
-          );
-        }
-
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ResultadoPage(
-              resultado: resultado,
-              perfil: widget.perfil,
-              token: token,
-            ),
-          ),
-        ).then((_) async {
-          await _controller.startImageStream();
-          setState(() => _capturedImage = null);
-        });
-      } else {
-        Navigator.pop(context);
-        _showMessage('❌ Token não encontrado', Colors.red);
-      }
-    } catch (e) {
-      Navigator.pop(context);
-      _showMessage('❌ Erro: ${e.toString()}', Colors.red);
-    } finally {
-      setState(() => _isProcessing = false);
-    }
   }
 
-  void _showMessage(String message, Color color) {
-    if (!mounted) return;
-
-    Navigator.pop(context, true);
-    showErrorFotoDialog(context, widget.perfil);
-  }
-
-  // Alterna o modo do flash e sincroniza o estado local
-  void _toggleFlashMode() {
-    if (!_controller.enableControls) return;
-
-    setState(() {
-      switch (_currentFlashMode) {
-        case CameraFlashMode.auto:
-          _currentFlashMode = CameraFlashMode.always;
-          break;
-        case CameraFlashMode.always:
-          _currentFlashMode = CameraFlashMode.off;
-          break;
-        case CameraFlashMode.off:
-          _currentFlashMode = CameraFlashMode.auto;
-          break;
-      }
-    });
-
-    _controller.changeFlashMode();
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: _capturedImage == null
-          ? AppBar(
-              backgroundColor: Colors.transparent,
-              leading: IconButton(
-                icon: const Icon(Icons.arrow_back_ios),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              ),
-            )
-          : null,
+      appBar:
+          _capturedImage == null
+              ? AppBar(
+                backgroundColor: Colors.transparent,
+                leading: IconButton(
+                  icon: const Icon(Icons.arrow_back_ios),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+              )
+              : null,
       body: Stack(
         fit: StackFit.expand,
         children: [
@@ -263,7 +173,9 @@ class _FaceCameraPageState extends State<FaceCameraPage> {
                           ),
                         ),
                         onPressed:
-                            _controller.enableControls ? _controller.captureImage : null,
+                            _controller.enableControls
+                                ? _controller.captureImage
+                                : null,
                       ),
                       const SizedBox(width: 16),
                       IconButton(
@@ -285,7 +197,9 @@ class _FaceCameraPageState extends State<FaceCameraPage> {
                           ),
                         ),
                         onPressed:
-                            _controller.enableControls ? _toggleFlashMode : null,
+                            _controller.enableControls
+                                ? _toggleFlashMode
+                                : null,
                       ),
                     ],
                   ),

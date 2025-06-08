@@ -2,14 +2,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:vision_app/presentation/pages/home/tela_home.dart';
-import 'package:vision_app/presentation/widgets/loading_dialog.dart';
 import 'package:vision_app/presentation/widgets/button.dart';
 import 'package:vision_app/core/constants/app_colors.dart';
-import 'package:vision_app/core/services/local_storage_service.dart';
-import '../../../core/services/auth_firebase_service.dart';
-import '../../../core/services/auth_backend_service.dart';
-import '../../../core/services/auth_token_service.dart';
+import '../../controllers/fazer_login_controller.dart';
 
 class Logincontainer extends StatefulWidget {
   const Logincontainer({super.key});
@@ -20,113 +15,27 @@ class Logincontainer extends StatefulWidget {
 }
 
 class _LogincontainerState extends State<Logincontainer> {
-  bool _obscurePassword = true; // controla a visibilidade da senha
-
+  bool _obscurePassword = true;
   final emailController = TextEditingController();
   final senhaController = TextEditingController();
 
-  String? _mensagemErroCpf; // Mensagem de erro para CPF
-  String? _mensagemErroSenha; // Mensagem de erro para senha
+  String? _mensagemErroCpf;
+  String? _mensagemErroSenha;
 
-  void _fazerLogin() async {
-    showLoadingDialog(context, mensagem: 'Entrando...');
-
-    final cpf = emailController.text.trim();
-    final senha = senhaController.text;
-    final emailFake = '$cpf@app.com';
-
+  void _setError(String? cpfError, String? senhaError) {
     setState(() {
-      _mensagemErroCpf = null;
-      _mensagemErroSenha = null;
+      _mensagemErroCpf = cpfError;
+      _mensagemErroSenha = senhaError;
     });
+  }
 
-    if (cpf.isEmpty && senha.isEmpty) {
-      Navigator.pop(context); // Fecha o loading antes de sair
-      setState(() {
-        _mensagemErroCpf = 'O CPF estar vazio.';
-        _mensagemErroSenha = 'O Senha estar vazio.';
-      });
-      return;
-    } else if (cpf.isEmpty) {
-      Navigator.pop(context); // Fecha o loading antes de sair
-      setState(() {
-        _mensagemErroCpf = 'O CPF estar vazio.';
-      });
-      return;
-    } else if (senha.isEmpty && cpf.length != 11) {
-      Navigator.pop(context); // Fecha o loading antes de sair
-      setState(() {
-        _mensagemErroCpf = 'CPF deve ter 11 dígitos';
-        _mensagemErroSenha = 'O Senha estar vazio.';
-      });
-      return;
-    }
-
-    if (cpf.length != 11) {
-      Navigator.pop(context); // Fecha o loading antes de sair
-      setState(() {
-        _mensagemErroCpf = 'CPF deve ter 11 dígitos';
-      });
-      return;
-    } else if (senha.isEmpty) {
-      Navigator.pop(context); // Fecha o loading antes de sair
-      setState(() {
-        _mensagemErroSenha = 'O Senha estar vazio.';
-      });
-      return;
-    }
-
-    try {
-      final firebaseToken = await AuthService().loginComFirebase(
-        emailFake,
-        senha,
-      );
-      if (firebaseToken == null) {
-        Navigator.pop(context);
-        setState(() {
-          _mensagemErroCpf = 'CPF pode está incorreto';
-          _mensagemErroSenha = 'Senha pode está incorreta';
-        });
-        return;
-      }
-
-      final backendJwt = await postWithToken(firebaseToken);
-      if (backendJwt == null) {
-        Navigator.pop(context);
-        setState(() {
-          _mensagemErroCpf = 'Erro ao autenticar com o servidor.';
-        });
-        return;
-      }
-
-      final perfil = await getUserProfile(backendJwt);
-      if (perfil == null) {
-        Navigator.pop(context);
-        setState(() {
-          _mensagemErroCpf = 'Não foi possível obter o perfil.';
-        });
-        return;
-      }
-
-      await AuthTokenService().saveToken(backendJwt);
-
-      await LocalStorageService().saveLoginData(backendJwt);
-
-      Navigator.pop(context); // Fecha o loading antes de navegar
-
-      FocusScope.of(context).unfocus();
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (context) => TelaHome(perfil: perfil)),
-        (Route<dynamic> route) => false,
-      );
-    } catch (e) {
-      Navigator.pop(context); // Fecha o loading em caso de erro inesperado
-
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Erro ao fazer login: $e')));
-    }
+  void _fazerLogin() {
+    fazerLogin(
+      context: context,
+      emailController: emailController,
+      senhaController: senhaController,
+      setError: _setError,
+    );
   }
 
   @override
