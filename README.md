@@ -77,6 +77,8 @@ Desenvolvimento de um aplicativo de segurança pública que utiliza reconhecimen
 
 <div align="center"> 
 
+<img src="images/arquitetura_app.drawio.png" width="800"/>
+
 </div>
 
 ## Funcionalidades
