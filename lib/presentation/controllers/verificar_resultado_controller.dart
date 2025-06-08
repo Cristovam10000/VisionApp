@@ -8,7 +8,7 @@ import 'package:vision_app/presentation/pages/home/tela_home.dart';
 
 Future<void> verificarResultado({
   required BuildContext context,
-  required Map<String, dynamic>? resultado,
+  required Map<dynamic, dynamic>? resultado,
   required Map<String, dynamic>? perfil,
   required String token,
   required void Function(Widget page) pushPage,
@@ -31,11 +31,11 @@ Future<void> verificarResultado({
 
     pushReplacement(FaceCameraPage(perfil: perfil));
   } else if (statusAmbiguidade == 'ambíguo') {
-    final opcoes = <Map<String, dynamic>>[];
+    final opcoes = <Map<dynamic, dynamic>?>[];
 
-    final List<dynamic> pessoas = resultado?['possiveis_identidades'] ?? [];
+    final List<dynamic>? pessoas = resultado?['possiveis_identidades'] ?? [];
 
-    for (final pessoa in pessoas) {
+    for (final pessoa in pessoas!) {
       opcoes.add({
         'identidade': pessoa['identidade'],
         'ficha_criminal': pessoa['ficha_criminal'],

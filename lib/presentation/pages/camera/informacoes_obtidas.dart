@@ -2,15 +2,12 @@
 
 import 'package:flutter/material.dart';
 import 'package:vision_app/presentation/pages/resultados/ficha_result_tela.dart';
-// import 'package:vision_app/presentation/pages/camera/face_camera_page.dart';
-// import 'package:vision_app/presentation/pages/camera/popup_dialog_error_foto.dart';
-// import 'package:vision_app/presentation/pages/camera/popup_dialog_nada_consta.dart';
-// import 'package:vision_app/presentation/pages/camera/tela_ambiguidade.dart';
-// import 'package:vision_app/presentation/pages/home/tela_home.dart';
+import 'package:vision_app/data/model/fichamodel.dart';
 import '../../controllers/verificar_resultado_controller.dart';
 
+
 class ResultadoPage extends StatefulWidget {
-  final Map<String, dynamic>? resultado;
+  final Map<dynamic, dynamic>? resultado;
   final Map<String, dynamic>? perfil;
   final String token;
 
@@ -52,23 +49,17 @@ class _ResultadoPageState extends State<ResultadoPage> {
 
   @override
   Widget build(BuildContext context) {
-    final identidade = widget.resultado?['identidade'] ?? {};
-    final fichaCriminal = widget.resultado?['ficha_criminal'] ?? {};
-    final fichaInfo = fichaCriminal['ficha_criminal'] ?? {};
-    final crimes = fichaCriminal['crimes'] ?? [];
-
-    final ficha = {
-      'cpf': identidade['cpf'],
-      'nome': identidade['nome'],
-      'nome_mae': identidade['nome_mae'],
-      'nome_pai': identidade['nome_pai'],
-      'data_nascimento': identidade['data_nascimento'],
-      'foto_url': identidade['url_face'],
-      'vulgo': fichaInfo['vulgo'],
-      'crimes': crimes,
-    };
 
 
-    return FichaResultPage(ficha: ficha, perfil: widget.perfil, token: widget.token);
+    final identidade = (widget.resultado?['identidade'] ?? {}).cast<String, dynamic>();
+    final fichaCriminal = (widget.resultado?['ficha_criminal'] ?? {}).cast<String, dynamic>();
+
+    final ficha = FichaModel.fromFacial(identidade, fichaCriminal);
+
+    return FichaResultPage(
+      ficha: ficha.toMap(), // ou só ficha, se a tela aceitar o model
+      perfil: widget.perfil,
+      token: widget.token,
+    );
   }
 }

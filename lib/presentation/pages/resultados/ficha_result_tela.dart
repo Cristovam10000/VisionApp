@@ -254,7 +254,7 @@ class _FichaResultPageState extends State<FichaResultPage> {
 }
 
 class CrimeCard extends StatelessWidget {
-  final Map<String, dynamic> crime;
+  final Map<dynamic, dynamic>? crime;
 
   const CrimeCard({super.key, required this.crime});
 
@@ -288,13 +288,13 @@ class CrimeCard extends StatelessWidget {
                   ),
                   decoration: BoxDecoration(
                     color:
-                        crime['status'] == 'Em Aberto'
+                        crime?['status'] == 'Em Aberto'
                             ? ColorPalette.vermelhoPaleta
                             : ColorPalette.cinza,
                     borderRadius: BorderRadius.circular(6),
                   ),
                   child: Text(
-                    crime['status'] ?? 'Desconhecido',
+                    crime?['status'] ?? 'Desconhecido',
                     style: const TextStyle(
                       color: ColorPalette.branco,
                       fontSize: 10,
@@ -305,9 +305,9 @@ class CrimeCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 7),
-            infoTextLine('Data: ', crime['data_ocorrencia'] ?? 'Não informada'),
+            infoTextLine('Data: ', crime?['data_ocorrencia'] ?? 'Não informada'),
             const SizedBox(height: 6),
-            infoTextLine('Artigo: ', crime['artigo'] ?? 'Não informado'),
+            infoTextLine('Artigo: ', crime?['artigo'] ?? 'Não informado'),
             const SizedBox(height: 6),
             Row(
               children: [
@@ -318,7 +318,7 @@ class CrimeCard extends StatelessWidget {
                 ),
                 const SizedBox(width: 4),
                 Text(
-                  '${crime['cidade'] ?? ''}, ${crime['estado'] ?? ''}',
+                  '${crime?['cidade'] ?? ''}, ${crime?['estado'] ?? ''}',
                   style: const TextStyle(color: ColorPalette.branco),
                 ),
               ],

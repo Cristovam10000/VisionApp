@@ -1,4 +1,4 @@
-String obterVulgo(Map<String, dynamic>? ficha) {
+String obterVulgo(Map<dynamic, dynamic>? ficha) {
   return ficha?['vulgo'] ??
       (ficha?['ficha_criminal'] is Map
           ? (ficha!['ficha_criminal'] as Map)['vulgo'] ??

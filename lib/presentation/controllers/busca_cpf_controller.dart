@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vision_app/core/services/upload_service.dart';
+import 'package:vision_app/data/model/fichamodel.dart';
 import 'package:vision_app/presentation/pages/camera/popup_dialog_nada_consta.dart';
 import 'package:vision_app/presentation/pages/home/tela_home.dart';
 import 'package:vision_app/presentation/pages/resultados/ficha_result_tela.dart';
@@ -39,18 +40,21 @@ mixin BuscaCpfController<T extends StatefulWidget> on State<T> {
     showLoadingDialog(context, mensagem: 'Buscando ficha...');
 
     try {
-      final ficha = await _uploadService.buscarFichaPorCpf(
+      final responseBody = await _uploadService.buscarFichaPorCpf(
         cpf,
         perfil?['matricula'],
         token,
       );
+
+      final ficha = FichaModel.fromCpf(responseBody); // Converte o body para o model
+
       if (!mounted) return;
       FocusScope.of(context).unfocus();
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
           builder: (_) => FichaResultPage(
-            ficha: ficha,
+            ficha: ficha.toMap(), // Use .toMap() se FichaResultPage espera Map
             perfil: perfil,
             token: token,
           ),

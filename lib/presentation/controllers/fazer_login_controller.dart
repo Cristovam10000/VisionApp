@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vision_app/data/model/usermodel.dart';
 import 'package:vision_app/presentation/pages/home/tela_home.dart';
 import 'package:vision_app/presentation/widgets/loading_dialog.dart';
 import 'package:vision_app/core/services/local_storage_service.dart';
@@ -62,12 +63,14 @@ Future<void> fazerLogin({
       return;
     }
 
-    final perfil = await getUserProfile(backendJwt);
-    if (perfil == null) {
+    final perfilMap = await getUserProfile(backendJwt);
+    if (perfilMap == null) {
       Navigator.pop(context);
       setError('Não foi possível obter o perfil.', null);
       return;
     }
+
+    final userProfile = UserProfile.fromJson(perfilMap);
 
     await AuthTokenService().saveToken(backendJwt);
     await LocalStorageService().saveLoginData(backendJwt);
@@ -77,13 +80,14 @@ Future<void> fazerLogin({
     FocusScope.of(context).unfocus();
     Navigator.pushAndRemoveUntil(
       context,
-      MaterialPageRoute(builder: (context) => TelaHome(perfil: perfil)),
+      MaterialPageRoute(builder: (context) => TelaHome(perfil: perfilMap)),
       (Route<dynamic> route) => false,
     );
+
   } catch (e) {
     Navigator.pop(context);
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Erro ao fazer login: $e')),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text('Erro ao fazer login: $e')));
   }
 }
