@@ -3,11 +3,11 @@
 import 'package:flutter/material.dart';
 import 'package:face_camera/face_camera.dart';
 import 'package:vision_app/core/constants/app_colors.dart';
-import 'package:vision_app/presentation/pages/camera/face_camera_controller_setup.dart';
+import 'package:vision_app/presentation/controllers/face_camera_controller_setup.dart';
 import 'package:vision_app/presentation/pages/camera/face_overlay.dart';
-import 'package:vision_app/presentation/pages/camera/face_utils.dart';
+import 'package:vision_app/presentation/controllers/face_utils.dart';
 import 'package:vision_app/presentation/pages/camera/popup_dialog_error_foto.dart';
-import 'package:vision_app/presentation/widgets/state/loading_dialog.dart';
+import 'package:vision_app/presentation/widgets/loading_dialog.dart';
 import 'dart:io';
 import '../../../core/services/auth_token_service.dart';
 import '../../../core/services/upload_service.dart';

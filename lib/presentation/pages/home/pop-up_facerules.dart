@@ -2,9 +2,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:vision_app/core/constants/app_colors.dart';
+import 'package:vision_app/core/constants/app_texts.dart';
 import 'package:vision_app/presentation/pages/camera/face_camera_page.dart';
-import 'package:vision_app/presentation/widgets/state/infotextline.dart';
-import 'package:vision_app/presentation/widgets/state/state.dart';
+import 'package:vision_app/presentation/widgets/infotextline.dart';
+import 'package:vision_app/presentation/widgets/button.dart';
 
 void mostrarPopUpRegrasFace({
   required BuildContext context,
@@ -20,7 +21,7 @@ void mostrarPopUpRegrasFace({
           children: [
             Center(
               child: Text(
-                "Certifique-se de tirar \n uma boa foto",
+                StandardTexts.popupFaceRulesTitle,
                 style: Theme.of(context).textTheme.titleMedium,
                 textAlign: TextAlign.center,
               ),

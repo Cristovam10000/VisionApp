@@ -1,11 +1,13 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+import 'package:vision_app/core/constants/api_constants.dart';
+
 
 /// Envia o Firebase ID token e retorna o JWT do back-end
 Future<String?> postWithToken(String firebaseToken) async {
-  const baseUrl = 'https://fastapi.ajvale.com.br/auth/firebase?token_data=';
-  final uri = Uri.parse('$baseUrl$firebaseToken');
+
+  final uri = Uri.parse('${ApiConstants.token}$firebaseToken');
 
   try {
     final response = await http.post(
@@ -24,13 +26,13 @@ Future<String?> postWithToken(String firebaseToken) async {
     // Decodifica o JSON de resposta
     final data = jsonDecode(response.body) as Map<String, dynamic>;
     if (kDebugMode) {
-      print('🔥 POST /auth/firebase retornou: $data');
+      print('POST /auth/firebase retornou: $data');
     }
 
     // Extrai apenas o JWT (campo exato depende da sua API)
     final accessToken = data['access_token'] as String?;
     if (kDebugMode) {
-      print('🔑 accessToken="$accessToken"');
+      print('accessToken="$accessToken"');
     }
     return accessToken;
 
@@ -44,14 +46,9 @@ Future<String?> postWithToken(String firebaseToken) async {
 }
 
 
-/// Puxa perfil usando o JWT que seu FastAPI gerou,
-/// e não mais o Firebase ID token.
-///
-/// Exemplo de chamada:
-///   final perfil = await getUserProfile(backendJwt);
 Future<Map<String, dynamic>?> getUserProfile(String backendJwt) async {
   // monta a URI sem query param
-  final uri = Uri.parse('https://fastapi.ajvale.com.br/usuario/perfil');
+  final uri = Uri.parse(ApiConstants.getuser);
 
   try {
     final response = await http.get(

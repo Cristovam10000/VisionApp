@@ -45,7 +45,7 @@ class TelaLogin extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 34),
                     child: Text(
-                      StandardTexts.appSubtitle,
+                      StandardTexts.appDescription,
                       textAlign: TextAlign.center,
                       style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                         fontSize: 16,

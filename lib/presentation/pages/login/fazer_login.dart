@@ -3,8 +3,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:vision_app/presentation/pages/home/tela_home.dart';
-import 'package:vision_app/presentation/widgets/state/loading_dialog.dart';
-import 'package:vision_app/presentation/widgets/state/state.dart';
+import 'package:vision_app/presentation/widgets/loading_dialog.dart';
+import 'package:vision_app/presentation/widgets/button.dart';
 import 'package:vision_app/core/constants/app_colors.dart';
 import 'package:vision_app/core/services/local_storage_service.dart';
 import '../../../core/services/auth_firebase_service.dart';

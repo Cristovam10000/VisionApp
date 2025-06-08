@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:vision_app/core/constants/app_colors.dart';
-import 'package:vision_app/presentation/widgets/state/state.dart';
+import 'package:vision_app/core/constants/app_texts.dart';
+import 'package:vision_app/presentation/widgets/button.dart';
 
 Future<void> showNadaConstaDialog(BuildContext context) async {
   return showDialog(
@@ -18,13 +19,13 @@ Future<void> showNadaConstaDialog(BuildContext context) async {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                "Nada consta!",
+                StandardTexts.popupNadaConstaTitle,
                 style:  Theme.of(context).textTheme.titleMedium,
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 12),
               const Text(
-                "Nada consta na ficha criminal desse cidadão.",
+                StandardTexts.popupNadaConstaMessage,
                 style: TextStyle(
                   fontSize: 16,
                   color: ColorPalette.preto,

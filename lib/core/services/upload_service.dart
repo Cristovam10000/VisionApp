@@ -3,13 +3,14 @@ import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:mime/mime.dart' as mime;
 import 'package:http_parser/http_parser.dart';
+import 'package:vision_app/core/constants/api_constants.dart';
+
 import 'dart:convert'; // Para JSON
 
 
+
 class UploadService {
-  final String baseUrl = 'https://fastapi.ajvale.com.br';
-  final String uploadEndpoint = '/buscar-similaridade-foto/';
-  final String fichaEndpoint = '/buscar-ficha-criminal';
+
 
   Future<Map<String, dynamic>> enviarImagem(
   String matricula,
@@ -17,7 +18,7 @@ class UploadService {
   String token,
   ) async {
     try {
-      final uri = Uri.parse('$baseUrl$uploadEndpoint?matricula=$matricula');
+      final uri = Uri.parse('${ApiConstants.uploadendpoint}?matricula=$matricula');
 
       final request = http.MultipartRequest('POST', uri);
 
@@ -67,8 +68,10 @@ class UploadService {
   Future<Map<String, dynamic>> buscarFichaPorCpf(String cpf, String matricula, String token) async {
   // Adiciona a matrícula como parâmetro de consulta (query parameter)
   final Uri url = Uri.parse(
-    'https://fastapi.ajvale.com.br/buscar-ficha-criminal/$cpf?matricula=$matricula',
+    '${ApiConstants.fichaendpoint}$cpf?matricula=$matricula',
   );
+
+
 
   try {
     final response = await http.get(

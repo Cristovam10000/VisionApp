@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:vision_app/presentation/widgets/state/splash_screen.dart';
-import 'core/config/firebase_options.dart';
+import 'package:vision_app/presentation/widgets/splash_screen.dart';
+import 'core/services/firebase_options.dart';
 import 'package:face_camera/face_camera.dart'; 
 import 'core/theme/app_theme.dart';
 import 'package:flutter/services.dart';
@@ -47,7 +47,6 @@ class VisionApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'VisionApp',
       home: SplashScreen(),
       theme: AppTheme.darkTheme,
       debugShowCheckedModeBanner: false,

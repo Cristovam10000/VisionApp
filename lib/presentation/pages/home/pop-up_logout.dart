@@ -2,8 +2,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:vision_app/core/constants/app_colors.dart';
+import 'package:vision_app/core/constants/app_texts.dart';
 import 'package:vision_app/presentation/pages/login/tela_login.dart';
-import '../../widgets/state/state.dart';
+import '../../widgets/button.dart';
 
 
 
@@ -26,7 +27,7 @@ void mostrarDialogoLogout(BuildContext context) {
               children: [
                 Center(
                   child: Text(
-                    'Tem certeza que deseja\nsair do aplicativo ?',
+                    StandardTexts.popupLogoutTitle,
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
@@ -46,7 +47,7 @@ void mostrarDialogoLogout(BuildContext context) {
             
             const SizedBox(height: 18),
             const Text(
-              'Você precisará fazer login novamente no próximo acesso.',
+              StandardTexts.popupLogoutMessage,
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 16,
@@ -55,7 +56,7 @@ void mostrarDialogoLogout(BuildContext context) {
             ),
             const SizedBox(height: 28),
             SizedBox(
-              child: Button(text: "Sair da sua Conta", backgroundColor: ColorPalette.vermelhoPaleta, textStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 18,
+              child: Button(text: StandardTexts.popupLogoutButton, backgroundColor: ColorPalette.vermelhoPaleta, textStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 18,
                   color: ColorPalette.branco,) , 
                   onPressed: () {
                   Navigator.of(context).pop();

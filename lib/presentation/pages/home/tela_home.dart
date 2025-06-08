@@ -3,7 +3,7 @@ import 'package:vision_app/presentation/pages/buscacpf/tela_busca_cpf.dart';
 import 'package:vision_app/presentation/pages/home/drawer_perfil.dart';
 import 'package:vision_app/presentation/pages/home/pop-up_facerules.dart';
 import 'package:vision_app/core/services/auth_token_service.dart';
-import '../../widgets/state/state.dart';
+import '../../widgets/button.dart';
 
 class TelaHome extends StatefulWidget {
   final String? nomeUsuario;
