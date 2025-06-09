@@ -6,6 +6,7 @@ class FichaModel {
   final String? dataNascimento;
   final String? fotoUrl;
   final String? vulgo;
+  final bool? gemeo;
   final List<dynamic>? crimes;
 
   FichaModel({
@@ -16,6 +17,7 @@ class FichaModel {
     this.dataNascimento,
     this.fotoUrl,
     this.vulgo,
+    this.gemeo,
     this.crimes = const [],
   });
 
@@ -30,6 +32,7 @@ class FichaModel {
       dataNascimento: identidade?['data_nascimento'],
       fotoUrl: identidade?['url_face'],
       vulgo: fichaInfo['vulgo'],
+      gemeo: identidade?['gemeo'],
       crimes: fichaCriminal?['crimes'] ?? [],
     );
   }
@@ -45,6 +48,7 @@ class FichaModel {
       dataNascimento: json?['data_nascimento'],
       fotoUrl: json?['foto_url'],
       vulgo: fichaCriminal['vulgo'],
+      gemeo: json?['gemeo'],
       crimes: json?['crimes'] ?? [],
     );
   }
@@ -57,6 +61,7 @@ class FichaModel {
     'data_nascimento': dataNascimento,
     'foto_url': fotoUrl,
     'vulgo': vulgo,
+    'gemeo': gemeo,
     'crimes': crimes,
   };
 }

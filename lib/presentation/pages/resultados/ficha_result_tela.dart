@@ -154,6 +154,7 @@ class _FichaResultPageState extends State<FichaResultPage> {
                                     color: ColorPalette.branco,
                                   ),
                                 ),
+                                
                               ],
                             ),
                           ],
@@ -190,6 +191,13 @@ class _FichaResultPageState extends State<FichaResultPage> {
                             _buildInfoRow(
                               'Nome do Pai',
                               widget.ficha?['nome_pai'],
+                            ),
+                            const SizedBox(height: 15),
+                            _buildInfoRow(
+                              'Possui gêmeo(a)',
+                              widget.ficha?['gemeo'] == true
+                                  ? 'Sim'
+                                  : 'Não',
                             ),
                           ],
                         ),
