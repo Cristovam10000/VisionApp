@@ -88,7 +88,7 @@ class _TelaHomeState extends State<TelaHome> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Text(
-                'Bem-Vindo,\n$nome!',
+                'Bem-Vindo(a),\n$nome!',
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.displayLarge,
               ),
