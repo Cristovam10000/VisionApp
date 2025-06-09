@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:vision_app/data/model/usermodel.dart';
 import 'package:vision_app/presentation/pages/home/tela_home.dart';
 import 'package:vision_app/presentation/widgets/loading_dialog.dart';
 import 'package:vision_app/core/services/local_storage_service.dart';
