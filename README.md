@@ -28,7 +28,6 @@
 - Cristovam Paulo - [cristovam10000](https://github.com/cristovam10000)
 - Gustavo do Vale - [gustavodovale](https://github.com/gustavodovale)
 - Lucas Cesar
-- Agenor Neto
 
 ## Descrição
 
